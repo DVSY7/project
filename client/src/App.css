@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+
+
+.App {
+  text-align: center;
+}
+
+body {
+  font-family: 'Lilita One', sans-serif;
+}
+
+/* menu의 오른쪽 라인 */
+@layer components {
+  .right-line-after {
+    @apply relative;
+  }
+
+  .right-line-after::after {
+    content: '';
+    bottom: 0;
+    left: 0;
+    border-right: 1px solid rgb(192, 192, 192);
+    position: absolute;
+    width: 100%;
+    height: 95%;
+    transform: translateY(-2.5%);
+  }
+  .right-search-line-after{
+    @apply relative;
+  }
+  
+  .right-search-line-after::after{
+    content: '';
+    bottom: 0;
+    left: 0;
+    border-right: 2px solid gray;
+    position: absolute;
+    width: 100%;
+    height: 120%;
+    transform:translate(50%, 10%)
+  }
+}
