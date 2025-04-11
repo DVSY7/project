@@ -1,8 +1,7 @@
 import '../App.css';
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 
-export default function Menu() {
+export default function Menu(props) {
 
   // 메뉴부분 레이아웃css
   const menu = "flex flex-col row-span-1 row-start-10 sm:row-start-1 min-w-[150px] sm:right-line-after";
@@ -14,21 +13,13 @@ export default function Menu() {
   const text_size = "sm:text-[3vh] md:text-[2vh] lg:text-[1em] xl:text-[1em] 2xl:text-[1.7vh]";
   // 모바일버전 사라지는 요소
   const m_menu = 'hidden sm:block';
-  // nav_action
-  const [src, setSrc] = useState(
-    [
-      "/images/홈1.png",
-      "/images/커뮤니티2.png",
-      "/images/장소추천2.png",
-      "/images/더하기2.png"
-    ]);
-  const nav_Action = (e) => {
-    const name = e.currentTarget.dataset.src;
-    console.log(name);
-    console.log(src)
-  }
 
+  const {current_src} = props;
 
+  const img_src = Object.fromEntries(
+    [1, 2, 3, 4].map(n => [n, n === current_src ? 1 : 2])
+  );
+  
 
   return (
     <>
@@ -40,11 +31,11 @@ export default function Menu() {
 
         {/* 중간 영역 */}
         <div className={`flex sm:block h-[full] sm:h-[75%] font-sans font-bold ${text_size}`}>
-          <Link data-src="/images/홈1.png" onClick={nav_Action} to="/home"><div className={text}><img className={img_size} src={src[0]} alt="홈"></img><p className={`${m_menu} sm:ml-1`} name="홈">홈</p></div></Link>
-          <Link data-name="커뮤니티" onClick={nav_Action} to="/community"><div className={text}><img className={img_size} src='/images/메세지2.png' alt="커뮤니티"></img><p className={`${m_menu} sm:ml-1`} name="커뮤니티">커뮤니티</p></div></Link>
+          <Link to="/home"><div className={text}><img className={img_size} src={`images/홈${img_src[1]}.png`} alt="홈"></img><p className={`${m_menu} sm:ml-1`} name="홈">홈</p></div></Link>
+          <Link to="/community"><div className={text}><img className={img_size} src={`images/커뮤니티${img_src[2]}.png`} alt="커뮤니티"></img><p className={`${m_menu} sm:ml-1`} name="커뮤니티">커뮤니티</p></div></Link>
           <div className={text}><img className={img_size} src='/images/위치2.png' alt="장소추천"></img><p className={`${m_menu} sm:ml-1`} name="장소추천">장소추천</p></div>
           <div className={text}><img className={img_size} src='/images/더하기2.png' alt="더하기"></img><p className={`${m_menu} sm:ml-1`} name="더하기">만들기</p></div>
-        </div>name=""
+        </div>
 
         {/* 하단 영역 */}
         <div className={`${m_menu} h-[10%] flex items-center justify-center font-sans font-bold ${text_size}`}>
