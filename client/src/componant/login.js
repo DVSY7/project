@@ -181,9 +181,10 @@ export default function Login() {
             <select
               value={local}
               onChange={(e) => { setLocal(e.target.value) }}
-              className={`text-black ${input_element}`}>
+              className={`text-black ${input_element} text-[0.9rem]`}>
               <option
-                value={""}
+                value={""}disabled hidden
+                
               >지역 선택</option>
               {cities.map((city) => (
                 <option value={city} key={city}>{city}</option>
@@ -191,11 +192,12 @@ export default function Login() {
             </select>
             {/* 관심사 선택박스 */}
             <div
-              className={`${input_element} bg-white flex flex-wrap items-center overflow-y-auto overflow-x-auto`}
+              className={`pl-2 h-[${2 + (selectedInterests.length % 2 === 0 ? selectedInterests.length * 2 : selectedInterests.length * 2 - 2)}rem] max-h-[6rem]
+                 text-black rounded-sm text-[1rem] w-60 placeholder:text-[0.8rem] bg-white flex flex-wrap items-center overflow-y-auto overflow-x-auto`}
             >
               <div
                 onClick={handleChangeInterestModal}
-                className={`${selectedInterests.length === 0 ? "block" : "hidden"} cursor-pointer`}>
+                className={`${selectedInterests.length === 0 ? "block" : "hidden"} cursor-pointer pl-1 text-[0.9rem]`}>
                 관심사 선택
               </div>
 
@@ -204,14 +206,14 @@ export default function Login() {
                 return (
                   <div
                     key={item}
-                    onClick={()=>{if(!interestsModal){handleChangeInterestModal()}}}
-                    className={`${selectedInterests.length === 0 ? "hidden" : "block"} relative font-sans text-[0.75rem] bg-gray-200 border-gray-200 border-[5px] cursor-pointer rounded-2xl m-1`}>
+                    onClick={()=>{if(!interestsModal){handleChangeInterestModal()}handleChangeInterestList(item)}}
+                    className={`${flex_center} ${selectedInterests.length === 0 ? "hidden" : "block"} relative h-6 font-sans text-[0.75rem] bg-gray-200 border-gray-200 border-[5px] cursor-pointer rounded-2xl m-1`}>
                     {item}
-                    {/* 선택해제 버튼 */}
-                    <div
-                    onClick={() => handleChangeInterestList(item)}
-                    className={`absolute right-[-3px] top-[-8px] text-[0.5rem] bg-gray-400 rounded-full cursor-pointer `}
-                    >❌</div>
+                    <img 
+                    src="/images/엑스표시.png" 
+                    alt="엑스표시" 
+                    className={`w-4 h-4 m-1 opacity-20`}>
+                    </img>
                   </div>
                 )
 
@@ -219,9 +221,9 @@ export default function Login() {
             </div>
             {/* 관심사 선택모달 */}
             <div
-              className={`${interestsModal ? "flex flex-wrap" : "hidden"} p-2 items-center bg-white text-black w-60 rounded-b-md absolute right-[6.55rem]`}
+              className={`${interestsModal ? "flex flex-wrap" : "hidden"} p-2 items-center bg-white text-black w-60 rounded-md absolute right-[22rem] transition-all`}
               style={{
-                transform: `translateY(${290 - (selectedInterests.length % 2 === 0 ? selectedInterests.length * 9 : selectedInterests.length * 9 - 9)}px)`,
+                transform: `translateY(100px)`,
               }}
             >
               {/* 관심사 목록 */}
