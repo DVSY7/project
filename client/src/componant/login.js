@@ -67,13 +67,13 @@ export default function Login() {
   ]
   // 관심사 모달 토글관리
   const [interestsModal, setInterestsModal] = useState(false);
+  // 관심사 목록 토글관리
+  const [selectedInterests, setSelectedInterestsList] = useState([]);
+
   // 관심사 모달 토글함수
   const handleChangeInterestModal = () => {
     interestsModal ? setInterestsModal(false) : setInterestsModal(true);
   }
-
-  // 관심사 목록 토글관리
-  const [selectedInterests, setSelectedInterestsList] = useState([]);
   // 관심사 목록 토글함수
   const handleChangeInterestList = (item) => {
     selectedInterests.includes(item) ?
@@ -191,27 +191,46 @@ export default function Login() {
             </select>
             {/* 관심사 선택박스 */}
             <div
-              className={`${input_element} bg-white flex flex-nowrap items-center cursor-pointer overflow-auto`}
-              onClick={handleChangeInterestModal}
+              className={`${input_element} bg-white flex flex-wrap items-center overflow-y-auto overflow-x-auto`}
             >
-              <div className={`${selectedInterests.length === 0 ? "block" : "hidden"}`}>관심사 선택</div>
+              <div
+                onClick={handleChangeInterestModal}
+                className={`${selectedInterests.length === 0 ? "block" : "hidden"} cursor-pointer`}>
+                관심사 선택
+              </div>
+
+              {/* 선택된 관심사 */}
               {selectedInterests.map((item) => {
                 return (
-                  <div className={`${selectedInterests.length === 0 ? "hidden" : "block"} font-sans text-[0.75rem] bg-gray-200 border-gray-200 border-[5px] rounded-2xl m-1`}>{item}</div>
+                  <div
+                    key={item}
+                    onClick={()=>{if(!interestsModal){handleChangeInterestModal()}}}
+                    className={`${selectedInterests.length === 0 ? "hidden" : "block"} relative font-sans text-[0.75rem] bg-gray-200 border-gray-200 border-[5px] cursor-pointer rounded-2xl m-1`}>
+                    {item}
+                    {/* 선택해제 버튼 */}
+                    <div
+                    onClick={() => handleChangeInterestList(item)}
+                    className={`absolute right-[-3px] top-[-8px] text-[0.5rem] bg-gray-400 rounded-full cursor-pointer `}
+                    >❌</div>
+                  </div>
                 )
 
               })}
             </div>
             {/* 관심사 선택모달 */}
-            <div className={`${interestsModal ? "flex flex-wrap" : "hidden"} p-2 items-center bg-white text-black w-60 rounded-b-md absolute bottom-[-1rem] right-[6.55rem]`}>
+            <div
+              className={`${interestsModal ? "flex flex-wrap" : "hidden"} p-2 items-center bg-white text-black w-60 rounded-b-md absolute right-[6.55rem]`}
+              style={{
+                transform: `translateY(${290 - (selectedInterests.length % 2 === 0 ? selectedInterests.length * 9 : selectedInterests.length * 9 - 9)}px)`,
+              }}
+            >
               {/* 관심사 목록 */}
-              {interests.map((item) => {
-                const selected = selectedInterests.includes(item);
+              {interests.filter(item => !selectedInterests.includes(item)).map((item) => {
                 return (
                   <div
                     key={item}
                     onClick={() => { handleChangeInterestList(item) }}
-                    className={`${flex_center} h-7 ${selected ? "bg-orange-300 border-orange-300" : " bg-gray-200 border-gray-200"} rounded-2xl m-1 font-sans text-[0.70rem] border-[9px] cursor-pointer`}
+                    className={`${flex_center} h-7 bg-gray-200 border-gray-200 rounded-2xl m-1 font-sans text-[0.70rem] border-[9px] cursor-pointer`}
                   >{item}</div>
                 )
               })}
