@@ -34,6 +34,7 @@ export default function Menu(props) {
           <Link to="/home"><div className={text}><img className={img_size} src={`images/홈${img_src[1]}.png`} alt="홈"></img><p className={`${m_menu} sm:ml-1`} name="홈">홈</p></div></Link>
           <Link to="/community"><div className={text}><img className={img_size} src={`images/커뮤니티${img_src[2]}.png`} alt="커뮤니티"></img><p className={`${m_menu} sm:ml-1`} name="커뮤니티">커뮤니티</p></div></Link>
           <div className={text}><img className={img_size} src='/images/위치2.png' alt="장소추천"></img><p className={`${m_menu} sm:ml-1`} name="장소추천">장소추천</p></div>
+          <div className={text}><img className={img_size} src='/images/더하기2.png' alt="더하기"></img><p className={`${m_menu} sm:ml-1`} name="더하기">프로필</p></div>
           <div className={text}><img className={img_size} src='/images/더하기2.png' alt="더하기"></img><p className={`${m_menu} sm:ml-1`} name="더하기">만들기</p></div>
         </div>
 

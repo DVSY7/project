@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-export default function Login() {
+export default function Login(props) {
+  // 들어온 경로
+  const {href} = props;
+  console.log(href);
   // 작은 글씨 사이즈
   const text_size = 'text-[0.75rem]';
   // 글자 투명도
@@ -22,8 +25,8 @@ export default function Login() {
   // sexButton 설정
   const [sexButton, setSexButton] = useState("");
   // 회원가입 클릭 이벤트
-  const [signinHidden, setSigninHidden] = useState("flex");
-  const [signupHidden, setSignupHidden] = useState("hidden");
+  const [signinHidden, setSigninHidden] = useState(href === "login" ? "flex" : "hidden");
+  const [signupHidden, setSignupHidden] = useState(href === "signup" ? "flex" : "hidden");
   const addSignup = () => {
     setSigninHidden("hidden");
     setSignupHidden("flex");

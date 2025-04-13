@@ -6,7 +6,7 @@ export default function Header() {
     // 플렉스 상태 아이템 중앙
     const item_center = "flex items-center justify-center";
     // 로그인관련 옵션 버튼 호버
-    const button_hover = "hover:bg-white";
+    const button_hover = "hover:bg-gray-200";
 
     return (
         <>
@@ -14,9 +14,9 @@ export default function Header() {
                 {/* PC화면 기본요소 */}
                 <div className={"hidden sm:flex sm:item-center sm:w-full sm:h-[40px]"}>
                     <div className={"absolute w-9 mx-8 mt-[0.45rem] right-search-line-after"}><img src="/images/프로필1.png" alt="프로필1" className={"w-full h-full"}></img></div>
-                    <input type='text' id='search' name='search' className={"h-full w-[80%] pl-20 rounded-full mx-5 shadow-lg border-[1px] border-gray-400"}></input>
-                    <div className={`${item_center} h-full bg-gray-300 w-[100px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 mr-5 ${button_hover}`}><Link to="/">로그인</Link></div>
-                    <div className={`${item_center} h-full bg-gray-300 w-[120px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}>회원가입</div>
+                    <input type='text' id='search' name='search' className={"h-full w-[77%] pl-20 rounded-full mx-5 shadow-lg border-[1px] border-gray-400"}></input>
+                    <div className={`${item_center} h-full w-[100px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ml-16 mr-5 ${button_hover}`}><Link to="/login">로그인</Link></div>
+                    <div className={`${item_center} h-full w-[120px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/signup">회원가입</Link></div>
                 </div>
                 <div className={"hidden sm:flex sm:justify-between sm:items-end sm:ml-12 sm:w-full h-[30%]"}>
                     <div className={"font-sans italic"}>#바다 #해외여행 #언젠가</div>
