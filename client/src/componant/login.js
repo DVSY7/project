@@ -21,7 +21,7 @@ export default function Login(props) {
   // 회원가입 / 비밀번호 찾기 호버
   const hover = 'hover:text-opacity-100 hover:text-[0.85rem]';
   // form 레이아웃 설정
-  const setForm = `flex flex-col gap-2 justify-center items-center relative h-full sm:w-[450px] w-full sm:float-end text-white`;
+  const setForm = `flex flex-col gap-3 justify-center items-center relative h-full sm:w-[450px] w-full sm:float-end text-white`;
   // sexButton 설정
   const [sexButton, setSexButton] = useState("");
   // 회원가입 클릭 이벤트
@@ -96,7 +96,7 @@ export default function Login(props) {
         >
           <source src="/videos/login.mp4" type="video/mp4"></source>
         </video>
-        <div className={"flex justify-center items-center relative bg-black bg-opacity-40 min-h-screen sm:w-[450px] w-screen sm:float-end text-white"}>
+        <div className={"flex justify-center items-center relative bg-black bg-opacity-40 min-h-screen sm:w-screen w-screen text-white"}>
           <form className={`${signinHidden} ${setForm}`}>
             {/* 제목 */}
             <h1 className="text-3xl font-normal m-4 "><Link to="/home">BucketMate</Link></h1>
@@ -114,7 +114,7 @@ export default function Login(props) {
             ></input>
 
             {/* 로그인 버튼 */}
-            <button className={`${button_element} ${mt} bg-gray-500 text-white w-60`}>로그인</button>
+            <button className={`${button_element} ${mt} bg-blue-500 text-white w-60`}>로그인</button>
             {/* 구분선 */}
             <div className={`flex items-center w-60 gap-2 text-[0.75rem] ${mt}`}>
               <div className="flex-1 h-px bg-white"></div>
@@ -136,27 +136,30 @@ export default function Login(props) {
             <div onClick={addSignup} className={`h-[20px] cursor-pointer ${text_size} ${text_opacity} ${hover} mt-20`}>계정이 없으신가요 ? <span className={"text-white text-opacity-100"}>가입하기</span></div>
             {/* 비밀번호 찾기 */}
             <div className={`h-[20px] cursor-pointer ${text_size} ${text_opacity} ${hover}`}>비밀번호를 잊으셨나요 ?</div>
+          
+          
+          {/* 회원가입폼 */}
           </form>
           <form className={`${signupHidden} ${setForm}`}>
             {/* 제목 */}
             <h1 className="text-3xl font-normal m-4 "><Link to="/home">BucketMate</Link></h1>
             {/* 구분선 */}
-            <div className={`flex items-center w-60 gap-2 text-[0.75rem]`}>
+            <div className={`flex items-center w-60 gap-2 text-[0.75rem] ${mt}`}>
               <div className="flex-1 h-px bg-white"></div>
-              <span className={`whitespace-nowrap ${text_opacity}`}>계정</span>
+              <span className={`whitespace-nowrap ${text_opacity} text-[1rem] font-bold`}>계정</span>
               <div className="flex-1 h-px bg-white"></div>
             </div>
             {/* 아이디 */}
             <input type="text" placeholder="아이디" className={`${input_element}`}></input>
-            <div className={`text-left w-60 text-red-500 ${text_size}`}>아이디가 중복되었습니다.</div>
+            {/* <div className={`text-left w-60 text-red-500 ${text_size}`}>아이디가 중복되었습니다.</div> */}
             {/* 비밀번호 */}
             <input type="password" placeholder="비밀번호" className={`${input_element}`}></input>
             <input type="password" placeholder="비밀번호 재확인" className={`${input_element}`}></input>
-            <div className={`text-left w-60 text-green-500 ${text_size}`}>비밀번호가 일치합니다.</div>
+            {/* <div className={`text-left w-60 text-green-500 ${text_size}`}>비밀번호가 일치합니다.</div> */}
             {/* 구분선 */}
-            <div className={`flex items-center w-60 gap-2 text-[0.75rem]`}>
+            <div className={`flex items-center w-60 gap-2 text-[0.75rem] ${mt}`}>
               <div className="flex-1 h-px bg-white"></div>
-              <span className={`whitespace-nowrap ${text_opacity}`}>회원정보</span>
+              <span className={`whitespace-nowrap ${text_opacity} text-[1rem] font-bold`}>회원정보</span>
               <div className="flex-1 h-px bg-white"></div>
             </div>
             {/* 회원정보 */}
@@ -176,15 +179,15 @@ export default function Login(props) {
             {/* 이메일 */}
             <input type="text" placeholder="이메일" className={`${input_element} placeholder:font-sans`}></input>
             {/* 구분선 */}
-            <div className={`flex items-center w-60 gap-2 text-[0.75rem]`}>
+            <div className={`flex items-center w-60 gap-2 text-[0.75rem] ${mt}`}>
               <div className="flex-1 h-px bg-white"></div>
-              <span className={`whitespace-nowrap ${text_opacity}`}>기타</span>
+              <span className={`whitespace-nowrap ${text_opacity} text-[1rem] font-bold`}>기타</span>
               <div className="flex-1 h-px bg-white"></div>
             </div>
             <select
               value={local}
               onChange={(e) => { setLocal(e.target.value) }}
-              className={`text-black ${input_element} text-[0.9rem]`}>
+              className={`text-black ${input_element} text-[0.88rem]`}>
               <option
                 value={""}disabled hidden
                 
@@ -252,10 +255,10 @@ export default function Login(props) {
               </div>
             </div>
             {/* 로그인 버튼 */}
-            <button className={`${button_element} ${mt} bg-gray-500 text-white w-60`}>가입하기</button>
+            <button className={`${button_element} ${mt} bg-blue-500 text-white w-60`}>가입하기</button>
             {/* 구분선 */}
             {/* 로그인으로 돌아가기 */}
-            <div onClick={addSignin} className={`h-[20px] cursor-pointer ${text_size} ${text_opacity} ${hover} mt-20`}>계정이 있으신가요 ? <span className={"text-white text-opacity-100"}>로그인</span></div>
+            <div onClick={addSignin} className={`h-[20px] cursor-pointer ${text_size} ${text_opacity} ${hover} mt-12`}>계정이 있으신가요 ? <span className={"text-white text-opacity-100"}>로그인</span></div>
           </form>
         </div>
       </div>
