@@ -13,7 +13,7 @@ export default function Header() {
             <div className={"flex sm:flex-col sm:justify-center sm:items-center h-[15%] sm:h-[15%] sm:relative"}>
                 {/* PC화면 기본요소 */}
                 <div className={"hidden sm:flex sm:item-center sm:w-full sm:h-[40px]"}>
-                    <div className={"absolute w-9 mx-8 mt-[0.45rem] right-search-line-after"}><img src="/images/프로필1.png" alt="프로필1" className={"w-full h-full"}></img></div>
+                    <div className={"absolute w-9 mx-8 mt-[0.45rem] right-search-line-after"}><img src="/images/프로필.png" alt="프로필" className={"w-full h-full"}></img></div>
                     <input type='text' id='search' name='search' className={"h-full w-[77%] pl-20 rounded-full mx-5 shadow-lg border-[1px] border-gray-400"}></input>
                     <div className={`${item_center} h-full w-[100px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ml-16 mr-5 ${button_hover}`}><Link to="/login">로그인</Link></div>
                     <div className={`${item_center} h-full w-[120px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/signup">회원가입</Link></div>

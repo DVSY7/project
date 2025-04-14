@@ -4,6 +4,7 @@ import Home from "./componant/home";
 import "./App.css";
 import Community from "./componant/community";
 import Login from "./componant/login";
+import Profile from "./componant/profile";
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/signup" element={<Login href = "signup"/>}></Route>
           <Route path="/home" element={<Home/>}></Route>
           <Route path="/community" element={<Community/>}/>
+          <Route path="/profile" element={<Profile/>}/>
         </Routes>
       </div>
     </BrowserRouter>
