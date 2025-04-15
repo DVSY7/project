@@ -12,9 +12,9 @@ function App() {
     <BrowserRouter>
       <div>
         <Routes>
-          <Route path="/" element={<Login href = "login"/>}></Route>
-          <Route path="/login" element={<Login href = "login"/>}></Route>
-          <Route path="/signup" element={<Login href = "signup"/>}></Route>
+          <Route path="/" element={<Login href = "login"/>}/>
+          <Route path="/login" element={<Login href = "login"/>}/>
+          <Route path="/signup" element={<Login href = "signup"/>}/>
           <Route path="/home" element={<Home/>}></Route>
           <Route path="/community" element={<Community/>}/>
           <Route path="/profile" element={<Profile/>}/>

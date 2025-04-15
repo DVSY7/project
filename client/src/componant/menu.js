@@ -6,7 +6,7 @@ export default function Menu(props) {
   // 메뉴부분 레이아웃css
   const menu = "flex flex-col row-span-1 row-start-10 sm:row-start-1 min-w-[150px] sm:right-line-after";
   // 메뉴 이미지
-  const img_size = "w-10 sm:w-[4vh] pr-2";
+  const img_size = "w-10 sm:w-[4vh] sm:pr-2";
   // 메뉴 텍스트
   const text = 'sm:flex p-4 px-10 items-center justify-start w-full relative z-10';
   // 메뉴 텍스트 크기
@@ -30,12 +30,12 @@ export default function Menu(props) {
         </div>
 
         {/* 중간 영역 */}
-        <div className={`flex sm:block h-[full] sm:h-[75%] font-sans font-bold ${text_size}`}>
-          <Link to="/home"><div className={text}><img className={img_size} src={`images/홈${img_src[1]}.png`} alt="홈"></img><p className={`${m_menu} sm:ml-1`} name="홈">홈</p></div></Link>
-          <Link to="/community"><div className={text}><img className={img_size} src={`images/커뮤니티${img_src[2]}.png`} alt="커뮤니티"></img><p className={`${m_menu} sm:ml-1`} name="커뮤니티">커뮤니티</p></div></Link>
-          <div className={text}><img className={img_size} src='/images/위치2.png' alt="장소추천"></img><p className={`${m_menu} sm:ml-1`} name="장소추천">장소추천</p></div>
-          <Link to="/profile"><div className={text}><img className={img_size} src={`/images/프로필${img_src[4]}.png`} alt="프로필"></img><p className={`${m_menu} sm:ml-1`} name="프로필">프로필</p></div></Link>
-          <div className={text}><img className={img_size} src='/images/더하기2.png' alt="더하기"></img><p className={`${m_menu} sm:ml-1`} name="더하기">만들기</p></div>
+        <div className={`flex justify-evenly sm:block h-[full] sm:h-[75%] font-sans font-bold ${text_size}`}>
+          <Link to="/home"><div className={text}><img className={`${img_size}`} src={`images/홈${img_src[1]}.png`} alt="홈"></img><p className={`${m_menu} sm:ml-1`} name="홈">홈</p></div></Link>
+          <Link to="/community"><div className={text}><img className={`${img_size}`} src={`images/커뮤니티${img_src[2]}.png`} alt="커뮤니티"></img><p className={`${m_menu} sm:ml-1`} name="커뮤니티">커뮤니티</p></div></Link>
+          <Link to="/home"><div className={text}><img className={`${img_size}`} src='/images/위치2.png' alt="장소추천"></img><p className={`${m_menu} sm:ml-1`} name="장소추천">장소추천</p></div></Link>
+          <Link to="/profile"><div className={text}><img className={`${img_size}`} src={`/images/프로필${img_src[4]}.png`} alt="프로필"></img><p className={`${m_menu} sm:ml-1`} name="프로필">프로필</p></div></Link>
+          <Link to="/home"><div className={text}><img className={`${img_size}`} src='/images/더하기2.png' alt="더하기"></img><p className={`${m_menu} sm:ml-1`} name="더하기">만들기</p></div></Link>
         </div>
 
         {/* 하단 영역 */}

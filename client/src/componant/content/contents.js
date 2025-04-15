@@ -1,3 +1,4 @@
+import BucketList from "../profile/bucketlist";
 import Miniprofile from "../profile/miniprofile";
 import Footer from "./footer";
 import Gallery from "./gallery";
@@ -13,10 +14,10 @@ export default function Contents(props) {
             <Header />
             {/* 콘텐츠 */}
             <div className="flex h-[75%]">
-                <d4v className={`${src === "profile" ? "sm:flex" : "sm:hidden"} sm:flex-col hidden sm:w-[35%] sm:bg-red-300`}>
-                    <div className={`h-[35%] w-full bg-green-200 flex justify-center`}><Miniprofile/></div>
-                    <div className={`h-[65%] w-full bg-green-400`}>2</div>
-                </d4v>
+                <div className={`${src === "profile" ? "sm:flex" : "sm:hidden"} sm:flex-col hidden sm:w-[35%]`}>
+                    <div className={`h-[35%] w-full flex justify-center`}><Miniprofile/></div>
+                    <div className={`flex justify-center items-end h-[65%] w-full`}><BucketList/></div>
+                </div>
                 <Gallery src={src} />
             </div>
             {/* 풋터 */}
