@@ -15,8 +15,8 @@ export default function Contents(props) {
             {/* 콘텐츠 */}
             <div className="flex h-[75%]">
                 <div className={`${src === "profile" ? "sm:flex" : "sm:hidden"} sm:flex-col hidden sm:w-[35%]`}>
-                    <div className={`h-[35%] w-full flex justify-center`}><Miniprofile/></div>
-                    <div className={`flex justify-center items-end h-[65%] w-full`}><BucketList/></div>
+                    <div className={`h-[35%] 2xl:w-full w-[400px] flex justify-center`}><Miniprofile/></div>
+                    <div className={`flex justify-center items-end h-[65%] 2xl:w-full w-[400px]`}><BucketList/></div>
                 </div>
                 <Gallery src={src} />
             </div>

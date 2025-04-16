@@ -61,7 +61,7 @@ export default function BucketList(){
                     {/* 프로필 불러오기(반복문) */}
                     {profiles.map((profile) => (
                         <div key={profile.title} className={`flex w-[90%] h-[25%] border-b border-b-gray-200 ml-6`}>
-                            <div className={`flex justify-center items-end w-[15%] h-full`}><img src={profile.img} alt="프로필" className={`mb-1`}></img></div>
+                            <div className={`flex justify-center items-end w-[15%] h-full 2xl:block hidden`}><img src={profile.img} alt="프로필" className={`mb-1`}></img></div>
                             <div className={`flex flex-col justify-end w-[65%] h-full`}>
                                 <div className={`font-bold ml-4`}>{profile.title}</div>
                                 <div className={`font-sans opacity-50 ml-6 mb-1`}>~ {profile.close}</div>

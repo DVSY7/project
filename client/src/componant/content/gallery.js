@@ -55,7 +55,7 @@ export default function Gallery(props) {
 
   return (
     <>
-      <div className={` h-[100%] sm:h-[100%] sm:overflow-y-auto overflow-x-hidden sm:p-4 sm:pr-8 ${src === "profile" ? "sm:w-[65%]" : ""}`}>
+      <div className={` h-[100%] sm:h-[100%] sm:overflow-y-auto 2xl:overflow-x-hidden overflow-x-auto sm:p-4 sm:pr-8 ${src === "profile" ? "2xl:w-[65%] w-[800px]" : ""}`}>
         {/* ✅ PC화면 무한스크롤 */}
         <Masonry
           breakpointCols={breakpointColumnsObj}
