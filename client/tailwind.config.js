@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       fontFamily: {
         'lilita': ['Lilita One', 'sans-serif'], // 'Lilita One' 폰트를 'lilita'라는 이름으로 추가
+        'hygothic': ['HYGothic', 'sans-serif'],
       },
       flexGrow: {
         2: '2',   // flex-2

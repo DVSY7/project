@@ -43,3 +43,15 @@ body {
     transform:translate(50%, 10%)
   }
 }
+
+.custom-height {
+  height: calc(200px - 100%);
+}
+
+@font-face {
+  font-family: "HYGothic";
+  src: url("./assets/fonts/H2GTRE.TTF") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
