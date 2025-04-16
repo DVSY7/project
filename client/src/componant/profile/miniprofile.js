@@ -13,9 +13,12 @@ export default function Miniprofile() {
                     {/* 닉네임/별점/퍼센트 */}
                     <div className={`flex flex-col justify-evenly h-full w-[70%]`}>
                         <div className={`text-[1.5rem] font-sans font-bold`}>윤크리스탈0321</div>
-                        <div className={`text-[1.5rem] font-sans font-bold text-yellow-400`}>★★★★★<span className={`ml-4 text-black font-sans font-normal text-[1rem]`}>4.99</span></div>
+                        <div className={`text-[1.5rem] font-sans font-bold text-yellow-400`}><span className={`mb-2 inline-block`}>★★★★★</span><span className={`ml-4 text-black font-sans font-normal text-[1rem]`}>4.99</span></div>
+                        <div className={`flex justify-start items-center`}>
                         <div className={`flex justify-between items-center w-32 h-4 bg-gray-300 rounded-lg`}>
-                            <div className={`w-[50%] h-full rounded-lg bg-green-500`}></div><span className={`relative left-10 font-sans font-bold`}>50%</span>
+                            <div className={`w-[100%] h-full rounded-lg bg-green-500`}></div>
+                        </div>
+                        <div className={`flex  font-sans font-bold ml-2`}>50%</div>
                         </div>
                     </div>
                 </div>
