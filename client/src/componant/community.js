@@ -1,5 +1,6 @@
 import '../App.css';
 import Block from './community/block';
+import Chatroom from './community/chatroom';
 import Chatting from './community/chatting';
 import Friend from './community/friend';
 import Menu from './menu';
@@ -19,7 +20,7 @@ export default function Community() {
     "차단",
   ]
   // 대화목록 정보
-  const communityUserInfo = [
+  const chattingList = [
     { id: 1, name: "KimSangYeol" },
     { id: 2, name: "KimReChel" },
     { id: 3, name: "KimSangYeol" },
@@ -29,10 +30,6 @@ export default function Community() {
   ]
   // 친구목록 정보
   const friendList = [
-    { id: 1, name: "김상열" },
-    { id: 2, name: "김원재" },
-    { id: 1, name: "김상열" },
-    { id: 2, name: "김원재" },
     { id: 1, name: "김상열" },
     { id: 2, name: "김원재" },
     { id: 1, name: "김상열" },
@@ -104,7 +101,7 @@ export default function Community() {
                 {/* 채팅목록 컴포넌트 */}
                 <Chatting
                   flexCenter={flexCenter}
-                  communityUserInfo={communityUserInfo}
+                  chattingList={chattingList}
                   selectedTab={selectedTab}
                   selectedList={selectedList}
                   communityTab={communityTab}
@@ -137,7 +134,13 @@ export default function Community() {
 
           {/* 채팅창 영역 */}
           <div className={`sm:${flexColCenter} hidden w-[70%] h-full`}>
-            <div className={`${shadow} rounded-3xl w-[97%] h-[93%]`}></div>
+            <div className={`${shadow} rounded-3xl w-[97%] h-[93%]`}>
+                  <Chatroom
+                  selectedList = {selectedList}
+                  chattingList = {chattingList}
+                  flexCenter = {flexCenter}
+                  />
+            </div>
           </div>
 
 

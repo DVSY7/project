@@ -2,7 +2,7 @@ export default function Chatting(props) {
     // 전달받은 flexCenter 값
         const {flexCenter} = props;
     // 전달 받은 commmunityUserInfo,selectedTab, communityTab 값
-        const {communityUserInfo, selectedTab, communityTab} = props;
+        const {chattingList, selectedTab, communityTab} = props;
 
     // 전달받은 selectedList 스테이트
         const {selectedList} = props;
@@ -13,12 +13,12 @@ export default function Chatting(props) {
     return (
         <>
             {/* 대화가 존재하지 않을 시 */}
-            {communityUserInfo.length === 0 && selectedTab === communityTab[1] ? (
+            {chattingList.length === 0 && selectedTab === communityTab[1] ? (
                 <div className={`${flexCenter} text-black text-opacity-50 w-full h-full`}>대화가존재하지 않습니다. 대화를 시작해주세요</div>
             ) : ""}
 
             {/* 대화목록 반복문 */}
-            {communityUserInfo.map((info) => {
+            {chattingList.map((info) => {
                 const isSelectedList = selectedList === info.id;
                 const isSelectedTab = selectedTab === communityTab[1];
                 return (
