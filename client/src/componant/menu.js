@@ -1,5 +1,7 @@
 import '../App.css';
 import { Link } from "react-router-dom";
+import {useState} from "react";
+
 
 export default function Menu(props) {
 
@@ -21,6 +23,14 @@ export default function Menu(props) {
   const img_src = Object.fromEntries(
     [1, 2, 3, 4, 5].map(n => [n, n === current_src ? 1 : 2])
   );
+
+  const [scrollMenu, setScrollMenu] = useState("hidden");
+
+  const handleChangeScrollMenu = ()=>{
+    
+
+  }
+
   
 
   return (
@@ -37,7 +47,35 @@ export default function Menu(props) {
           <Link to="/community"><div className={text}><img className={`${img_size}`} src={`images/커뮤니티${img_src[2]}.png`} alt="커뮤니티"></img><p className={`${activeMenu} sm:ml-1`} name="커뮤니티">커뮤니티</p></div></Link>
           <Link to="/home"><div className={text}><img className={`${img_size}`} src='/images/위치2.png' alt="장소추천"></img><p className={`${activeMenu} sm:ml-1`} name="장소추천">장소추천</p></div></Link>
           <Link to="/profile"><div className={text}><img className={`${img_size}`} src={`/images/프로필${img_src[4]}.png`} alt="프로필"></img><p className={`${activeMenu} sm:ml-1`} name="프로필">프로필</p></div></Link>
-          <Link to="/home"><div className={text}><img className={`${img_size}`} src='/images/더하기2.png' alt="더하기"></img><p className={`${activeMenu} sm:ml-1`} name="더하기">만들기</p></div></Link>
+        
+            <div
+              className={`${text} relative`} // 부모 요소에 relative 추가
+              onMouseOver={() => setScrollMenu("block")}
+              onMouseLeave={() => setScrollMenu("hidden")}
+            >
+              <img
+                className={`${img_size}`}
+                src={`/images/더하기${img_src[5]}.png`}
+                alt="더하기"
+              />
+              <p className={`${activeMenu} sm:ml-1`} name="더하기">
+                만들기
+              </p>
+              {/* 드롭다운 메뉴 */}
+              <div
+                className={`${scrollMenu} absolute top-full left-1/2 transform -translate-x-1/2 bg-white border rounded shadow-lg`}
+              >
+                <ul className="p-1">
+                  <li className="hover:bg-gray-200 p-1">
+                    <Link to="/createList">리스트</Link>
+                  </li>
+                  <li className="hover:bg-gray-200 p-1">
+                    <Link to="/createPost">게시글</Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+       
         </div>
 
         {/* 하단 영역 */}

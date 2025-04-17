@@ -10,7 +10,7 @@ export default function Profile() {
                 <Menu current_src = {4} />
                 {/* 오른쪽: 가로 8 비율 (8/9) */}
                 <div className=" flex flex-col flex-wrap row-span-9 sm:col-span-8 ">
-                    <Contents src="profile"/>
+                    <Contents src="profile" />
                 </div>
             </div>
         </>
