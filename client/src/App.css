@@ -3,7 +3,6 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
 
-
 .App {
   text-align: center;
 }
@@ -46,12 +45,5 @@ body {
 
 .custom-height {
   height: calc(200px - 100%);
-}
-
-@font-face {
-  font-family: "HYGothic";
-  src: url("./assets/fonts/H2GTRE.TTF") format("truetype");
-  font-weight: normal;
-  font-style: normal;
 }
 

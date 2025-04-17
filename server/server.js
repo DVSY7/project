@@ -20,6 +20,10 @@ app.post('/request', (req, res) => {
   });
 });
 
+app.get("/",(req,res) => {
+  res.send("hellow express!");
+})
+
 app.listen(port, () => {
   console.log(`서버 실행 중: http://localhost:${port}`);
 });
