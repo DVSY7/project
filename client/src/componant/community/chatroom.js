@@ -4,10 +4,11 @@ export default function Chatroom(props) {
 
     // 전달된 대화방과 해당하는 유저정보
     const { chattingList, selectedList, flexCenter } = props;
-    // 
+
+    // 선택 된 방 상태관리 스테이트
     const [chatroom, setChatroom] = useState("");
 
-
+    // selectedList 값이 변동이 있을때만 실행
     useEffect(() => {
         const selectedFriend = chattingList.find((friend) => friend.id === selectedList);
         if (selectedFriend) {
