@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Select from "react-select";
 
 export default function Login(props) {
+
+
   // 들어온 경로
   const {href} = props;
-  console.log(href);
+  // console.log(href);
+
+
   // 작은 글씨 사이즈
   const text_size = 'text-[0.75rem]';
   // 글자 투명도
@@ -22,15 +28,62 @@ export default function Login(props) {
   const hover = 'hover:text-opacity-100 hover:text-[0.85rem]';
   // form 레이아웃 설정
   const setForm = `flex flex-col gap-3 justify-center items-center relative h-full sm:w-[450px] w-full sm:float-end text-white`;
+
+
   // sexButton 설정
   const [sexButton, setSexButton] = useState("");
+
+
+  // 회원가입 폼 제출 데이터 상태관리 스테이트
+  const [username, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+  const [name, setName] = useState("");
+  const [sex, setSex] = useState("");
+  const [year, setYear] = useState("");
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
+  const [email, setEmail] = useState("");
+  const [local, setLocal] = useState("");
+  const [selectedInterests, setSelectedInterestsList] = useState([]);
+
+
+  // 회원가입 성공 시 폼 초기화 함수
+  const resetForm = ()=>{
+    setUserName("");
+    setPassword("");
+    setPasswordCheck("");
+    setName("");
+    setSex("");
+    setSexButton("");
+    setYear(null);
+    setMonth(null);
+    setDay(null);
+    setEmail("");
+    setLocal("");
+    setSelectedInterestsList([]);
+  }
+  
+  // // // 회원정보 디버그 코드
+  // useEffect(()=>{
+  //   console.log(username)
+  //   console.log(password)
+  //   console.log(passwordCheck)
+  //   console.log(name)
+  //   console.log(sex)
+  //   console.log(email)
+  //   console.log(local)
+  //   console.log(selectedInterests)
+
+  // },[username,password,passwordCheck,name,sex,email,local,selectedInterests])
+
+
   // 회원가입 클릭 이벤트
   const [signinHidden, setSigninHidden] = useState(href === "login" ? "flex" : "hidden");
   const [signupHidden, setSignupHidden] = useState(href === "signup" ? "flex" : "hidden");
   const addSignup = () => {
     setSigninHidden("hidden");
     setSignupHidden("flex");
-    console.log(signinHidden);
   }
   const addSignin = () => {
     setSignupHidden("hidden");
@@ -43,8 +96,7 @@ export default function Login(props) {
       setSexButton(sex);
     }
   }
-  // 관심사, 지역 상태관리
-  const [local, setLocal] = useState("");
+  
   // 지역목록 
   const cities = [
     "서울특별시",
@@ -70,8 +122,6 @@ export default function Login(props) {
   ]
   // 관심사 모달 토글관리
   const [interestsModal, setInterestsModal] = useState(false);
-  // 관심사 목록 토글관리
-  const [selectedInterests, setSelectedInterestsList] = useState([]);
 
   // 관심사 모달 토글함수
   const handleChangeInterestModal = () => {
@@ -83,6 +133,65 @@ export default function Login(props) {
       setSelectedInterestsList(selectedInterests.filter(i => i !== item)) :
       setSelectedInterestsList([...selectedInterests, item]);
   }
+  // 회원가입 폼 제출함수
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const userData = {
+
+      // // 정석
+      // username : username,
+      // password : password,
+      // passwordCheck : passwordCheck,
+      // name : name,
+      // sex : sex,
+      // email : email,
+      // local : local,
+      // interests : selectedInterests,
+
+      // key와 value가 같을 때는 축약형도 가능
+      username,
+      password,
+      name,
+      sex,
+      birth: `${year.toString()}${month === "" ? "" : month.toString().padStart(2, "0")}${day === "" ? "" : day.toString().padStart(2, "0")}`,
+      email,
+      local,
+      interests : selectedInterests,
+    };
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/users/signup", userData);
+      alert("회원가입 성공!");
+      console.log(response.data);
+
+      // 회원가입 후 로그인 폼으로 이동
+      addSignin();
+      // 회원가입 후 폼 초기화
+      resetForm();
+      
+    }catch (error){
+      if(error.response){
+        alert(`회원가입 실패 : ${error.response.data.message}`);
+      }else{
+        alert("서버에 연결할 수 없습니다.");
+      }
+      console.error("에러발생: ", error);
+    }
+  }
+
+  // 생년월일 생성 함수
+  const yearOptions = Array.from({length: 2025 - 1900 +1}, (_,i) =>{
+    const year = 1900 +i;
+    return { value: year, label: year.toString()};
+  })
+  const monthOptions = [...Array(12)].map((_,i) =>{
+    const month = i+1;
+    return {value: month, label: month.toString()};
+  })
+  const dayOptions = [...Array(31)].map((_,i) => {
+    const day = i+1;
+    return {value: day, label: day.toString()};
+  })
 
 
   return (
@@ -97,6 +206,8 @@ export default function Login(props) {
           <source src="/videos/login.mp4" type="video/mp4"></source>
         </video>
         <div className={"flex justify-center items-center relative bg-black bg-opacity-40 min-h-screen sm:w-screen w-screen text-white"}>
+
+          {/* 로그인폼 */}
           <form className={`${signinHidden} ${setForm}`}>
             {/* 제목 */}
             <h1 className="text-3xl font-normal m-4 "><Link to="/home">BucketMate</Link></h1>
@@ -137,9 +248,10 @@ export default function Login(props) {
             {/* 비밀번호 찾기 */}
             <div className={`h-[20px] cursor-pointer ${text_size} ${text_opacity} ${hover}`}>비밀번호를 잊으셨나요 ?</div>
           
-          
-          {/* 회원가입폼 */}
           </form>
+
+
+          {/* 회원가입폼 */}
           <form className={`${signupHidden} ${setForm}`}>
             {/* 제목 */}
             <h1 className="text-3xl font-normal m-4 "><Link to="/home">BucketMate</Link></h1>
@@ -150,11 +262,11 @@ export default function Login(props) {
               <div className="flex-1 h-px bg-white"></div>
             </div>
             {/* 아이디 */}
-            <input type="text" placeholder="아이디" className={`${input_element}`}></input>
+            <input type="text" placeholder="아이디" value={username} onChange={(e) => {setUserName(e.target.value)}} className={`${input_element}`}></input>
             {/* <div className={`text-left w-60 text-red-500 ${text_size}`}>아이디가 중복되었습니다.</div> */}
             {/* 비밀번호 */}
-            <input type="password" placeholder="비밀번호" className={`${input_element}`}></input>
-            <input type="password" placeholder="비밀번호 재확인" className={`${input_element}`}></input>
+            <input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} className={`${input_element}`}></input>
+            <input type="password" placeholder="비밀번호 재확인" value={passwordCheck} onChange={(e) => setPasswordCheck(e.target.value)} className={`${input_element}`}></input>
             {/* <div className={`text-left w-60 text-green-500 ${text_size}`}>비밀번호가 일치합니다.</div> */}
             {/* 구분선 */}
             <div className={`flex items-center w-60 gap-2 text-[0.75rem] ${mt}`}>
@@ -164,20 +276,78 @@ export default function Login(props) {
             </div>
             {/* 회원정보 */}
             {/* 이름 */}
-            <input type="text" placeholder="이름" className={`${input_element}`}></input>
+            <input type="text" placeholder="이름" value={name} onChange={(e) => setName(e.target.value)} className={`${input_element}`}></input>
             {/* 성별 */}
             <div className={`flex w-60 h-8 rounded-sm`}>
-              <button onClick={(e) => { handleChangeSexButton(e, "male") }} className={`${sexButton} ${sexButton === "male" ? "bg-gray-300" : "bg-white"} block w-32 text-black border-black border-r text-[0.75rem]`}>남자</button>
-              <button onClick={(e) => { handleChangeSexButton(e, "female") }} className={`${sexButton} ${sexButton === "female" ? "bg-gray-300" : "bg-white"} block w-32 text-black text-[0.75rem]`}>여자</button>
+              <button value={sex} onClick={(e) => { handleChangeSexButton(e, "male"); setSex("male") }} className={`${sexButton} ${sexButton === "male" ? "bg-gray-300" : "bg-white"} block w-32 text-black border-black border-r text-[0.75rem]`}>남자</button>
+              <button value={sex} onClick={(e) => { handleChangeSexButton(e, "female"); setSex("female") }} className={`${sexButton} ${sexButton === "female" ? "bg-gray-300" : "bg-white"} block w-32 text-black text-[0.75rem]`}>여자</button>
             </div>
-            {/* 주민번호 */}
+
+            {/* 생년월일 */}
             <div className="flex justify-between w-60">
-              <input type="text" placeholder="주민번호 앞자리" className={`w-[7rem] font-sans text-black ${input_element}`}></input>
-              <div className="flex items-center">-</div>
-              <input type="text" placeholder="뒷 자리" className={`w-[7rem] font-sans text-black ${input_element}`}></input>
+              {/* <input type="text" placeholder="생년월일" value={birth} onChange={(e) => setBirth(e.target.value)} className={`w-[7rem] font-sans text-black ${input_element}`}></input> */}
+
+              {/* 출생년도 */}
+              <Select
+              onChange={(e) => {setYear(e.value)}}
+              options={yearOptions}
+              placeholder='년'
+              value={yearOptions.find(option => option.value === year) || null}
+              className={`text-black font-sans`}
+              styles={{
+                control: (provided) =>({
+                  ...provided,
+                  height: "20px",
+                }),
+                menuList: (provided) => ({
+                  ...provided,
+                  maxHeight: "200px",
+                  overflowY: "auto",   // 여기서만 스크롤
+                })
+              }}
+              />
+              {/* 출생 월 */}
+              <Select
+              onChange={(e) => {setMonth(e.value)}}
+              options={monthOptions}
+              placeholder={"월"}
+              value={monthOptions.find(option => option.value === month) || null}
+              className={`text-black font-sans`}
+              styles={{
+                control: (provided) =>({
+                  ...provided,
+                  height: "20px",
+                }),
+                menuList: (provided) => ({
+                  ...provided,
+                  maxHeight: "200px",
+                  overflowY: "auto"
+                })
+              }}
+              />
+              {/* 출생 일 */}
+              <Select
+              onChange={(e) => {setDay(e.value)}}
+              options={dayOptions}
+              placeholder={"일"}
+              value={dayOptions.find(option => option.value === day) || null}
+              className={`text-black font-sans`}
+              styles={{
+                control: (provided) =>({
+                  ...provided,
+                  height: "20px",
+                }),
+                menuList: (provided) => ({
+                  ...provided,
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                })
+              }}
+              />
+
             </div>
             {/* 이메일 */}
-            <input type="text" placeholder="이메일" className={`${input_element} placeholder:font-sans`}></input>
+            <input type="text" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} className={`${input_element} placeholder:font-sans`}></input>
             {/* 구분선 */}
             <div className={`flex items-center w-60 gap-2 text-[0.75rem] ${mt}`}>
               <div className="flex-1 h-px bg-white"></div>
@@ -254,8 +424,8 @@ export default function Login(props) {
                 </div>
               </div>
             </div>
-            {/* 로그인 버튼 */}
-            <button className={`${button_element} ${mt} bg-blue-500 text-white w-60`}>가입하기</button>
+            {/* 가입하기기 버튼 */}
+            <button onClick={handleSubmit} className={`${button_element} ${mt} bg-blue-500 text-white w-60`}>가입하기</button>
             {/* 구분선 */}
             {/* 로그인으로 돌아가기 */}
             <div onClick={addSignin} className={`h-[20px] cursor-pointer ${text_size} ${text_opacity} ${hover} mt-12`}>계정이 있으신가요 ? <span className={"text-white text-opacity-100"}>로그인</span></div>
