@@ -7,7 +7,7 @@ export default function Login(props) {
 
 
   // 들어온 경로
-  const {href} = props;
+  const { href } = props;
   // console.log(href);
 
 
@@ -49,7 +49,7 @@ export default function Login(props) {
 
 
   // 회원가입 성공 시 폼 초기화 함수
-  const resetForm = ()=>{
+  const resetForm = () => {
     setUserName("");
     setPassword("");
     setPasswordCheck("");
@@ -62,9 +62,52 @@ export default function Login(props) {
     setEmail("");
     setLocal("");
     setSelectedInterestsList([]);
+    setInterestsModal(false)
+  }
+
+  // 로그인 폼 제출 상태관리 스테이트
+  const [inputUserName, setInputUserName] = useState("");
+  const [inputPassWord, setInputPassWord] = useState("");
+
+  // 로그인 폼 제출 정보 디버그 코드
+  useEffect(() => {
+    console.log(inputUserName);
+    console.log(inputPassWord);
+  }, [inputUserName, inputPassWord]);
+
+  // 로그인 폼 제출 함수
+  const handleSubmitLogin = async (e) => {
+    e.preventDefault();
+    const inputData = {
+      inputUserName,
+      inputPassWord,
+    };
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/users/login', inputData);
+
+      // 서버에서 발급한 토큰 저장
+      const token = response.data.token;
+      localStorage.setItem('token', token);
+      // 로그인 성공 처리
+      alert("로그인 성공!");
+      // 홈 화면으로 리디렉션
+      window.location.href = '/home';
+      // 로그인 정보 디버그 코드
+      console.log(response.data);
+
+    } catch (error) {
+      if (error.response) {
+        console.log(`로그인 실패 : ${alert(error.response.data.message)}`);
+      } else {
+        console.log(`서버에 연결할 수 없습니다.`);
+      }
+      console.error(`에러발생: ${error}`);
+    }
+
   }
   
-  // // // 회원정보 디버그 코드
+  // // 회원정보 디버그 코드
   // useEffect(()=>{
   //   console.log(username)
   //   console.log(password)
@@ -74,7 +117,6 @@ export default function Login(props) {
   //   console.log(email)
   //   console.log(local)
   //   console.log(selectedInterests)
-
   // },[username,password,passwordCheck,name,sex,email,local,selectedInterests])
 
 
@@ -96,7 +138,7 @@ export default function Login(props) {
       setSexButton(sex);
     }
   }
-  
+
   // 지역목록 
   const cities = [
     "서울특별시",
@@ -156,7 +198,7 @@ export default function Login(props) {
       birth: `${year.toString()}${month === "" ? "" : month.toString().padStart(2, "0")}${day === "" ? "" : day.toString().padStart(2, "0")}`,
       email,
       local,
-      interests : selectedInterests,
+      interests: selectedInterests,
     };
 
     try {
@@ -168,11 +210,11 @@ export default function Login(props) {
       addSignin();
       // 회원가입 후 폼 초기화
       resetForm();
-      
-    }catch (error){
-      if(error.response){
+
+    } catch (error) {
+      if (error.response) {
         alert(`회원가입 실패 : ${error.response.data.message}`);
-      }else{
+      } else {
         alert("서버에 연결할 수 없습니다.");
       }
       console.error("에러발생: ", error);
@@ -180,17 +222,17 @@ export default function Login(props) {
   }
 
   // 생년월일 생성 함수
-  const yearOptions = Array.from({length: 2025 - 1900 +1}, (_,i) =>{
-    const year = 1900 +i;
-    return { value: year, label: year.toString()};
+  const yearOptions = Array.from({ length: 2025 - 1900 + 1 }, (_, i) => {
+    const year = 1900 + i;
+    return { value: year, label: year.toString() };
   })
-  const monthOptions = [...Array(12)].map((_,i) =>{
-    const month = i+1;
-    return {value: month, label: month.toString()};
+  const monthOptions = [...Array(12)].map((_, i) => {
+    const month = i + 1;
+    return { value: month, label: month.toString() };
   })
-  const dayOptions = [...Array(31)].map((_,i) => {
-    const day = i+1;
-    return {value: day, label: day.toString()};
+  const dayOptions = [...Array(31)].map((_, i) => {
+    const day = i + 1;
+    return { value: day, label: day.toString() };
   })
 
 
@@ -213,19 +255,25 @@ export default function Login(props) {
             <h1 className="text-3xl font-normal m-4 "><Link to="/home">BucketMate</Link></h1>
             {/* 아이디 입력란 */}
             <input
+              onChange={(e) => { setInputUserName(e.target.value) }}
               type="text"
               placeholder="아이디"
               className={`${input_element}`}
             ></input>
             {/* 비밀번호 입력란 */}
             <input
+              onChange={(e) => { setInputPassWord(e.target.value) }}
               type="password"
               placeholder="비밀번호 "
               className={`${input_element}`}
             ></input>
 
             {/* 로그인 버튼 */}
-            <button className={`${button_element} ${mt} bg-blue-500 text-white w-60`}>로그인</button>
+            <button
+              onClick={handleSubmitLogin}
+              className={`${button_element} ${mt} bg-blue-500 text-white w-60`}>
+              로그인
+            </button>
             {/* 구분선 */}
             <div className={`flex items-center w-60 gap-2 text-[0.75rem] ${mt}`}>
               <div className="flex-1 h-px bg-white"></div>
@@ -247,7 +295,7 @@ export default function Login(props) {
             <div onClick={addSignup} className={`h-[20px] cursor-pointer ${text_size} ${text_opacity} ${hover} mt-20`}>계정이 없으신가요 ? <span className={"text-white text-opacity-100"}>가입하기</span></div>
             {/* 비밀번호 찾기 */}
             <div className={`h-[20px] cursor-pointer ${text_size} ${text_opacity} ${hover}`}>비밀번호를 잊으셨나요 ?</div>
-          
+
           </form>
 
 
@@ -262,7 +310,7 @@ export default function Login(props) {
               <div className="flex-1 h-px bg-white"></div>
             </div>
             {/* 아이디 */}
-            <input type="text" placeholder="아이디" value={username} onChange={(e) => {setUserName(e.target.value)}} className={`${input_element}`}></input>
+            <input type="text" placeholder="아이디" value={username} onChange={(e) => { setUserName(e.target.value) }} className={`${input_element}`}></input>
             {/* <div className={`text-left w-60 text-red-500 ${text_size}`}>아이디가 중복되었습니다.</div> */}
             {/* 비밀번호 */}
             <input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} className={`${input_element}`}></input>
@@ -289,60 +337,60 @@ export default function Login(props) {
 
               {/* 출생년도 */}
               <Select
-              onChange={(e) => {setYear(e.value)}}
-              options={yearOptions}
-              placeholder='년'
-              value={yearOptions.find(option => option.value === year) || null}
-              className={`text-black font-sans`}
-              styles={{
-                control: (provided) =>({
-                  ...provided,
-                  height: "20px",
-                }),
-                menuList: (provided) => ({
-                  ...provided,
-                  maxHeight: "200px",
-                  overflowY: "auto",   // 여기서만 스크롤
-                })
-              }}
+                onChange={(e) => { setYear(e.value) }}
+                options={yearOptions}
+                placeholder='년'
+                value={yearOptions.find(option => option.value === year) || null}
+                className={`text-black font-sans`}
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    height: "20px",
+                  }),
+                  menuList: (provided) => ({
+                    ...provided,
+                    maxHeight: "200px",
+                    overflowY: "auto",   // 여기서만 스크롤
+                  })
+                }}
               />
               {/* 출생 월 */}
               <Select
-              onChange={(e) => {setMonth(e.value)}}
-              options={monthOptions}
-              placeholder={"월"}
-              value={monthOptions.find(option => option.value === month) || null}
-              className={`text-black font-sans`}
-              styles={{
-                control: (provided) =>({
-                  ...provided,
-                  height: "20px",
-                }),
-                menuList: (provided) => ({
-                  ...provided,
-                  maxHeight: "200px",
-                  overflowY: "auto"
-                })
-              }}
+                onChange={(e) => { setMonth(e.value) }}
+                options={monthOptions}
+                placeholder={"월"}
+                value={monthOptions.find(option => option.value === month) || null}
+                className={`text-black font-sans`}
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    height: "20px",
+                  }),
+                  menuList: (provided) => ({
+                    ...provided,
+                    maxHeight: "200px",
+                    overflowY: "auto"
+                  })
+                }}
               />
               {/* 출생 일 */}
               <Select
-              onChange={(e) => {setDay(e.value)}}
-              options={dayOptions}
-              placeholder={"일"}
-              value={dayOptions.find(option => option.value === day) || null}
-              className={`text-black font-sans`}
-              styles={{
-                control: (provided) =>({
-                  ...provided,
-                  height: "20px",
-                }),
-                menuList: (provided) => ({
-                  ...provided,
-                  maxHeight: "200px",
-                  overflowY: "auto",
-                })
-              }}
+                onChange={(e) => { setDay(e.value) }}
+                options={dayOptions}
+                placeholder={"일"}
+                value={dayOptions.find(option => option.value === day) || null}
+                className={`text-black font-sans`}
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    height: "20px",
+                  }),
+                  menuList: (provided) => ({
+                    ...provided,
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                  })
+                }}
               />
 
             </div>
@@ -359,8 +407,8 @@ export default function Login(props) {
               onChange={(e) => { setLocal(e.target.value) }}
               className={`text-black ${input_element} text-[0.88rem]`}>
               <option
-                value={""}disabled hidden
-                
+                value={""} disabled hidden
+
               >지역 선택</option>
               {cities.map((city) => (
                 <option value={city} key={city}>{city}</option>
@@ -382,13 +430,13 @@ export default function Login(props) {
                 return (
                   <div
                     key={item}
-                    onClick={()=>{if(!interestsModal){handleChangeInterestModal()}handleChangeInterestList(item)}}
+                    onClick={() => { if (!interestsModal) { handleChangeInterestModal() } handleChangeInterestList(item) }}
                     className={`${flex_center} ${selectedInterests.length === 0 ? "hidden" : "block"} relative h-6 font-sans text-[0.75rem] bg-gray-200 border-gray-200 border-[5px] cursor-pointer rounded-2xl m-1`}>
                     {item}
-                    <img 
-                    src="/images/엑스표시.png" 
-                    alt="엑스표시" 
-                    className={`w-4 h-4 m-1 opacity-20`}>
+                    <img
+                      src="/images/엑스표시.png"
+                      alt="엑스표시"
+                      className={`w-4 h-4 m-1 opacity-20`}>
                     </img>
                   </div>
                 )

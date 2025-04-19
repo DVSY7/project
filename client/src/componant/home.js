@@ -1,8 +1,30 @@
 import '../App.css';
 import Contents from './content/contents';
 import Menu from './menu';
+import {useEffect} from "react";
+import axios from "axios";
 
 export default function Home() {
+
+  // 로그인 성공 시 토큰 검증
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const login = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/token/protected-data', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log('인증된 데이터 :', response.data);
+      } catch (err) {
+        console.error('토큰 오류:', err);
+      }
+    }
+    if (token) {
+      login();
+    }
+  }, [])
   
   return (
     <>
