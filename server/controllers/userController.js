@@ -1,5 +1,6 @@
 // server/controllers/userController.js
 
+require('dotenv').config({path: "../config/.env"});
 const db = require('../config/db'); // DB 연결
 const bcrypt = require('bcryptjs'); // bcrypt 모듈 불러오기
 const jwt = require('jsonwebtoken'); // jsonwebtoken 불러오기
@@ -74,6 +75,7 @@ exports.login = async (req,res) =>{
     // 문자열과 Object를 구분해서 출력하는 형태
     console.log(`로그인 요청 데이터:`, req.body);
 
+
     // 리터럴로 출력하는 형태 (객체는 문자열로 변환시 Object로만 표기됨)
     // console.log(`로그인 요청 데이터 : ${JSON.stringify(req.body)}`);
 
@@ -91,6 +93,7 @@ exports.login = async (req,res) =>{
         }
 
         const user = results[0];
+       
 
         // bcript로 비밀번호 비교
         const match = await bcrypt.compare(inputPassWord, user.password);

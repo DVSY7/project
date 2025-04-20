@@ -68,18 +68,14 @@ exports.kakaoLogin = async (req, res) => {
         }
 
         // JWT 발급
-        const payload = {
-            id: rows[0]?.id || insertedUserId, // 유저의 고유 id
-            name,
-            email,
-            provider: 'kakao'
-        };
-        const jwtToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({
+            id: kakaoId, username: email, name,
+        }, JWT_SECRET, { expiresIn: '1h' });
 
 
 
 
-        res.status(200).json({ user: kakaoAccount, token: jwtToken });
+        res.status(200).json({ user: kakaoAccount, token });
 
     } catch (error) {
         console.error('카카오 로그인 오류:', error.response?.data || error.message);
