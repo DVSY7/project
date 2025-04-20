@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Select from 'react-select';
 
@@ -101,7 +100,7 @@ export default function Login(props) {
   };
 
   // kakao 로그인 버튼 함수
-  const REST_API_KEY = '984700b41305e657196c25896694cfd6';
+  const REST_API_KEY = 'f6badfb7692d7ca2cbf9febe90105836';
   const REDIRECT_URL = 'http://localhost:3000/auth/kakao/callback';
 
   const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URL}&response_type=code`;

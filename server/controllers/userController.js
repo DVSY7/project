@@ -1,4 +1,5 @@
 // server/controllers/userController.js
+
 const db = require('../config/db'); // DB 연결
 const bcrypt = require('bcryptjs'); // bcrypt 모듈 불러오기
 const jwt = require('jsonwebtoken'); // jsonwebtoken 불러오기
