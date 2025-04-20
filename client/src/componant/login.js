@@ -61,6 +61,8 @@ export default function Login(props) {
   // 로그인 폼 제출 상태관리 스테이트
   const [inputUserName, setInputUserName] = useState('');
   const [inputPassWord, setInputPassWord] = useState('');
+  // 로딩 상태 관리
+  const [isLoading, setIsLoading] = useState(false);
 
   // 로그인 폼 제출 정보 디버그 코드
   useEffect(() => {
@@ -69,20 +71,33 @@ export default function Login(props) {
   }, [inputUserName, inputPassWord]);
 
   // 로그인 폼 제출 함수
+
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
+
+    if (isLoading) {
+      return; // 이미 요청이 진행 중이면 함수를 종료하여 중복 요청을 방지
+    }
+
+    // 로딩 상태 설정
+    setIsLoading(true);
+
     const inputData = {
       inputUserName,
       inputPassWord,
     };
+
     try {
       const response = await axios.post(
         'http://localhost:5000/api/users/login',
-        inputData
+        inputData,
+        { headers: { 'Content-Type': 'application/json' } }
       );
+
       // 서버에서 발급한 토큰 저장
       const token = response.data.token;
       localStorage.setItem('token', token);
+
       // 로그인 성공 처리
       alert('로그인 성공!');
       // 홈 화면으로 리디렉션
@@ -96,6 +111,9 @@ export default function Login(props) {
         console.log(`서버에 연결할 수 없습니다.`);
       }
       console.error(`에러발생: ${error}`);
+    } finally {
+      // 요청 완료 후 로딩 상태 리셋
+      setIsLoading(false);
     }
   };
 
@@ -107,11 +125,11 @@ export default function Login(props) {
 
   const kakaoLogin = (e) => {
     e.preventDefault();
-    window.location.href=kakaoURL;
+    window.location.href = kakaoURL;
     console.log(kakaoURL);
   };
 
-  // kakao 에서 발급한 
+  // kakao 에서 발급한
 
   // // 회원정보 디버그 코드
   // useEffect(()=>{
