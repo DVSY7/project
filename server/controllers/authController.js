@@ -1,8 +1,11 @@
 // server/controller/authController
 
 require('dotenv').config({ path: '../config/.env' });
+const db = require('../config/db'); // DB 연결
 const qs = require('qs');
 const axios = require('axios');
+const jwt = require(`jsonwebtoken`);
+const JWT_SECRET = process.env.JWT_SECRET;
 const REST_API_KEY = process.env.KAKAO_REST_API_KEY;
 const REDIRECT_URL = process.env.KAKAO_REDIRECT_URL;
 
@@ -41,22 +44,42 @@ exports.kakaoLogin = async (req, res) => {
         });
 
         const kakaoAccount = userInfoResponse.data.kakao_account;
-        console.log('userInfoResponse 정보:', userInfoResponse.data);
 
-        console.log("kakaoAcount 정보: ", kakaoAccount);
+        console.log("카카오 로그인 성공!", { user: kakaoAccount })
+
+        // ✅ DB 사용자 등록/조회 로직이 들어가야 합니다.
+        // 중복확인 (없으면 회원가입 처리/ 있으면 로그인 처리)
+        const kakaoId = `KAKAO_${userInfoResponse.data.id}`;
+        console.log("가져온 id", kakaoId);
+        const email = kakaoAccount.email;
+        console.log("가져온 email", email);
+        const name = kakaoAccount.profile?.nickname;
+        console.log("가져온 nickname", name);
+
+        // 중복 체크 쿼리
+        const [rows] = await db.query("SELECT * FROM users WHERE social_login = ?", [kakaoId]);
+
+        // 중복 없으면 회원가입 처리
+        if (rows.length === 0) {
+            await db.query(
+                "INSERT INTO users(social_login,username, name, email) VALUES (?, ?, ?, ?)",
+                [kakaoId, email, name, email]
+            );
+        }
+
+        // JWT 발급
+        const payload = {
+            id: rows[0]?.id || insertedUserId, // 유저의 고유 id
+            name,
+            email,
+            provider: 'kakao'
+        };
+        const jwtToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
 
 
-        // const userEmail = kakaoAccount.email;
 
-        // // ⚠️ null 체크 추가
-        // if (!kakaoAccount || !kakaoAccount.email) {
-        //     return res.status(400).json({ message: "카카오 계정에 이메일 정보가 없습니다." });
-        // }
 
-        console.log("카카오 로그인 성공!", { user: kakaoAccount });
-
-        // ✅ 여기에서 토큰 생성 및 DB 사용자 등록/조회 로직이 들어가야 합니다.
-        res.status(200).json({ user: kakaoAccount });
+        res.status(200).json({ user: kakaoAccount, token: jwtToken });
 
     } catch (error) {
         console.error('카카오 로그인 오류:', error.response?.data || error.message);

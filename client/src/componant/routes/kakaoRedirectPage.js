@@ -22,9 +22,9 @@ export default function KakaoRedirectPage(){
                     code: code, // code값을 body로 전송
                 });
 
-                console.log("토큰 응답:", response.data);
-                localStorage.setItem("kakaoToken", response.data.kakaoToken);
-                // window.location.href = '/home';
+                console.log("토큰 응답:", response.data.token);
+                localStorage.setItem("token", response.data.token);
+                window.location.href = '/home';
                }catch(error){
                 console.error("카카오 토큰 요청 실패: ", error);
                }
