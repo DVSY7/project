@@ -4,6 +4,7 @@ require('dotenv').config({ path: '../config/.env' });
 const db = require('../config/db'); // DB 연결
 const bcrypt = require('bcryptjs'); // bcrypt 모듈 불러오기
 const jwt = require('jsonwebtoken'); // jsonwebtoken 불러오기
+const { logLoginAttempt } = require('../utiles/logHelper');
 
 const JWT_SECRET = process.env.JWT_SECRET; // env에서 가져옴
 
@@ -93,6 +94,7 @@ exports.login = async (req, res) => {
 
     const match = await bcrypt.compare(inputPassWord, user.password);
     if (!match) {
+      await logLoginAttempt(user.name, 'fail', req);
       return res.status(401).json({ message: '비밀번호가 일치하지 않습니다' });
     }
 
@@ -105,6 +107,7 @@ exports.login = async (req, res) => {
     console.log('로그인 성공:', user);
     console.log('발급된 토큰:', token);
 
+    await logLoginAttempt(user.name, 'success', req);
     return res.status(200).json({ message: '로그인 성공', user, token });
   } catch (err) {
     console.error('로그인 처리 중 오류:', err);
