@@ -1,7 +1,17 @@
 import Contents from "./content/contents";
 import Menu from "./menu";
+import {useEffect, useState} from 'react';
+import { checkedToken } from "./fuction/checkedToken";
 
 export default function Profile() {
+    const [username, setUsername] = useState("");
+    useEffect(()=>{
+        const getUsername = async ()=>{
+            await checkedToken(setUsername);
+        };
+       getUsername();
+    },[])
+
     return (
         <>
             {/*가장 바깥영역 화면의 최대로 설정*/}
@@ -10,7 +20,7 @@ export default function Profile() {
                 <Menu current_src = {4} />
                 {/* 오른쪽: 가로 8 비율 (8/9) */}
                 <div className=" flex flex-col flex-wrap row-span-9 sm:col-span-8 ">
-                    <Contents src="profile"/>
+                    <Contents src="profile" username ={username}/>
                 </div>
             </div>
         </>

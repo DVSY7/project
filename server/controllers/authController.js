@@ -1,13 +1,13 @@
 // server/controller/authController
 
 require('dotenv').config({ path: '../config/.env' });
-const db = require('../config/db'); // DB 연결
 const qs = require('qs');
 const axios = require('axios');
-const jwt = require(`jsonwebtoken`);
-const JWT_SECRET = process.env.JWT_SECRET;
+const {signupCheck} = require('../function/signup');
 const REST_API_KEY = process.env.KAKAO_REST_API_KEY;
 const REDIRECT_URL = process.env.KAKAO_REDIRECT_URL;
+const NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID;
+const NAVER_SECRET_KEY = process.env.NAVER_SECRET_KEY;
 
 
 
@@ -50,30 +50,11 @@ exports.kakaoLogin = async (req, res) => {
         // ✅ DB 사용자 등록/조회 로직이 들어가야 합니다.
         // 중복확인 (없으면 회원가입 처리/ 있으면 로그인 처리)
         const kakaoId = `KAKAO_${userInfoResponse.data.id}`;
-        console.log("가져온 id", kakaoId);
         const email = kakaoAccount.email;
-        console.log("가져온 email", email);
         const name = kakaoAccount.profile?.nickname;
-        console.log("가져온 nickname", name);
 
-        // 중복 체크 쿼리
-        const [rows] = await db.query("SELECT * FROM users WHERE social_login = ?", [kakaoId]);
-
-        // 중복 없으면 회원가입 처리
-        if (rows.length === 0) {
-            await db.query(
-                "INSERT INTO users(social_login,username, name, email) VALUES (?, ?, ?, ?)",
-                [kakaoId, email, name, email]
-            );
-        }
-
-        // JWT 발급
-        const token = jwt.sign({
-            id: kakaoId, username: email, name,
-        }, JWT_SECRET, { expiresIn: '1h' });
-
-
-
+         // 토큰과 중복처리를 한번에 하는 함수 (function/signup.js)
+        const token = await signupCheck(kakaoId,email,name,email);
 
         res.status(200).json({ user: kakaoAccount, token });
 
@@ -83,3 +64,48 @@ exports.kakaoLogin = async (req, res) => {
     }
 };
 
+exports.naverLogin = async (req, res) => {
+    const { code, state } = req.body;
+
+    try {
+        // access token 요청
+        const tokenResponse = await axios.get(`https://nid.naver.com/oauth2.0/token`,{
+            params:{
+                grant_type: 'authorization_code',
+                client_id: NAVER_CLIENT_ID,
+                client_secret: NAVER_SECRET_KEY,
+                code,
+                state,
+            },
+        });
+        // token확인
+        const accessToken = tokenResponse.data.access_token;
+
+        console.log(accessToken);
+
+        // 사용자 정보 요청
+        const profileResponse = await axios.get(`https://openapi.naver.com/v1/nid/me`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        const profile = profileResponse.data;
+        // 사용자 정보 확인하기
+        console.log(`네이버 사용자 정보: `, profile);
+        // db에 등록할 내용
+        const naverId = `NAVER_${profile.response.id}`;
+        const email = profile.response.email;
+        const name = profile.response.name;
+
+        // 토큰과 중복처리를 한번에 하는 함수 (function/signup.js)
+        const token = await signupCheck(naverId,email,name,email);        
+
+        res.status(200).json({ user: profile, token: token });
+
+    }catch(error){
+        console.error("네이버 로그인 중 에러:", error);
+        return res.status(500).json({message: "서버 오류 발생:", error});
+    }
+
+}

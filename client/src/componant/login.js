@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
+import KakaoLogin from './login/kakaoLogin';
+import NaverLogin from './login/naverLogin';
 
 export default function Login(props) {
   // 들어온 경로
@@ -115,18 +117,6 @@ export default function Login(props) {
       // 요청 완료 후 로딩 상태 리셋
       setIsLoading(false);
     }
-  };
-
-  // kakao 로그인 버튼 함수
-  const REST_API_KEY = 'f6badfb7692d7ca2cbf9febe90105836';
-  const REDIRECT_URL = 'http://localhost:3000/auth/kakao/callback';
-
-  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URL}&response_type=code`;
-
-  const kakaoLogin = (e) => {
-    e.preventDefault();
-    window.location.href = kakaoURL;
-    console.log(kakaoURL);
   };
 
   // kakao 에서 발급한
@@ -326,18 +316,14 @@ export default function Login(props) {
               </span>
               <div className="flex-1 h-px bg-white"></div>
             </div>
-            {/* 카카오로그인 버튼 */}
-            <button
-              onClick={kakaoLogin}
-              className={`${button_element} flex relative justify-center items-center bg-[#FFEB00] w-60 font-bold font-sans text-black `}
-            >
-              <img
-                src="/images/카카오버튼.png"
-                alt="카카오버튼"
-                className={'h-full absolute sm:left-14 left-8'}
-              ></img>
-              Kakao
-            </button>
+
+            {/* 카카오 로그인 컴포넌트 */}
+            <KakaoLogin/>
+            {/* 네이버 로그인 컴포넌트 */}
+            <NaverLogin/>
+           
+
+
             {/* 회원가입 */}
             <div
               onClick={addSignup}
@@ -346,6 +332,8 @@ export default function Login(props) {
               계정이 없으신가요 ?{' '}
               <span className={'text-white text-opacity-100'}>가입하기</span>
             </div>
+
+
             {/* 비밀번호 찾기 */}
             <div
               className={`h-[20px] cursor-pointer ${text_size} ${text_opacity} ${hover}`}
@@ -353,6 +341,7 @@ export default function Login(props) {
               비밀번호를 잊으셨나요 ?
             </div>
           </form>
+
 
           {/* 회원가입폼 */}
           <form className={`${signupHidden} ${setForm}`}>

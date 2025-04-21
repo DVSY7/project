@@ -6,6 +6,7 @@ import Community from "./componant/community";
 import Login from "./componant/login";
 import Profile from "./componant/profile";
 import KakaoRedirectPage from "./componant/routes/kakaoRedirectPage";
+import NaverRedirectPage from "./componant/routes/naverRedirectPage";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/community" element={<Community/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/auth/kakao/callback" element={<KakaoRedirectPage/>}/>
+          <Route path="/auth/naver/callback" element={<NaverRedirectPage/>}/>
         </Routes>
       </div>
     </BrowserRouter>
