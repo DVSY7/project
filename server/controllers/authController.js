@@ -4,6 +4,7 @@ require('dotenv').config({ path: '../config/.env' });
 const qs = require('qs');
 const axios = require('axios');
 const {signupCheck} = require('../function/signup');
+const { logLoginAttempt } = require('../utiles/logHelper');
 
 // 카카오 API 요청 시 필요한 env 데이터
 const REST_API_KEY = process.env.KAKAO_REST_API_KEY;
@@ -63,6 +64,9 @@ exports.kakaoLogin = async (req, res) => {
         const email = kakaoAccount.email;
         const name = kakaoAccount.profile?.nickname;
 
+        // 로그기록을 남기는 함수
+        await logLoginAttempt(email, 'success', req);
+
          // 토큰과 중복처리를 한번에 하는 함수 (function/signup.js)
         const token = await signupCheck(kakaoId,email,name,email);
 
@@ -108,13 +112,22 @@ exports.naverLogin = async (req, res) => {
         const email = profile.response.email;
         const name = profile.response.name;
 
+        // 로그기록을 남기는 함수
+        await logLoginAttempt(email, 'success', req);
+
         // 토큰과 중복처리를 한번에 하는 함수 (function/signup.js)
-        const token = await signupCheck(naverId,email,name,email);        
+        const token = await signupCheck(naverId,email,name,email);      
 
         res.status(200).json({ user: profile, token: token });
 
     }catch(error){
         console.error("네이버 로그인 중 에러:", error);
+        if(error.code === "ER_DUP_ENTRY"){
+            return res.status(409).json({
+                message: "이미 등록된 사용자입니다. 로그인 혹은 다른 계정으로 시도해주세요.",
+                errorCode: error.code
+            });
+        }
         return res.status(500).json({message: "서버 오류 발생:", error});
     }
 
@@ -160,6 +173,9 @@ exports.googleLogin = async (req, res) =>{
         const googleId = `GOOGLE_${profile.id}`;
         const email = profile.email;
         const name = profile.name;
+
+        // 로그기록을 남기는 함수
+        await logLoginAttempt(email, 'success', req);
 
         // DB 저장 및 JWT 발급
         const token = await signupCheck(googleId, email, name, email);

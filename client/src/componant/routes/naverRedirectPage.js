@@ -28,6 +28,10 @@ export default function NaverRedirectPage() {
           localStorage.setItem("token", response.data.token);
           window.location.href = '/home';
         } catch (error) {
+          if(error.status === 409){
+            alert("이미 등록된 사용자 입니다. 로그인을 진행해주세요.");
+            window.location.href='/';
+          }
           console.error("네이버 토큰 요청 실패:", error);
         }
       };

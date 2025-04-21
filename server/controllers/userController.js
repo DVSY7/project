@@ -94,7 +94,7 @@ exports.login = async (req, res) => {
 
     const match = await bcrypt.compare(inputPassWord, user.password);
     if (!match) {
-      await logLoginAttempt(user.name, 'fail', req);
+      await logLoginAttempt(user.email, 'fail', req);
       return res.status(401).json({ message: '비밀번호가 일치하지 않습니다' });
     }
 
@@ -107,7 +107,7 @@ exports.login = async (req, res) => {
     console.log('로그인 성공:', user);
     console.log('발급된 토큰:', token);
 
-    await logLoginAttempt(user.name, 'success', req);
+    await logLoginAttempt(user.email, 'success', req);
     return res.status(200).json({ message: '로그인 성공', user, token });
   } catch (err) {
     console.error('로그인 처리 중 오류:', err);
