@@ -16,7 +16,7 @@ export default function Miniprofile() {
                         <div className={`text-[1.5rem] font-sans font-bold text-yellow-400`}><span className={`mb-2 inline-block`}>★★★★★</span><span className={`ml-4 text-black font-sans font-normal text-[1rem]`}>4.99</span></div>
                         <div className={`flex justify-start items-center`}>
                         <div className={`flex justify-between items-center w-32 h-4 bg-gray-300 rounded-lg`}>
-                            <div className={`w-[100%] h-full rounded-lg bg-green-500`}></div>
+                            <div className={`w-[50%] h-full rounded-lg bg-green-500`}></div>
                         </div>
                         <div className={`flex  font-sans font-bold ml-2`}>50%</div>
                         </div>
