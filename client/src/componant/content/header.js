@@ -1,5 +1,6 @@
 import "../../App.css";
 import { Link } from "react-router-dom";
+import { useState,useEffect } from "react";
 
 export default function Header(props) {
 
@@ -11,8 +12,22 @@ export default function Header(props) {
     // 토큰에서 검증된 유저이름
     const { username } = props;
 
-    // 로그인 유저인지 확인
-    const getToken = localStorage.getItem('token');
+    // 로그인 로그아웃 상태관리 스테이트
+    const [Token, setToken] = useState(null);
+
+    // 컴포넌트가 마운트될 때 토큰 가져오기
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken && storedToken !== 'null') {
+            setToken(storedToken);
+        }
+    }, []);;
+
+    // 로그아웃 버튼 함수
+    const handleChangeLogout = () => {
+        localStorage.setItem('token', null);
+        setToken(null);
+    }
 
 
     return (
@@ -22,15 +37,15 @@ export default function Header(props) {
                 <div className={"hidden sm:flex sm:item-center sm:w-full sm:h-[40px]"}>
                     <div className={"absolute w-9 mx-8 mt-[0.45rem] right-search-line-after"}><img src="/images/프로필.png" alt="프로필" className={"w-full h-full"}></img></div>
                     <input type='text' id='search' name='search' className={"h-full w-[77%] pl-20 rounded-full mx-5 shadow-lg border-[1px] border-gray-400"}></input>
-                    
+
                     {/* 비로그인 시 요소 */}
-                    <div className={`${item_center} ${getToken !== "" ? "hidden" : ""} h-full w-[100px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ml-16 mr-5 ${button_hover}`}><Link to="/login">로그인</Link></div>
-                    <div className={`${item_center} ${getToken !== "" ? "hidden" : ""} h-full w-[120px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/signup">회원가입</Link></div>                    
+                    <div className={`${item_center} ${Token !== null ? "hidden" : ""} h-full w-[100px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ml-16 mr-5 ${button_hover}`}><Link to="/login">로그인</Link></div>
+                    <div className={`${item_center} ${Token !== null ? "hidden" : ""} h-full w-[120px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/signup">회원가입</Link></div>
 
                     {/* 로그인 시 요소 */}
-                    <div className={`${item_center} w-[220px] text-[20px]`}>Welcome Mate <p className={`mx-1`}>:</p><p className={`text-center font-bold block`}>{username}</p></div>
-                    <div className={`${item_center} ${getToken === "" ? "hidden" : ""} h-full w-[120px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/login">로그아웃</Link></div>
-                    
+                    <div className={`${item_center} ${Token === null ? "hidden" : ""} w-[220px] text-[20px]`}>Welcome Mate <p className={`mx-1`}>:</p><p className={`text-center font-sans font-bold block`}>{username}</p></div>
+                    <div className={`${item_center} ${Token === null ? "hidden" : ""} h-full w-[120px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/login" onClick={handleChangeLogout}>로그아웃</Link></div>
+
                 </div>
                 <div className={"hidden sm:flex sm:justify-between sm:items-end sm:ml-12 sm:w-full h-[30%]"}>
                     <div className={"font-sans italic"}>#바다 #해외여행 #언젠가</div>

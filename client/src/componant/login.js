@@ -4,6 +4,7 @@ import axios from 'axios';
 import Select from 'react-select';
 import KakaoLogin from './login/kakaoLogin';
 import NaverLogin from './login/naverLogin';
+import GoogleLogin from './login/googleLogin';
 
 export default function Login(props) {
   // 들어온 경로
@@ -321,6 +322,8 @@ export default function Login(props) {
             <KakaoLogin/>
             {/* 네이버 로그인 컴포넌트 */}
             <NaverLogin/>
+            {/* 구글 로그인 컴포넌트 */}
+            <GoogleLogin/>
            
 
 

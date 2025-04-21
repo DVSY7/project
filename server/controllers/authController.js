@@ -4,10 +4,20 @@ require('dotenv').config({ path: '../config/.env' });
 const qs = require('qs');
 const axios = require('axios');
 const {signupCheck} = require('../function/signup');
+
+// 카카오 API 요청 시 필요한 env 데이터
 const REST_API_KEY = process.env.KAKAO_REST_API_KEY;
 const REDIRECT_URL = process.env.KAKAO_REDIRECT_URL;
+
+
+// 네이버 API 요청 시 필요한 env 데이터
 const NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID;
 const NAVER_SECRET_KEY = process.env.NAVER_SECRET_KEY;
+
+// 구글 AIP 요청 시 필요한 env 데이터
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_SECRET_KEY = process.env.GOOGLE_SECRET_KEY;
+const GOOGLE_REDIRECT_URL = process.env.GOOGLE_REDIRECT_URL;
 
 
 
@@ -109,3 +119,54 @@ exports.naverLogin = async (req, res) => {
     }
 
 }
+
+exports.googleLogin = async (req, res) =>{
+    const {code} = req.body;
+
+    try {
+        // 구글 access_token 요청
+        const tokenResponse = await axios.post(
+            'https://oauth2.googleapis.com/token',
+            {
+                code,
+                client_id: GOOGLE_CLIENT_ID,
+                client_secret: GOOGLE_SECRET_KEY,
+                redirect_uri: GOOGLE_REDIRECT_URL,
+                grant_type: 'authorization_code',
+            },
+            {
+                headers: {
+                    "Content_type" : "application/json",
+                },
+            }
+        );
+
+        const accessToken = tokenResponse.data.access_token;
+        console.log('구글 Access Token',accessToken);
+
+        // 토큰으로 사용자 정보 요청
+        const profileResponse = await axios.get(
+            'https://www.googleapis.com/oauth2/v2/userinfo',
+            {
+                headers:{
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+
+        const profile = profileResponse.data;
+        console.log('구글 사용자 정보:', profile);
+
+        const googleId = `GOOGLE_${profile.id}`;
+        const email = profile.email;
+        const name = profile.name;
+
+        // DB 저장 및 JWT 발급
+        const token = await signupCheck(googleId, email, name, email);
+
+        res.status(200).json({user: profile, token: token});
+    }catch(error){
+        console.error('구글 로그인 에러:',error.response?.data || error);
+        res.status(500).json({message: '구글 로그인 실패', error});
+    }
+};

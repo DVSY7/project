@@ -5,8 +5,8 @@ export default function NaverLogin() {
     // 네이버 로그인 기본 설정
     const CLIENT_ID = '4Dz2Y9Ovs8NYRENEZDMq';
     const REDIRECT_URI = 'http://localhost:3000/auth/naver/callback';
-  
-    const STATE = 'RANDOM_STATE_STRING'; // CSRF 방지용. uuid 등으로 생성 가능
+    const STATE = 'RANDOM_STATE_STRING';
+
     const naverURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
   
     const naverLogin = (e) => {

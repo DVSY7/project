@@ -7,6 +7,7 @@ import Login from "./componant/login";
 import Profile from "./componant/profile";
 import KakaoRedirectPage from "./componant/routes/kakaoRedirectPage";
 import NaverRedirectPage from "./componant/routes/naverRedirectPage";
+import GoogleRedirectPage from "./componant/routes/googleRedirectPage";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/auth/kakao/callback" element={<KakaoRedirectPage/>}/>
           <Route path="/auth/naver/callback" element={<NaverRedirectPage/>}/>
+          <Route path="/auth/google/callback" element={<GoogleRedirectPage/>}/>
         </Routes>
       </div>
     </BrowserRouter>
