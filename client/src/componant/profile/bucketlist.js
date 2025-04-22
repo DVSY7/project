@@ -55,7 +55,8 @@ export default function BucketList(){
                     <div className={`flex items-center h-full text-[1.5rem] ml-6`}>리스트</div>
                     <div className={`mt-3 mr-8 cursor-pointer  opacity-30 text-[0.8rem]`}>필터<span className={`ml-1 text-[0.75rem]`}>●</span></div>
                 </div>
-                <div className={`h-[85%] overflow-y-auto`}>
+                <div 
+                className={`h-[85%] overflow-y-auto`}>
 
 
                     {/* 프로필 불러오기(반복문) */}

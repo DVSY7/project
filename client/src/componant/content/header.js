@@ -1,6 +1,6 @@
 import "../../App.css";
 import { Link } from "react-router-dom";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function Header(props) {
 
@@ -29,14 +29,33 @@ export default function Header(props) {
         setToken(null);
     }
 
+    // 검색창 이미지 변경 스테이트
+    const [searchImage, setSeachImage] = useState(true);
+
 
     return (
         <>
             <div className={"flex sm:flex-col sm:justify-center sm:items-center h-[15%] sm:h-[15%] sm:relative"}>
                 {/* PC화면 기본요소 */}
                 <div className={"hidden sm:flex sm:item-center sm:w-full sm:h-[40px]"}>
-                    <div className={"absolute w-9 mx-8 mt-[0.45rem] right-search-line-after"}><img src="/images/프로필.png" alt="프로필" className={"w-full h-full"}></img></div>
-                    <input type='text' id='search' name='search' className={"h-full w-[77%] pl-20 rounded-full mx-5 shadow-lg border-[1px] border-gray-400"}></input>
+                    <div className={`absolute w-9 mx-8 mt-[0.45rem] right-search-line-after`}>
+                        <img 
+                        src={`/images/${searchImage? "유저검색" : "태그검색"}.png`} 
+                        alt="검색창 이미지" 
+                        className={"w-[25px] h-[25px] z-10 relative cursor-pointer opacity-50 hover:opacity-100 transition-opacity duration-500"}
+                        onClick={()=>{searchImage? setSeachImage(false) : setSeachImage(true); console.log(searchImage)}}
+                        ></img>
+                        </div>
+
+                    {/* 검색창 영역 */}
+                    <input
+                        type='text'
+                        id='search'
+                        name='search'
+                        className={"h-full w-[77%] pl-16 rounded-full mx-5 shadow-lg border-[1px] border-gray-400"}
+                        placeholder={`${searchImage? "유저검색" : "태그검색"}` }
+                        >
+                    </input>
 
                     {/* 비로그인 시 요소 */}
                     <div className={`${item_center} ${Token !== null ? "hidden" : ""} h-full w-[100px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ml-16 mr-5 ${button_hover}`}><Link to="/login">로그인</Link></div>
@@ -44,7 +63,7 @@ export default function Header(props) {
 
                     {/* 로그인 시 요소 */}
                     <div className={`${item_center} ${Token === null ? "hidden" : ""} w-[220px] text-[20px]`}>Welcome Mate <p className={`mx-1`}>:</p><p className={`text-center font-sans font-bold block`}>{username}</p></div>
-                    <div className={`${item_center} ${Token === null ? "hidden" : ""} h-full w-[120px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/login" onClick={handleChangeLogout}>로그아웃</Link></div>
+                    <div className={`${item_center} ${Token === null ? "hidden" : ""} h-full w-[100px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/login" onClick={handleChangeLogout}>로그아웃</Link></div>
 
                 </div>
                 <div className={"hidden sm:flex sm:justify-between sm:items-end sm:ml-12 sm:w-full h-[30%]"}>

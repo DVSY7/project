@@ -11,7 +11,7 @@ body {
   font-family: 'Lilita One', sans-serif;
 }
 
-/* menu의 오른쪽 라인 */
+
 @layer components {
   .right-line-after {
     @apply relative;
@@ -39,11 +39,30 @@ body {
     position: absolute;
     width: 100%;
     height: 120%;
-    transform:translate(50%, 10%)
+    transform:translate(10%, 10%)
+  }
+  .galleryhover-before{
+    @apply relative;
+  }
+  .galleryhover-before::before {
+    content: '';
+    position: absolute;
+    top: 50%;         /* 세로 중앙 기준 */
+    left: 3%;          /* 가로는 왼쪽 끝 */
+    transform: translateY(-50%); /* 정확한 세로 중앙 정렬 */
+    width: 13px;
+    height: 13px;
+    background-color: gray;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  .clicked-before::before {
+    background-color: #3b82f6; /* Tailwind bg-blue-500 */
   }
 }
 
 .custom-height {
   height: calc(200px - 100%);
 }
+
 

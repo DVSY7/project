@@ -1,5 +1,6 @@
 import Masonry from 'react-masonry-css';
 import { useEffect, useRef, useState } from 'react';
+import GalleryHover from './utilities/galleryHover';
 
 export default function Gallery(props) {
 
@@ -14,6 +15,9 @@ export default function Gallery(props) {
     768: src === "profile" ? 1 : 2,
     640: src === "profile" ? 1 : 1,
   };
+
+  //갤러리 호버 상태관리 스테이트
+  const [hoverIndex, setHoverIndex] = useState(null);
 
   const [items, setItems] = useState([...Array(30).keys()]);
   const observerRef = useRef(null);
@@ -62,16 +66,24 @@ export default function Gallery(props) {
           className="hidden sm:flex gap-5"
           columnClassName="flex flex-col gap-5"
         >
+          {/* 갤러리 요소 영역 */}
           {items.map((i) => (
             <div
               key={i}
-              className={`bg-red-500 rounded-2xl text-white text-center ${i % 3 === 1
-                  ? 'h-[500px]'
-                  : i % 3 === 2
-                    ? 'h-[400px]'
-                    : 'h-[300px]'
+              onMouseLeave={() => { setHoverIndex(null) }}
+              onMouseOver={() => { setHoverIndex(i) }}
+              className={`relative bg-red-500 rounded-2xl text-white text-center overflow-hidden ${i % 3 === 1
+                ? 'h-[500px]'
+                : i % 3 === 2
+                  ? 'h-[400px]'
+                  : 'h-[300px]'
                 }`}
             >
+              {/* 갤러리 호버 요소 */}
+                <div className={`absolute inset-0 z-10 bg-black bg-opacity-50 ${hoverIndex === i ? "opacity-100":" opacity-0" } transition-opacity duration-500`}>
+                  <GalleryHover />
+                </div>
+              {/* 갤러리 이미지 요소 */}
               <img
                 className="w-full h-full object-cover rounded-2xl"
                 src={`/images/이미지 (${i + 1}).jpg`}

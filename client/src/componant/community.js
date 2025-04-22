@@ -95,7 +95,7 @@ export default function Community() {
 
 
               {/*목록영역 */}
-              <div className="flex flex-col justify-start items-center h-[calc(100%-100px)] w-full pt-8 rounded-b-3xl overflow-x-hidden overflow-y-auto">
+              <div className="flex flex-col justify-start items-center h-[calc(100%-100px)] w-full pt-8 rounded-b-3xl overflow-x-hidden overflow-y-auto sm:scrollbar-none ">
 
 
                 {/* 채팅목록 컴포넌트 */}
