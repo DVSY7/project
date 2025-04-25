@@ -5,7 +5,7 @@ import Gallery from "./gallery";
 import Header from "./header";
 
 export default function Contents(props) {
-    // 콘텐츠를 마운트한 페이지의 src
+    // 콘텐츠를 마운트한 페이지의 src,username
     const { src,username } = props;
 
     return (
