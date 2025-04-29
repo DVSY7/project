@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 const authRoutes = require("./routes/authRoutes");
+const searchRoutes = require("./routes/searchRoutes");
 const db = require('./config/db');
 const cors = require('cors');
 
@@ -17,7 +18,9 @@ app.use(cors());
 // 라우터 연결
 app.use('/api/users',userRoutes);
 app.use('/api/token',protectedRoutes);
+app.use('/api',searchRoutes);
 app.use('/auth',authRoutes);
+
 
 module.exports = app;
 

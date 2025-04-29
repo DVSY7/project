@@ -1,7 +1,7 @@
 import Contents from "./content/contents";
 import Menu from "./menu";
 import {useEffect, useState} from 'react';
-import { checkedToken } from "./fuction/checkedToken";
+import { checkedToken } from "./function/checkedToken";
 
 export default function Profile() {
     const [username, setUsername] = useState("");

@@ -1,6 +1,6 @@
 import Masonry from 'react-masonry-css';
 import { useEffect, useRef, useState } from 'react';
-import GalleryHover from './utilities/galleryHover';
+import GalleryHover from './ui/galleryHover';
 
 export default function Gallery(props) {
 
