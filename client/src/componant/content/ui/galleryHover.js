@@ -4,9 +4,9 @@ import { useState } from "react";
 
 export default function GalleryHover(props) {
     // props로 전달받은 객체
-    const { info } = props;
+    // const { info } = props;
     // 갤러리 날짜상태 관리 스테이트
-    const [date, setDate] = useState("");
+    // const [date, setDate] = useState("");
     const [clicked, setClicked] = useState(false);
     return (
         <>
@@ -23,9 +23,9 @@ export default function GalleryHover(props) {
                 <div className={`flex justify-between `}>
                     {/* 도구 이미지 영역 */}
                     <div className={`flex ml-4 mt-1`}>
-                        <img className={`w-[20px] h-[20px] mr-3`} src="/images/휴지통.png"></img>
-                        <img className={`w-[20px] h-[20px] mr-3`} src="/images/연필.png"></img>
-                        <img className={`w-[20px] h-[20px] mr-3`} src="/images/위치.png"></img>
+                        <img alt="휴지통" className={`w-[20px] h-[20px] mr-3`} src="/images/휴지통.png"></img>
+                        <img alt="연필" className={`w-[20px] h-[20px] mr-3`} src="/images/연필.png"></img>
+                        <img alt="위치" className={`w-[20px] h-[20px] mr-3`} src="/images/위치.png"></img>
                     </div>
                     {/* 비공개 글자 영역 */}
                     <div className={`mr-4 text-[0.75rem]`}>{clicked ? "공개" : "비공개"}</div>
@@ -43,13 +43,14 @@ export default function GalleryHover(props) {
             {/* 갤러리 호버 풋터 */}
             <div className={` h-[25%] w-full flex justify-between items-end pb-2`}>
                 {/* 갤러리 프로필 이미지 영역 */}
-                <div className={`w-[42px] h-[42px] ml-3 mb-1`}><img src="/images/미니프로필.png"></img></div>
+                <div className={`w-[42px] h-[42px] ml-3 mb-1`}><img alt="미니프로필" src="/images/미니프로필.png"></img></div>
                 {/* 조회수 좋아요 표시 영역 */}
                 <div className={`flex mx-4 font-sans`}>
                     {/* 눈 이미지 영역 */}
                     <span>
                         {/* 눈 이미지 요소*/}
-                        <img 
+                        <img
+                        alt="눈" 
                         src="/images/눈.png"
                         className={`w-[20px] h-[20px] mr-2`}
                         ></img>
@@ -60,6 +61,7 @@ export default function GalleryHover(props) {
                     <span className={`flex justify-center items-center mr-2`}>
                         {/* 하트 이미지 요소 */}
                         <img 
+                        alt="하트"
                         src="/images/하트.png"
                         className={`w-[15px] h-[15px]`}
                         ></img>

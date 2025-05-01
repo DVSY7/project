@@ -2,6 +2,7 @@ import "../../App.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { search } from "./utilities/search";
+import SearchCategory from "./ui/searchCategory";
 
 export default function Header(props) {
 
@@ -19,6 +20,11 @@ export default function Header(props) {
     // 검색창 이미지 변경 스테이트
     const [searchImage, setSearchImage] = useState(true);
 
+    // 검색 옵션 상태관리 스테이트
+    const [searchCategory, setSearchCategory] = useState(false);
+    // 검색 옵션선택 상태관리 스테이트
+    const [selectedCategory, setSelectedCategory] = useState("최신순");
+
 
     // 컴포넌트가 마운트될 때 토큰 가져오기
     useEffect(() => {
@@ -27,12 +33,6 @@ export default function Header(props) {
             setToken(storedToken);
         }
     }, []);;
-
-    // 로그아웃 버튼 함수
-    const handleChangeLogout = () => {
-        localStorage.setItem('token', null);
-        setToken(null);
-    }
 
     // 검색창 정보를 관리하는 스테이트
     const [searchValues, setSearchValues] = useState("");
@@ -76,7 +76,7 @@ export default function Header(props) {
 
 
     useEffect(() => {
-        console.log(searchHashtags);
+        // console.log(searchHashtags);
         search(searchHashtags);
     }, [searchHashtags]);
 
@@ -103,7 +103,7 @@ export default function Header(props) {
                         name='search'
                         className={"h-full w-[77%] pl-16 rounded-full mx-5 shadow-lg border-[1px] border-gray-400 font-sans"}
                         value={searchValues}
-                        placeholder={`${searchImage ? "유저검색(아이콘을 눌러 전환)" : "태그검색(아이콘을 눌러 전환)"}`}
+                        placeholder={`${searchImage ? "유저 검색 (아이콘을 눌러 전환)" : "태그 검색 (아이콘을 눌러 전환)"}`}
 
                         // 인풋란에 입력값이 들어올때 마다 상태 업데이트
                         onChange={(e) => {
@@ -148,7 +148,6 @@ export default function Header(props) {
 
                     {/* 로그인 시 요소 */}
                     <div className={`flex items-center ${Token === null ? "hidden" : ""} w-[220px] text-[20px]`}>Welcome Mate <p className={`mx-1`}>:</p><p className={`text-center font-sans font-bold block`}>{username}</p></div>
-                    <div className={`${item_center} ${Token === null ? "hidden" : ""} h-full w-[100px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/login" onClick={handleChangeLogout}>로그아웃</Link></div>
 
                 </div>
                 <div className={"hidden sm:flex sm:items-end sm:ml-12 sm:w-full max-w-[1920px] h-[30%] max-h-[30%]"}>
@@ -175,8 +174,20 @@ export default function Header(props) {
                             )
                         })}
                     </div>
-
-                    <div className={'font-sans text-[10px] text-gray-500 ml-auto mr-20'}>최신순▼</div>
+                    <div 
+                    onClick={(e)=>{setSearchCategory(prev => !prev)}}
+                    className={'font-sans text-[12px] text-gray-500 ml-auto mr-20 relative cursor-pointer'}>
+                        {selectedCategory}▼
+                        {searchCategory&& 
+                            <SearchCategory 
+                                onSelect={(value) => {
+                                    setSelectedCategory(value);
+                                    setSearchCategory(false);
+                                    console.log("선택된 정렬 기준:",value);
+                                }}
+                                
+                            />}
+                    </div>
                 </div>
 
                 {/* 모바일화면 기본요소 */}

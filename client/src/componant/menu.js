@@ -1,5 +1,6 @@
 import '../App.css';
 import { Link } from "react-router-dom";
+import {useState, useEffect} from 'react';
 
 export default function Menu(props) {
 
@@ -26,6 +27,25 @@ export default function Menu(props) {
   const img_src = Object.fromEntries(
     [1, 2, 3, 4, 5].map(n => [n, n === current_src ? 1 : 2])
   );
+
+  // 로그인 로그아웃 상태관리 스테이트
+      const [Token, setToken] = useState(null);
+  // 더 보기 모달 상태관리 스테이트
+      const [addModal, setAddModal] = useState(false);
+  
+  // 컴포넌트가 마운트될 때 토큰 가져오기
+      useEffect(() => {
+          const storedToken = localStorage.getItem('token');
+          if (storedToken && storedToken !== 'null') {
+              setToken(storedToken);
+          }
+      }, []);
+
+  // 로그아웃 버튼 함수
+      const handleChangeLogout = () => {
+          localStorage.removeItem('token');
+          setToken(null);
+      }
   
 
   return (
@@ -44,10 +64,20 @@ export default function Menu(props) {
           <Link to="/profile"><div className={`${text} ${hover}`}><img className={`${img_size}`} src={`/images/프로필${img_src[4]}.png`} alt="프로필"></img><p className={`${activeMenu} sm:ml-1`} name="프로필">프로필</p></div></Link>
           <Link to="/home"><div className={`${text} ${hover}`}><img className={`${img_size}`} src='/images/더하기2.png' alt="더하기"></img><p className={`${activeMenu} sm:ml-1`} name="더하기">만들기</p></div></Link>
         </div>
+        
+        {/* 더보기 모달 */}
+        <div className={`${addModal && Token !== null ? "flex" : "hidden"} flex-col w-full h-[120px] cursor-pointer ${text_size}`}>
+        <div className={`${text} ${hover} h-full`}><img className={img_size} src='/images/정보수정.png' alt="정보수정"></img><p className={`${activeMenu} sm:ml-1  font-sans font-bold`}>정보수정</p>
+        </div>
+        <div onClick={handleChangeLogout} className={`${text} ${hover} h-full`}><img className={img_size} src='/images/로그아웃.png' alt="로그아웃"></img><Link to="/login">
+        <p className={`${activeMenu} sm:ml-1  font-sans font-bold`}>로그아웃</p></Link>
+          </div>
+        </div>
 
         {/* 하단 영역 */}
-        <div className={`${m_menu} h-[10%] flex items-center justify-center font-sans font-bold ${text_size}`}>
-          <div className={`${text} ${hover} h-full`}><img className={img_size} src='/images/메뉴2.png' alt="더 보기"></img><p className={`${activeMenu} sm:ml-1`}>더 보기</p></div>
+        <div onClick={()=> {if(Token === null){alert("로그인 후 이용해주세요.")} return(setAddModal(prev => !prev))}} className={`${m_menu} h-[10%] flex items-center justify-center font-sans font-bold cursor-pointer ${text_size}`}>
+          <div className={`${text} ${hover} h-full`}><img className={img_size} src='/images/메뉴2.png' alt="더 보기"></img><p className={`${activeMenu} sm:ml-1`}>더 보기</p>
+          </div>
         </div>
       </div>
     </>

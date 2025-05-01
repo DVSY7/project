@@ -16,6 +16,8 @@ export async function checkedToken(setUsername){
         setUsername(response.data.username.name);
     }catch(error){
         console.error(`토큰 오류`, error);
+        alert("토근이 만료되었습니다. 다시 로그인 해주세요.");
+        window.location.href = "/login";
     }
 
 
