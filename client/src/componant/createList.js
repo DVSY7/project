@@ -6,6 +6,7 @@ import IsPlanned from "./create/list/IsPlanned.js";
 import TagManager from "./create/list/TagManager.js";
 import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
+import AddButtons from "./create/list/AddButtons.js";
 
 export default function CreateList() {
   // 예시 이미지 표시 여부
@@ -197,8 +198,6 @@ export default function CreateList() {
                     handleAddDay={handleAddDay}
                     activeDay={activeDay}
                     setActiveDay={setActiveDay}
-                    showExample={showExample}
-                    setShowExample={setShowExample}
                   />
                   {/* 이미지 예시 영역 */}
                   {showExample ? (
@@ -268,6 +267,9 @@ export default function CreateList() {
                       </div>
 
 
+                      <AddButtons
+                        showExample={showExample}
+                        setShowExample={setShowExample} />
                     </div>
                   )}
                 </div>
