@@ -94,7 +94,7 @@ export default function CreateList() {
 
 
 
-  
+
 
   // 태그 목록
   const [tags, setTags] = useState([]);
@@ -197,6 +197,8 @@ export default function CreateList() {
                     handleAddDay={handleAddDay}
                     activeDay={activeDay}
                     setActiveDay={setActiveDay}
+                    showExample={showExample}
+                    setShowExample={setShowExample}
                   />
                   {/* 이미지 예시 영역 */}
                   {showExample ? (
@@ -265,18 +267,7 @@ export default function CreateList() {
                         ))}
                       </div>
 
-                      <div>
-                        <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
-                          장소 등록하기 +
-                        </button>
-                        <ListAddPhoto
-                          showExample={showExample}
-                          setShowExample={setShowExample}
-                        />
-                        <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
-                          메모 하기 +
-                        </button>
-                      </div>
+
                     </div>
                   )}
                 </div>

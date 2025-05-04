@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ListAddPhoto from "./ListAddPhoto";
 
 export default function DayList({
   days,
@@ -6,6 +7,8 @@ export default function DayList({
   handleAddDay,
   activeDay,
   setActiveDay,
+  showExample,
+  setShowExample,
 }) {
   // 날짜 별 항목 상태 (빈 객체로 초기화)
   const [dayItems, setDayItems] = useState({});
@@ -35,43 +38,48 @@ export default function DayList({
         </div>
       ) : (
         <>
-        {/*  추가된 일차 목록 */}
-        <div className="flex items-center">
-          {days.map((day, index) => (
-            <div
-              key={index}
-              onClick={() => handleDayClick(day)}
-              className={`font-sans text-white bg-blue-500 mr-1 rounded-2xl  flex items-center justify-center px-4 py-2 ${
-                activeDay === day ? "bg-blue-500 text-white" : "bg-gray-200"
-              }`}
-            >
-              {day}
-            </div>
-          ))}
-          <button onClick={handleAddDay} className="border w-8">
-            +
-          </button>
-        </div>
-
-  
-        {activeDay && (
-          <div>
-            <h3 className="text-lg font-bold mb-2">{activeDay} 항목</h3>
-            <ul>
-              {(dayItems[activeDay] || []).map((item, index) => (
-                <li key={index} className="mb-2">
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-              onClick={() => handleAddItemToDay("새 항목")}
-            >
-              항목 추가
+          {/*  추가된 일차 목록 */}
+          <div className="flex items-center">
+            {days.map((day, index) => (
+              <div
+                key={index}
+                onClick={() => handleDayClick(day)}
+                className={`font-sans text-white bg-blue-500 mr-1 rounded-2xl  flex items-center justify-center px-4 py-2 ${activeDay === day ? "bg-blue-500 text-white" : "bg-gray-200"
+                  }`}
+              >
+                {day}
+              </div>
+            ))}
+            <button onClick={handleAddDay} className="border w-8">
+              +
             </button>
           </div>
-        )}
+
+
+          {activeDay && (
+            <div>
+              {/* <h3 className="text-lg font-bold mb-2">{activeDay} 항목</h3> */}
+              <ul>
+                {(dayItems[activeDay] || []).map((item, index) => (
+                  <li key={index} className="mb-2">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div>
+                <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
+                  장소 등록하기 +
+                </button>
+                <ListAddPhoto
+                  showExample={showExample}
+                  setShowExample={setShowExample}
+                />
+                <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
+                  메모 하기 +
+                </button>
+              </div>
+            </div>
+          )}
         </>
       )}
     </>
