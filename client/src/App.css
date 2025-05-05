@@ -49,8 +49,7 @@ body {
     content: '';
     position: absolute;
     top: 50%;         /* 세로 중앙 기준 */
-    left: 3%;          /* 가로는 왼쪽 끝 */
-    transform: translateY(-50%); /* 정확한 세로 중앙 정렬 */
+    left: 3%;          /* 가로는 왼쪽 끝 */    
     width: 13px;
     height: 13px;
     background-color: gray;

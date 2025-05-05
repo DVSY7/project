@@ -17,7 +17,7 @@ export default function GalleryHover(props) {
                     {/* 날짜 표기 영역 */}
                     <div className={`text-[1rem] ml-4`}>2025-08-09</div>
                     {/* 비공개설정 UI 영역 */}
-                    <div className={`w-[40px] h-[13px] bg-gray-50 rounded-2xl mr-4 `}><div onClick={() => setClicked(clicked ? false : true)} className={`${clicked ? "translate-x-[63%] clicked-before" : ""}  transition-transform duration-500 w-full h-full galleryhover-before`}></div></div>
+                    <div className={`w-[40px] h-[13px] bg-gray-50 rounded-2xl mr-4 `}><div onClick={() => setClicked(clicked ? false : true)} className={`${clicked ? "translate-x-[63%] clicked-before" : ""} translate-y-[-50%] transition-transform duration-500 w-full h-full galleryhover-before`}></div></div>
                 </div>
                 {/* 도구탭 영역 */}
                 <div className={`flex justify-between `}>

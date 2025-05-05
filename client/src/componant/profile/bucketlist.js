@@ -59,7 +59,7 @@ export default function BucketList(){
             <div className={` w-[80%] h-[95%]  rounded-3xl shadow-xl border border-solid border-t-gray-200`}>
                 <div className={`flex justify-between h-[15%]`}>
                     <div className={`flex items-center h-full text-[1.5rem] ml-6`}>리스트</div>
-                    <div onClick={()=>setFilter(prev => !prev)} className={`mt-3 mr-8 cursor-pointer relative ${filter? "opacity-100":" opacity-30"} text-[0.8rem] transition-opacity duration-300`}>필터<span className={`ml-1 text-[0.75rem]`}>●</span>{filter&&<FilterModal/>}</div>
+                    <div onClick={()=>setFilter(prev => !prev)} className={`mt-3 mr-8 cursor-pointer relative ${filter? "opacity-100":" opacity-30"} text-[0.8rem] transition-opacity duration-300`}>필터<span className={`ml-1 text-[0.75rem]`}>●</span>{filter&&<FilterModal setFilter={setFilter}/>}</div>
                 </div>
                 <div 
                 className={`h-[85%] overflow-y-auto`}>
