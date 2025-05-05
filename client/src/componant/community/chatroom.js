@@ -15,7 +15,7 @@ export default function Chatroom(props) {
             setChatroom(selectedFriend.name);
         }
 
-    }, [selectedList]);
+    }, [selectedList,chattingList]);
 
 
     return (
@@ -30,7 +30,7 @@ export default function Chatroom(props) {
                     <div className={`flex items-center w-full h-[70px] border-b border-solid border-gary-300`}>
                         {/* 선택된 대화방 헤더요소 */}
                         {/* 프로필이미지 */}
-                        <img src='/images/미니프로필.png' className={`w-[40px] h-[40px] ml-4`}></img>
+                        <img src='/images/미니프로필.png' alt="미니프로필" className={`w-[40px] h-[40px] ml-4`}></img>
                         {/* 닉네임 */}
                         <span className={`ml-2`}>{chatroom}</span>
                         <span className={`ml-8 p-1 px-3 rounded-3xl bg-yellow-100 font-sans font-bold`}>나만의 케이크 만들기</span>

@@ -1,6 +1,22 @@
+// client/src/componant/profile/miniprofile.js
+import {useState, useEffect} from "react";
+import { checkedToken } from "../function/checkedToken";
+
+
+
+
 export default function Miniprofile() {
     // 플렉스 요소 센터 정렬
     const flexCenter = "justify-center items-center";
+    // 프로필의 유저이름 상태관리 스테이트
+    const [username, setUsername] = useState("");
+    useEffect(()=>{
+        const getUsername = async ()=>{
+            await checkedToken(setUsername);
+        };
+       getUsername();
+    },[])
+
     return (
         <>
             <div className={`flex flex-col w-[80%] h-full`}>
@@ -12,7 +28,7 @@ export default function Miniprofile() {
                     </div>
                     {/* 닉네임/별점/퍼센트 */}
                     <div className={`flex flex-col justify-evenly h-full w-[70%]`}>
-                        <div className={`text-[1.5rem] font-sans font-bold`}>윤크리스탈0321</div>
+                        <div className={`text-[1.5rem] font-sans font-bold`}>{username}</div>
                         <div className={`text-[1.5rem] font-sans font-bold text-yellow-400`}><span className={`mb-2 inline-block`}>★★★★★</span><span className={`ml-4 text-black font-sans font-normal text-[1rem]`}>4.99</span></div>
                         <div className={`flex justify-start items-center`}>
                         <div className={`flex justify-between items-center w-32 h-4 bg-gray-300 rounded-lg`}>
