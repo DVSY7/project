@@ -6,6 +6,7 @@ import IsPlanned from "./create/list/IsPlanned.js";
 import TagManager from "./create/list/TagManager.js";
 import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
+import AddButtons from "./create/list/AddButtons.js";
 
 export default function CreateList() {
   // 예시 이미지 표시 여부
@@ -15,7 +16,11 @@ export default function CreateList() {
   // 텍스트 상태
   const [text, setText] = useState("");
   // 등록된 항목 상태
-  const [registeredItems, setRegisteredItems] = useState([]);
+  const [registeredItems, setRegisteredItems] = useState([
+    { day: "Day 1", image: "image1.jpg", description: "Day 1의 첫 번째 항목" },
+    { day: "Day 1", image: "image2.jpg", description: "Day 1의 두 번째 항목" },
+    { day: "Day 2", image: "image3.jpg", description: "Day 2의 첫 번째 항목" },
+  ]);
 
   //이미지 업로드 핸들러
   const handleImageUpload = (e) => {
@@ -94,7 +99,7 @@ export default function CreateList() {
 
 
 
-  
+
 
   // 태그 목록
   const [tags, setTags] = useState([]);
@@ -197,10 +202,13 @@ export default function CreateList() {
                     handleAddDay={handleAddDay}
                     activeDay={activeDay}
                     setActiveDay={setActiveDay}
+                    showExample={showExample}
+                    setShowExample={setShowExample}
+                    registeredItems={registeredItems}
                   />
                   {/* 이미지 예시 영역 */}
                   {showExample ? (
-                    <div className="w-full h-full p-4 bg-gray-100 border rounded-xl mb-4  z-10">
+                    <div className="p-4 bg-gray-100 border rounded-xl z-10">
                       {/* 이미지가 있을 경우 이미지 크기만큼 공간 차지 */}
                       {ImageSrc ? (
                         <div className="w-full h-[300px] mb-4">
@@ -211,12 +219,12 @@ export default function CreateList() {
                           />
                         </div>
                       ) : (
-                        <div className="w-full h-[300px] mb-4 bg-red-400"></div>
+                        <div className="w-full h-[300px] mb-4 bg-red-100"></div>
                       )}
                       {/* 텍스트 입력 영역 */}
                       <div className="flex flex-col w-full">
                         <textarea
-                          className="w-full h-60 resize-none p-2 mb-4 border rounded"
+                          className="flex w-full h-44 resize-none p-2 mb-4 border rounded"
                           placeholder="이미지에 대한 설명을 입력하세요..."
                           value={text}
                           onChange={(e) => setText(e.target.value)}
@@ -264,19 +272,10 @@ export default function CreateList() {
                           </div>
                         ))}
                       </div>
-
-                      <div>
-                        <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
-                          장소 등록하기 +
-                        </button>
-                        <ListAddPhoto
-                          showExample={showExample}
-                          setShowExample={setShowExample}
-                        />
-                        <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
-                          메모 하기 +
-                        </button>
-                      </div>
+                        
+                      <AddButtons
+                        showExample={showExample}
+                        setShowExample={setShowExample} />
                     </div>
                   )}
                 </div>

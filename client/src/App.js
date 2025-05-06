@@ -6,12 +6,14 @@ import Community from "./componant/community";
 import Login from "./componant/login";
 import Profile from "./componant/profile";
 import CreateList from "./componant/createList";
+import DayDetails from "./componant/create/list/DayDetails";
+
 
 function App() {
 
   return (
     <BrowserRouter>
-      <div>
+      {/* <div> */}
         <Routes>
           <Route path="/" element={<Login href = "login"/>}/>
           <Route path="/login" element={<Login href = "login"/>}/>
@@ -20,8 +22,10 @@ function App() {
           <Route path="/community" element={<Community/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/createList" element={<CreateList/>}/>
+          {/* <Route path="/" element={<CreateList/>} /> */}
+          <Route path="/day/:day" element={<DayDetails/>}/>
         </Routes>
-      </div>
+      {/* </div> */}
     </BrowserRouter>
   );
 }

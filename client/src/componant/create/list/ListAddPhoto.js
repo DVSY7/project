@@ -17,32 +17,8 @@ export default function ListAddPhoto({showExample, setShowExample}) {
       // 파일 데이터를 서버로 보낼 객체 생성
       const formData = new FormData();
       formData.append("photo", photo);
-
-      // try {
-      //   const response = await axios.post("http://localhost:5000/createList", formData, {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data", // 파일 업로드를 위한 헤더 설정
-      //     },
-      //   });
-
-      //   if (response.status === 200) {
-      //     setUploadStatus("사진이 성공적으로 업로드되었습니다!");
-      //   } else {
-      //     setUploadStatus("사진 업로드에 실패했습니다.");
-      //   }
-      // } catch (error) {
-      //   console.error("업로드 중 오류 발생:", error);
-      //   setUploadStatus("업로드 중 오류가 발생했습니다.");
-      // }
     }
-  };
-
-  // 사진 업로드 버튼
-  // const handlePhotoUpload = () => {
-  //   document.getElementById("photoInput").click();
-  // };
-
-  
+  }
   return (
     <>
       {/* 사진 첨부 버튼 */}
