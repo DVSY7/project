@@ -49,6 +49,7 @@ export default function Menu(props) {
       }
   const [scrollMenu, setScrollMenu] = useState("hidden");
 
+
   
 
   return (
@@ -61,20 +62,6 @@ export default function Menu(props) {
 
         {/* 중간 영역 */}
         <div className={`flex justify-evenly sm:block h-[full] sm:h-[75%] font-sans font-bold ${text_size}`}>
-          <Link to="/home"><div className={`${text} ${hover}`}><img className={`${img_size}`} src={`images/홈${img_src[1]}.png`} alt="홈"></img><p className={`${activeMenu} sm:ml-1`} name="홈">홈</p></div></Link>
-          <Link to="/community"><div className={`${text} ${hover}`}><img className={`${img_size}`} src={`images/커뮤니티${img_src[2]}.png`} alt="커뮤니티"></img><p className={`${activeMenu} sm:ml-1`} name="커뮤니티">커뮤니티</p></div></Link>
-          <Link to="/home"><div className={`${text} ${hover}`}><img className={`${img_size}`} src='/images/위치2.png' alt="장소추천"></img><p className={`${activeMenu} sm:ml-1`} name="장소추천">장소추천</p></div></Link>
-          <Link to="/profile"><div className={`${text} ${hover}`}><img className={`${img_size}`} src={`/images/프로필${img_src[4]}.png`} alt="프로필"></img><p className={`${activeMenu} sm:ml-1`} name="프로필">프로필</p></div></Link>
-          <Link to="/home"><div className={`${text} ${hover}`}><img className={`${img_size}`} src='/images/더하기2.png' alt="더하기"></img><p className={`${activeMenu} sm:ml-1`} name="더하기">만들기</p></div></Link>
-        </div>
-        
-        {/* 더보기 모달 */}
-        <div className={`${addModal && Token !== null ? "flex" : "hidden"} flex-col w-full h-[120px] cursor-pointer ${text_size}`}>
-        <div className={`${text} ${hover} h-full`}><img className={img_size} src='/images/정보수정.png' alt="정보수정"></img><p className={`${activeMenu} sm:ml-1  font-sans font-bold`}>정보수정</p>
-        </div>
-        <div onClick={handleChangeLogout} className={`${text} ${hover} h-full`}><img className={img_size} src='/images/로그아웃.png' alt="로그아웃"></img><Link to="/login">
-        <p className={`${activeMenu} sm:ml-1  font-sans font-bold`}>로그아웃</p></Link>
-          </div>
           <Link to="/home"><div className={text}><img className={`${img_size}`} src={`images/홈${img_src[1]}.png`} alt="홈"></img><p className={`${activeMenu} sm:ml-1`} name="홈">홈</p></div></Link>
           <Link to="/community"><div className={text}><img className={`${img_size}`} src={`images/커뮤니티${img_src[2]}.png`} alt="커뮤니티"></img><p className={`${activeMenu} sm:ml-1`} name="커뮤니티">커뮤니티</p></div></Link>
           <Link to="/home"><div className={text}><img className={`${img_size}`} src='/images/위치2.png' alt="장소추천"></img><p className={`${activeMenu} sm:ml-1`} name="장소추천">장소추천</p></div></Link>
@@ -107,6 +94,15 @@ export default function Menu(props) {
                 </ul>
               </div>
             </div>
+        </div>
+        
+        {/* 더보기 모달 */}
+        <div className={`${addModal && Token !== null ? "flex" : "hidden"} flex-col w-full h-[120px] cursor-pointer ${text_size}`}>
+        <div className={`${text} ${hover} h-full`}><img className={img_size} src='/images/정보수정.png' alt="정보수정"></img><p className={`${activeMenu} sm:ml-1  font-sans font-bold`}>정보수정</p>
+        </div>
+        <div onClick={handleChangeLogout} className={`${text} ${hover} h-full`}><img className={img_size} src='/images/로그아웃.png' alt="로그아웃"></img><Link to="/login">
+        <p className={`${activeMenu} sm:ml-1  font-sans font-bold`}>로그아웃</p></Link>
+          </div>
         </div>
 
         {/* 하단 영역 */}

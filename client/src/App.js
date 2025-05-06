@@ -28,7 +28,6 @@ function App() {
           <Route path="/auth/naver/callback" element={<NaverRedirectPage/>}/>
           <Route path="/auth/google/callback" element={<GoogleRedirectPage/>}/>
           <Route path="/createList" element={<CreateList/>}/>
-          {/* <Route path="/" element={<CreateList/>} /> */}
           <Route path="/day/:day" element={<DayDetails/>}/>
         </Routes>
       {/* </div> */}
