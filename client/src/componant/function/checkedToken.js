@@ -3,7 +3,10 @@ import axios from 'axios';
 export async function checkedToken(setUsername){
 
     const token = localStorage.getItem('token');
-    if(!token) return;
+    if(!token){
+        localStorage.removeItem('token');
+        return;
+    }
 
     try{
         const response = await axios.get('http://localhost:5000/api/token/protected-data',{
@@ -17,6 +20,7 @@ export async function checkedToken(setUsername){
     }catch(error){
         console.error(`토큰 오류`, error);
         alert("토근이 만료되었습니다. 다시 로그인 해주세요.");
+        localStorage.removeItem('token');
         window.location.href = "/login";
     }
 
