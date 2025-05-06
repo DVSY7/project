@@ -8,6 +8,8 @@ export default function Contents(props) {
     // 콘텐츠를 마운트한 페이지의 src,username
     const { src,username } = props;
 
+    // console.log(src)
+
     return (
         <>
             {/* 검색창 */}

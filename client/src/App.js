@@ -8,12 +8,15 @@ import Profile from "./componant/profile";
 import KakaoRedirectPage from "./componant/routes/kakaoRedirectPage";
 import NaverRedirectPage from "./componant/routes/naverRedirectPage";
 import GoogleRedirectPage from "./componant/routes/googleRedirectPage";
+import CreateList from "./componant/createList";
+import DayDetails from "./componant/create/list/DayDetails";
+
 
 function App() {
 
   return (
     <BrowserRouter>
-      <div>
+      {/* <div> */}
         <Routes>
           <Route path="/" element={<Login href = "login"/>}/>
           <Route path="/login" element={<Login href = "login"/>}/>
@@ -24,8 +27,11 @@ function App() {
           <Route path="/auth/kakao/callback" element={<KakaoRedirectPage/>}/>
           <Route path="/auth/naver/callback" element={<NaverRedirectPage/>}/>
           <Route path="/auth/google/callback" element={<GoogleRedirectPage/>}/>
+          <Route path="/createList" element={<CreateList/>}/>
+          {/* <Route path="/" element={<CreateList/>} /> */}
+          <Route path="/day/:day" element={<DayDetails/>}/>
         </Routes>
-      </div>
+      {/* </div> */}
     </BrowserRouter>
   );
 }
