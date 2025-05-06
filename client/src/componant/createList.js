@@ -272,7 +272,12 @@ export default function CreateList() {
                           </div>
                         ))}
                       </div>
+<<<<<<< HEAD
                         
+=======
+
+
+>>>>>>> cfbaadb88114d38586a22a92aab7caec85349ab4
                       <AddButtons
                         showExample={showExample}
                         setShowExample={setShowExample} />

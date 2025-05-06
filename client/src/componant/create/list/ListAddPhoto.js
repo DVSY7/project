@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios"; // axios를 import
 
-export default function ListAddPhoto({showExample, setShowExample}) {
+export default function ListAddPhoto({ showExample, setShowExample }) {
   // 파일 상태 관리
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(null);
@@ -24,7 +24,7 @@ export default function ListAddPhoto({showExample, setShowExample}) {
       {/* 사진 첨부 버튼 */}
       <button
         className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5"
-        onClick={() => {setShowExample(true)}}
+        onClick={() => { setShowExample(true) }}
       >
         사진 첨부하기 +
       </button>
