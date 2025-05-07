@@ -2,6 +2,7 @@
 import {useState,useEffect} from "react";
 import FilterModal from "./ui/filterModal";
 import bookmark from "./utilities/bookmark";
+import JoinMessage from "./ui/joinMessage";
 
 export default function BucketList(){
 
@@ -76,6 +77,12 @@ export default function BucketList(){
         profiles.map(profile => profile.bookmark)
       );
 
+    // 참여하기 버튼 메세지 상태관리 스테이트
+    const [clickedJoin, setClickedJoin] = useState(
+        profiles.map(() => false)
+    )
+    
+
     return(
         <>
             <div className={` w-[80%] h-[95%]  rounded-3xl shadow-xl border border-solid border-t-gray-200`}>
@@ -111,7 +118,29 @@ export default function BucketList(){
                                 </div>
                                 <div className={`grid grid-cols-2 font-sans font-bold`}>
                                     <div className={`col-start-1`}><div><span>{profile.currentMember}</span>/<span>{profile.maxMember}</span></div></div>
-                                    <div className={'col-start-2 flex'}><span className={`flex justify-end text-blue-400 w-full`}>참여</span></div>
+                                    <div className={'col-start-2 flex'}>
+                                        <span 
+                                            className={`flex justify-end text-blue-400 w-full`}
+                                            onClick={()=>{
+                                                const updateClicked = [...clickedJoin];
+                                                updateClicked[key] = true;
+                                                setClickedJoin(updateClicked);      
+                                            }}
+                                            >
+                                            {/* 참여버튼 요소 */}
+                                            참여
+                                            {/* 버튼클릭 모달 */}
+                                            <JoinMessage 
+                                            img = {profile.img}
+                                            title = {profile.title} 
+                                            clickedJoin = {clickedJoin} 
+                                            index = {key}
+                                            currentMember = {profile.currentMember}
+                                            maxMember = {profile.maxMember}
+                                            setClickedJoin = {setClickedJoin}
+                                            />
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
