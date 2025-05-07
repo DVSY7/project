@@ -41,7 +41,10 @@ export default function DayList({
         // 상태 업데이트
         const updatedItems = {
           ...prevItems,
-          [activeDay]: [...existingItems, { image: ImageSrc, description: text }],
+          [activeDay]: [
+            ...existingItems,
+            { image: ImageSrc, description: text },
+          ],
         };
 
         console.log("Updated Items:", updatedItems);
@@ -59,7 +62,10 @@ export default function DayList({
 
   const itemsForActiveDay = (registeredItems[activeDay] || []).filter(
     (item, index, self) =>
-      index === self.findIndex((t) => t.image === item.image && t.description === item.description)
+      index ===
+      self.findIndex(
+        (t) => t.image === item.image && t.description === item.description
+      )
   );
 
   return (
@@ -84,11 +90,14 @@ export default function DayList({
 
       {/* 해당 날짜의 등록된 항목 표시 */}
       {activeDay && (
-        <div className="relative bg-blue-200 overflow-y-auto max-h-[550px]">
+        <div className="relative overflow-y-auto max-h-[610px]">
+          {/* 등록된 항목 표시 - 한 번만 렌더링 */}
           <div>
             {itemsForActiveDay.map((item, index) => (
-              <div key={index} className="flex items-center rounded-lg bg-gray-200 mb-4 h-36">
-                {/* 이미지 */}
+              <div
+                key={index}
+                className="flex items-center rounded-lg bg-gray-200 mb-4 h-36"
+              >
                 <div>
                   <img
                     src={item.image}
@@ -96,13 +105,13 @@ export default function DayList({
                     className="ml-2 w-48 h-32 object-cover rounded"
                   />
                 </div>
-                {/* 설명 글 */}
                 <div className="flex-1 p-4">
                   <p>{item.description}</p>
                 </div>
               </div>
             ))}
           </div>
+
           {/* 이미지 예시 영역 */}
           {showExample ? (
             <div className="p-4 bg-gray-100 border rounded-xl z-10">
@@ -130,6 +139,7 @@ export default function DayList({
                 {/* 파일 첨부 버튼 */}
                 <div className="flex justify-between">
                   <input
+                    key={ImageSrc} // 이 줄 추가
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
@@ -151,35 +161,11 @@ export default function DayList({
               </div>
             </div>
           ) : (
-            <div>
-              {/* 등록된 항복 표시 */}
-              <div>
-                {itemsForActiveDay.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center rounded-lg bg-gray-200 mb-4 h-36"
-                  >
-                    {/* 이미지 */}
-                    <div>
-                      <img
-                        src={item.image}
-                        alt="등록된 이미지"
-                        className="ml-2 w-48 h-32 object-cover rounded"
-                      />
-                    </div>
-                    {/* 설명 글 */}
-                    <div className="flex-1 p-4">
-                      <p>{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <AddButtons
+              showExample={showExample}
+              setShowExample={setShowExample}
+            />
           )}
-          {!showExample && (
-            <AddButtons showExample={showExample} setShowExample={setShowExample} />
-          )}
-          {/* <h2 className="text-lg font-bold mb-4">{activeDay}의 항목</h2>   */}
         </div>
       )}
     </>

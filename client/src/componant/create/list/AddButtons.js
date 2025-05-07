@@ -1,12 +1,14 @@
 import ListAddPhoto from "./ListAddPhoto"
+import ListAddPlace from "./ListAddPlace"
 
 
 export default function AddButtons({ showExample, setShowExample }) {
     return (
         <div className="relative">
-            <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
+            {/* <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
                 장소 등록하기 +
-            </button>
+            </button> */}
+            <ListAddPlace/>
             <ListAddPhoto
                 showExample={showExample}
                 setShowExample={setShowExample}

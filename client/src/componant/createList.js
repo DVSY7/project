@@ -6,7 +6,7 @@ import IsPlanned from "./create/list/IsPlanned.js";
 import TagManager from "./create/list/TagManager.js";
 import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
-import AddButtons from "./create/list/AddButtons.js";
+import KakaoMap from "./create/list/KakaoMap.js";
 
 export default function CreateList() {
   // 예시 이미지 표시 여부
@@ -23,25 +23,22 @@ export default function CreateList() {
   ]);
 
   //이미지 업로드 핸들러
+  // CreateList.js 내부의 handleImageUpload 함수 수정
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        // 이미지 URL 상태에 저장
-        setImageSrc(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+    e.stopPropagation(); // 이벤트 버블링 중지
+    e.preventDefault();
 
-  // const handleRegister = ({day, image, description}) => {
-  //   setRegisteredItems((prevItems) => ({
-  //     ...prevItems,
-  //     [day]: [...(prevItems[day] || []), {image, description}],
-  //   }));
- 
-  // };
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageSrc(reader.result);
+      // 파일 선택기 초기화 (중복 첨부 방지용)
+      e.target.value = null;
+    };
+    reader.readAsDataURL(file);
+  };
 
   // 인원 수 선택 항목변수
   const selectNumber = [2, 4, 8, 12, 16, 20, 30, 50, 100, "기타"];
@@ -193,7 +190,6 @@ export default function CreateList() {
                     registeredItems={registeredItems}
                     setRegisteredItems={setRegisteredItems}
                   />
-
                 </div>
                 {/* 하단 영역 */}
                 <div className="mt-5">
@@ -218,7 +214,9 @@ export default function CreateList() {
               {/* 오른쪽 영역 */}
               <div className="border-l grid grid-rows-[2.5fr_3fr_0.5fr]  overflow-hidden">
                 {/* 상단 영역: 지도영역 */}
-                <div className="bg-red-200">지도</div>
+                <div className="w-full h-full">
+                  <KakaoMap />
+                </div>
                 {/* 중간 영역: 텍스트 입력란 */}
                 <div className="flex items-center justify-center">
                   {isPlanned ? (
