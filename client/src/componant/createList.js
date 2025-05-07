@@ -11,15 +11,15 @@ import AddButtons from "./create/list/AddButtons.js";
 export default function CreateList() {
   // 예시 이미지 표시 여부
   const [showExample, setShowExample] = useState(false);
-  //  이미지 URL 상태
+  // 이미지 URL 상태
   const [ImageSrc, setImageSrc] = useState(null);
   // 텍스트 상태
   const [text, setText] = useState("");
   // 등록된 항목 상태
   const [registeredItems, setRegisteredItems] = useState([
-    { day: "Day 1", image: "image1.jpg", description: "Day 1의 첫 번째 항목" },
-    { day: "Day 1", image: "image2.jpg", description: "Day 1의 두 번째 항목" },
-    { day: "Day 2", image: "image3.jpg", description: "Day 2의 첫 번째 항목" },
+    //   { day: "1일차", image: "image1.jpg", description: "Day 1의 첫 번째 항목" },
+    //   { day: "1일차", image: "image2.jpg", description: "Day 1의 두 번째 항목" },
+    //   { day: "3일차", image: "image3.jpg", description: "Day 3의 첫 번째 항목" },
   ]);
 
   //이미지 업로드 핸들러
@@ -35,23 +35,13 @@ export default function CreateList() {
     }
   };
 
-  const handleRegister = () => {
-    if (ImageSrc && text.trim() !== "") {
-      // 기존 배열 복사하고, 그 뒤에 새 아이템 추가
-      setRegisteredItems([
-        ...registeredItems,
-        { image: ImageSrc, description: text },
-      ]);
-      //이미지 초기화
-      setImageSrc(null);
-      //텍스트 초기화
-      setText("");
-      // 사진 첨부 폼 숭기기
-      setShowExample(false);
-    } else {
-      setShowExample(false);
-    }
-  };
+  // const handleRegister = ({day, image, description}) => {
+  //   setRegisteredItems((prevItems) => ({
+  //     ...prevItems,
+  //     [day]: [...(prevItems[day] || []), {image, description}],
+  //   }));
+ 
+  // };
 
   // 인원 수 선택 항목변수
   const selectNumber = [2, 4, 8, 12, 16, 20, 30, 50, 100, "기타"];
@@ -79,27 +69,18 @@ export default function CreateList() {
   const [Offline, setOffline] = useState(true);
 
   // 일차 목록 스태이트
-  const [days, setDays] = useState([]);
+  const [days, setDays] = useState(["1일차"]);
   // 현재 활성화된 날짜
-  const [activeDay, setActiveDay] = useState(null);
-
+  const [activeDay, setActiveDay] = useState("1일차");
 
   // 버튼 표시 여부 스테이트
   const [showAddDayButton, setShowAddDayButton] = useState(true);
 
   // 일차 추가 함수
   const handleAddDay = () => {
-    // 새로운 일차 생성
     const newDay = `${days.length + 1}일차`;
-    // 일차 목록애 추가
     setDays([...days, newDay]);
-    //버튼 숨기기
-    setShowAddDayButton(false);
   };
-
-
-
-
 
   // 태그 목록
   const [tags, setTags] = useState([]);
@@ -123,9 +104,9 @@ export default function CreateList() {
       setTags([...tags, formattedTag]);
       // 입력 필드 초기화
       setCurrentTag("");
+      // 입력 필드 숨기기
+      setShowInput(false);
     }
-    // 입력 필드 숨기기
-    setShowInput(false);
   };
 
   // 태그 수정 완료 함수
@@ -204,79 +185,15 @@ export default function CreateList() {
                     setActiveDay={setActiveDay}
                     showExample={showExample}
                     setShowExample={setShowExample}
+                    ImageSrc={ImageSrc} // 이미지 URL 상태 전달
+                    setImageSrc={setImageSrc}
+                    text={text} // 텍스트 상태 전달
+                    setText={setText} // 텍스트 상태 업데이트 함수 전달
+                    handleImageUpload={handleImageUpload} // 이미지 업로드 함수 전달
                     registeredItems={registeredItems}
+                    setRegisteredItems={setRegisteredItems}
                   />
-                  {/* 이미지 예시 영역 */}
-                  {showExample ? (
-                    <div className="p-4 bg-gray-100 border rounded-xl z-10">
-                      {/* 이미지가 있을 경우 이미지 크기만큼 공간 차지 */}
-                      {ImageSrc ? (
-                        <div className="w-full h-[300px] mb-4">
-                          <img
-                            src={ImageSrc}
-                            alt="첨부된 이미지"
-                            className="w-full h-full object-cover rounded-xl"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-full h-[300px] mb-4 bg-red-100"></div>
-                      )}
-                      {/* 텍스트 입력 영역 */}
-                      <div className="flex flex-col w-full">
-                        <textarea
-                          className="flex w-full h-44 resize-none p-2 mb-4 border rounded"
-                          placeholder="이미지에 대한 설명을 입력하세요..."
-                          value={text}
-                          onChange={(e) => setText(e.target.value)}
-                        />
 
-                        {/* 파일 첨부 버튼 */}
-                        <div className="flex justify-between">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="flex mb-4"
-                          />
-
-                          <button
-                            className="bg-blue-500 text-white w-16 rounded mb-4"
-                            onClick={handleRegister}
-                          >
-                            등록
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="relative">
-                      {/* 등록된 항복 표시 */}
-                      <div>
-                        {registeredItems.map((item, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center rounded-lg bg-gray-200 mb-4 h-36"
-                          >
-                            {/* 이미지 */}
-                            <div>
-                              <img
-                                src={item.image}
-                                alt="등록된 이미지"
-                                className="ml-2 w-48 h-32 object-cover rounded"
-                              />
-                            </div>
-                            {/* 설명 글 */}
-                            <div className="flex-1 p-4">
-                              <p>{item.description}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <AddButtons
-                        showExample={showExample}
-                        setShowExample={setShowExample} />
-                    </div>
-                  )}
                 </div>
                 {/* 하단 영역 */}
                 <div className="mt-5">
