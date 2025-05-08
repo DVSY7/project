@@ -7,6 +7,7 @@ export default function KakaoMap() {
   const [marker, setMarker] = useState(null);
   const [infowindow, setInfowindow] = useState(null);
   const [places, setPlaces] = useState([]);
+  const [itemsForActiveDay, setItemsForActiveDay] = useState([]);
 
   // 지도 초기화
   useEffect(() => {
@@ -69,16 +70,29 @@ export default function KakaoMap() {
     });
   };
 
-  // 결과 클릭 시 지도 이동
+  // 장소 클릭 시 지도 이동 + 아이템 등록
   const handlePlaceClick = (place) => {
     const moveLatLon = new window.kakao.maps.LatLng(place.y, place.x);
     map.setCenter(moveLatLon);
     marker.setPosition(moveLatLon);
     marker.setMap(map);
+
     infowindow.setContent(
       `<div style="padding:5px;font-size:12px;">${place.place_name}</div>`
     );
     infowindow.open(map, marker);
+
+    // 검색 결과 숨기기
+    setPlaces([]);
+
+    // 아이템 등록
+    const newItem = {
+      image: `https://via.placeholder.com/200x130?text=${encodeURIComponent(
+        place.place_name
+      )}`,
+      description: place.place_name,
+    };
+    setItemsForActiveDay((prev) => [...prev, newItem]);
   };
 
   return (
@@ -112,6 +126,17 @@ export default function KakaoMap() {
             >
               <div className="font-medium">{place.place_name}</div>
               <div className="text-sm text-gray-500">{place.address_name}</div>
+              <div className="text-sm mt-1">
+                <a
+                  href={`https://place.map.kakao.com/${place.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-blue-600 hover:underline"
+                >
+                  상세보기
+                </a>
+              </div>
             </div>
           ))}
         </div>
@@ -119,6 +144,27 @@ export default function KakaoMap() {
 
       {/* 지도 영역 */}
       <div ref={mapContainer} className="w-full min-h-[500px]" />
+
+      {/* 등록된 항목 리스트 */}
+      <div className="relative overflow-y-auto max-h-[610px] mt-4 px-2">
+        {itemsForActiveDay.map((item, index) => (
+          <div
+            key={index}
+            className="flex items-center rounded-lg bg-gray-200 mb-4 h-36"
+          >
+            <div>
+              <img
+                src={item.image}
+                alt="등록된 이미지"
+                className="ml-2 w-48 h-32 object-cover rounded"
+              />
+            </div>
+            <div className="flex-1 p-4">
+              <p>{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
