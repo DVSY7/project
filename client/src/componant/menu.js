@@ -67,6 +67,7 @@ export default function Menu(props) {
           <Link to="/home"><div className={text}><img className={`${img_size}`} src='/images/위치2.png' alt="장소추천"></img><p className={`${activeMenu} sm:ml-1`} name="장소추천">장소추천</p></div></Link>
           <Link to="/profile"><div className={text}><img className={`${img_size}`} src={`/images/프로필${img_src[4]}.png`} alt="프로필"></img><p className={`${activeMenu} sm:ml-1`} name="프로필">프로필</p></div></Link>
         
+            <div>
             <div
               className={`${text} relative`} // 부모 요소에 relative 추가
               onMouseOver={() => setScrollMenu("block")}
@@ -93,6 +94,7 @@ export default function Menu(props) {
                   </li>
                 </ul>
               </div>
+            </div>
             </div>
         </div>
         

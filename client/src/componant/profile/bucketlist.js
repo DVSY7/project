@@ -109,7 +109,7 @@ export default function BucketList(){
                                     {/* 북마크 영역 */}
                                     <img
                                     onClick={() => bookmark(key, clickedBookmark, setClickedBookmark)}
-                                    className="w-5 h-5 mt-3"
+                                    className="w-5 h-5 mt-3 cursor-pointer"
                                     src={clickedBookmark[key] ? "/images/북마크1.png" : "/images/북마크2.png"}
                                     alt="북마크"
                                     />
@@ -120,11 +120,11 @@ export default function BucketList(){
                                     <div className={`col-start-1`}><div><span>{profile.currentMember}</span>/<span>{profile.maxMember}</span></div></div>
                                     <div className={'col-start-2 flex'}>
                                         <span 
-                                            className={`flex justify-end text-blue-400 w-full`}
+                                            className={`flex justify-end text-blue-400 w-full cursor-pointer`}
                                             onClick={()=>{
                                                 const updateClicked = [...clickedJoin];
-                                                updateClicked[key] = true;
-                                                setClickedJoin(updateClicked);      
+                                                updateClicked[key] = true ;
+                                                setClickedJoin(updateClicked);
                                             }}
                                             >
                                             {/* 참여버튼 요소 */}

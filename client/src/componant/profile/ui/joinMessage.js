@@ -1,13 +1,16 @@
 export default function JoinMessage(props){
-
     const {clickedJoin,setClickedJoin,title,index,currentMember,maxMember,img} = props;
 
     // 버튼 스타일링 변수
     const buttonStyle = `w-[60px] h-[25px] bg-blue-500 rounded-[0.25rem] text-white font-sans font-normal m-1`;
 
+    if (!clickedJoin[index]) return null;
+
     return(
         <>
-            <div className={`${clickedJoin[index]? "block":"hidden"} flex flex-col justify-between fixed left-[calc(50%_-_200px)] top-[calc(50%_-_100px)] w-[400px] h-[200px] bg-white border-[1px] rounded-xl shadow-md z-50`}>
+            <div
+                onClick={(e) => e.stopPropagation()}
+                className={`flex flex-col justify-between fixed left-[calc(50%_-_200px)] top-[calc(50%_-_100px)] w-[400px] h-[200px] bg-white border-[1px] rounded-xl shadow-md z-50 cursor-default transition-opacity duration-500`}>
                 {/* 리스트 제목 */}
                 <div className={`flex justify-start items-center text-black text-[1.2rem] mt-4` }>
                     {/* 리스트 프로필 이미지 */}
@@ -26,10 +29,10 @@ export default function JoinMessage(props){
                     <button className={`${buttonStyle}`}>참여</button>
                     <button 
                         className={`${buttonStyle} mr-2 mb-2`}
-                        onClick={()=> {
+                        onClick={(e)=> {
+                            e.stopPropagation()
                             const updateClicked = [...clickedJoin];
                             updateClicked[index] = false;
-                            console.log(updateClicked);
                             setClickedJoin(updateClicked);
                         }
                         }
