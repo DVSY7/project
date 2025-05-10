@@ -14,7 +14,7 @@ export default function JoinMessage(props){
                 {/* 리스트 제목 */}
                 <div className={`flex justify-start items-center text-black text-[1.2rem] mt-4` }>
                     {/* 리스트 프로필 이미지 */}
-                    <img className={`w-[40px] h-[40px] mx-4`} src={`${img}`}></img>
+                    <img className={`w-[40px] h-[40px] mx-4`} alt="미니프로필" src={`${img}`}></img>
                     <div>{title}</div>
                 </div>
                 {/* 메세지 본문 내용 */}

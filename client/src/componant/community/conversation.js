@@ -1,13 +1,15 @@
+//client/src/componant/community/conversation.js
+
 export default function Conversation(props) {
     const { message } = props;
     const userName = props.message.name;
-    console.log(userName);
+    // console.log(userName);
 
     return (
         <>
             <div className={`flex ${userName !== "레이첼" ? "justify-end" : ""} mt-2`}>
                 {/* 채팅 프로필 */}
-                <img src={message.profile} className={`w-[50px] h-[50px] ${userName !== "레이첼" ? "order-3 mr-4" : "ml-4"}`}></img>
+                <img alt="미니프로필" src={message.profile} className={`w-[50px] h-[50px] ${userName !== "레이첼" ? "order-3 mr-4" : "ml-4"}`}></img>
 
                 {/* 닉네임과 내용 */}
                 <div className={`${userName !== "레이첼" ? "order-2" : ""}`}>

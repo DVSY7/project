@@ -21,12 +21,12 @@ export default function Community() {
   ]
   // 대화목록 정보
   const chattingList = [
-    { id: 1, name: "KimSangYeol" },
-    { id: 2, name: "KimReChel" },
-    { id: 3, name: "KimSangYeol" },
-    { id: 4, name: "KimReChel" },
-    { id: 5, name: "KimSangYeol" },
-    { id: 6, name: "KimReChel" },
+    { id: 1, name: "상열" },
+    { id: 2, name: "레이첼" },
+    { id: 3, name: "상열" },
+    { id: 4, name: "레이첼" },
+    { id: 5, name: "상열" },
+    { id: 6, name: "레이첼" },
   ]
   // 친구목록 정보
   const friendList = [
@@ -65,7 +65,7 @@ export default function Community() {
   return (
     <>
       {/*가장 바깥영역 화면의 최대로 설정*/}
-      <div className="grid grid-cols-1 grid-rows-9 sm:grid-rows-1 sm:grid-cols-sm-minmax sm:grid-cols-9 h-screen">
+      <div className="grid grid-cols-1 grid-rows-9 sm:grid-rows-1 sm:grid-cols-9 h-screen">
         {/* 왼쪽: 가로 1 비율 (1/9) */}
         <Menu current_src={2} />
         {/* 오른쪽: 가로 8 비율 (8/9) */}
