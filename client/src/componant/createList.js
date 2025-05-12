@@ -7,6 +7,7 @@ import TagManager from "./create/list/TagManager.js";
 import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
 import AddPlaceIndex from "./create/list/addPlace/AddPlaceIndex.js";
+import KakaoMap from "./create/list/KakaoMap.js";
 
 export default function CreateList() {
   // 예시 이미지 표시 여부
@@ -16,9 +17,7 @@ export default function CreateList() {
   // 텍스트 상태
   const [text, setText] = useState("");
   // 등록된 항목 상태
-  const [registeredItems, setRegisteredItems] = useState([
-]);
-  
+  const [registeredItems, setRegisteredItems] = useState([]);
 
   //이미지 업로드 핸들러
   // CreateList.js 내부의 handleImageUpload 함수 수정
@@ -136,6 +135,12 @@ export default function CreateList() {
     }
   };
 
+  const [showMap, setShowMap] = useState(false);
+
+  const handlePlaceSelect = (newItem) => {
+    setRegisteredItems((prev) => [...prev, newItem]);
+  };
+
   return (
     <>
       {/*가장 바깥영역 화면의 최대로 설정*/}
@@ -148,7 +153,7 @@ export default function CreateList() {
             <div
               className={`w-[95%] h-[93%] rounded-3xl grid grid-cols-[3fr_2fr] shadow-lg border  bg-white`}
             >
-              {/* 왼쪽쪽 영역 */}
+              {/* 왼쪽 영역 */}
               <div className="grid grid-rows-[1fr_6.5fr_0.5fr] p-4 pl-10">
                 {/* 상단 영역 */}
                 <div className="flex grid grid-rows-[0.5fr_1fr]">
@@ -187,6 +192,8 @@ export default function CreateList() {
                     handleImageUpload={handleImageUpload} // 이미지 업로드 함수 전달
                     registeredItems={registeredItems}
                     setRegisteredItems={setRegisteredItems}
+                    showMap={showMap}
+                    setShowMap={setShowMap}
                   />
                 </div>
                 {/* 하단 영역 */}
@@ -212,9 +219,7 @@ export default function CreateList() {
               {/* 오른쪽 영역 */}
               <div className="border-l grid grid-rows-[2.5fr_3fr_0.5fr]  overflow-hidden">
                 {/* 상단 영역: 지도영역 */}
-                <div className="w-full h-full">
-                  <AddPlaceIndex />
-                </div>
+                <div className="w-full h-full">{/* <KakaoMap /> */}</div>
                 {/* 중간 영역: 텍스트 입력란 */}
                 <div className="flex items-center justify-center">
                   {isPlanned ? (

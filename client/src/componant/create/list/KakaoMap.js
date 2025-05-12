@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function KakaoMap() {
+
+export default function KakaoMap({showMap, setShowMap, handlePlaceSelect}) {
   const mapContainer = useRef(null);
   const [keyword, setKeyword] = useState("");
   const [map, setMap] = useState(null);
@@ -70,8 +71,23 @@ export default function KakaoMap() {
     });
   };
 
+  // 장소의 상세 정보를 가져오는 함수
+  const getPlaceDetail = (placeId) => {
+    return new Promise((resolve, reject) => {
+      const ps = new window.kakao.maps.services.Places();
+      
+      ps.getDetails({ placeId }, (result, status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          resolve(result[0]);
+        } else {
+          reject(new Error('Failed to get place details'));
+        }
+      });
+    });
+  };
+
   // 장소 클릭 시 지도 이동 + 아이템 등록
-  const handlePlaceClick = (place) => {
+  const handlePlaceClick = async (place) => {
     const moveLatLon = new window.kakao.maps.LatLng(place.y, place.x);
     map.setCenter(moveLatLon);
     marker.setPosition(moveLatLon);
@@ -82,23 +98,44 @@ export default function KakaoMap() {
     );
     infowindow.open(map, marker);
 
+    try {
+      // 장소 상세 정보 가져오기
+      const placeDetail = await getPlaceDetail(place.id);
+      
+      // 아이템 등록
+      const newItem = {
+        image: placeDetail.photo ? placeDetail.photo[0].thumbnail_url : `https://via.placeholder.com/200x130?text=${encodeURIComponent(place.place_name)}`,
+        description: place.place_name,
+        placeId: place.id,
+        address: place.address_name,
+        category: place.category_name,
+      };
+
+      // 부모 컴포넌트로 전달
+      handlePlaceSelect(newItem);
+      setShowMap(false);
+    } catch (error) {
+      console.error('Failed to get place details:', error);
+      // 에러 발생 시 기본 이미지 사용
+      const newItem = {
+        image: `https://via.placeholder.com/200x130?text=${encodeURIComponent(place.place_name)}`,
+        description: place.place_name,
+        placeId: place.id,
+        address: place.address_name,
+        category: place.category_name,
+      };
+      handlePlaceSelect(newItem);
+      setShowMap(false);
+    }
+
     // 검색 결과 숨기기
     setPlaces([]);
-
-    // 아이템 등록
-    const newItem = {
-      image: `https://via.placeholder.com/200x130?text=${encodeURIComponent(
-        place.place_name
-      )}`,
-      description: place.place_name,
-    };
-    setItemsForActiveDay((prev) => [...prev, newItem]);
   };
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative bg-slate-500">
       {/* 검색창 */}
-      <div className="w-full p-2 flex gap-2 absolute top-0 z-10 bg-white shadow-md">
+      <div className="w-full p-2 flex gap-2 absolute top-0 z-10 shadow-md">
         <input
           type="text"
           value={keyword}
@@ -146,7 +183,7 @@ export default function KakaoMap() {
       <div ref={mapContainer} className="w-full min-h-[500px]" />
 
       {/* 등록된 항목 리스트 */}
-      <div className="relative overflow-y-auto max-h-[610px] mt-4 px-2">
+      {/* <div className="relative overflow-y-auto max-h-[610px] mt-4 px-2">
         {itemsForActiveDay.map((item, index) => (
           <div
             key={index}
@@ -156,7 +193,7 @@ export default function KakaoMap() {
               <img
                 src={item.image}
                 alt="등록된 이미지"
-                className="ml-2 w-48 h-32 object-cover rounded"
+                className="ml-2 w-48 h-32 object-cover rounded bg-slate-400"
               />
             </div>
             <div className="flex-1 p-4">
@@ -164,7 +201,7 @@ export default function KakaoMap() {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

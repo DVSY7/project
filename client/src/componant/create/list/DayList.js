@@ -1,4 +1,5 @@
-import AddButtons from "./AddButtons";
+import KakaoMap from "./KakaoMap";
+import ListAddPhoto from "./ListAddPhoto";
 
 export default function DayList({
   days,
@@ -14,50 +15,63 @@ export default function DayList({
   text,
   setText,
   handleImageUpload,
+  showMap,
+  setShowMap,
 }) {
   const handleDayClick = (day) => {
-    // 선택한 날짜로 이동
     setActiveDay(day);
   };
 
   const handleRegisterForActiveDay = () => {
-    console.log("handleRegisterForActiveDay 호출됨");
-
     if (ImageSrc && text.trim() !== "") {
       setRegisteredItems((prevItems) => {
-        console.log("Previous Items:", prevItems);
-
-        // 중복 데이터 확인
         const existingItems = prevItems[activeDay] || [];
-        const isDuplicate = existingItems.some(
-          (item) => item.image === ImageSrc && item.description === text
-        );
-
-        if (isDuplicate) {
-          console.log("중복된 항목이 이미 존재합니다.");
-          return prevItems; // 상태를 변경하지 않음
+        
+        // 이미지 타입 아이템이 이미 있는지 확인
+        const hasImage = existingItems.some(item => item.type === 'image');
+        if (hasImage) {
+          return prevItems;
         }
 
-        // 상태 업데이트
-        const updatedItems = {
+        return {
           ...prevItems,
           [activeDay]: [
+            { image: ImageSrc, description: text, type: 'image' },
             ...existingItems,
-            { image: ImageSrc, description: text },
           ],
         };
-
-        console.log("Updated Items:", updatedItems);
-        return updatedItems;
       });
 
-      // 입력 필드 초기화
       setImageSrc(null);
       setText("");
       setShowExample(false);
     } else {
       setShowExample(false);
     }
+  };
+
+  const handlePlaceSelect = (item) => {
+    setRegisteredItems((prevItems) => {
+      const existingItems = prevItems[activeDay] || [];
+      const isDuplicate = existingItems.some(
+        (i) => i.image === item.image && i.description === item.description
+      );
+      if (isDuplicate) return prevItems;
+
+      // 이미지 타입 아이템과 일반 아이템을 분리
+      const imageItems = existingItems.filter(i => i.type === 'image');
+      const normalItems = existingItems.filter(i => i.type !== 'image');
+
+      return {
+        ...prevItems,
+        [activeDay]: [
+          ...imageItems,
+          { ...item, type: 'place' },
+          ...normalItems,
+        ],
+      };
+    });
+    setShowMap(false);
   };
 
   const itemsForActiveDay = (registeredItems[activeDay] || []).filter(
@@ -68,9 +82,11 @@ export default function DayList({
       )
   );
 
+  // 이미지가 이미 등록되어 있는지 확인
+  const hasRegisteredImage = itemsForActiveDay.some(item => item.type === 'image');
+
   return (
     <>
-      {/* 추가된 일차 목록 */}
       <div className="flex items-center">
         {days.map((day, index) => (
           <div
@@ -88,10 +104,8 @@ export default function DayList({
         </button>
       </div>
 
-      {/* 해당 날짜의 등록된 항목 표시 */}
       {activeDay && (
-        <div className="relative overflow-y-auto max-h-[610px]">
-          {/* 등록된 항목 표시 - 한 번만 렌더링 */}
+        <div className="relative overflow-y-auto max-h-[610px] bg-red-400">
           <div>
             {itemsForActiveDay.map((item, index) => (
               <div
@@ -106,16 +120,20 @@ export default function DayList({
                   />
                 </div>
                 <div className="flex-1 p-4">
-                  <p>{item.description}</p>
+                  <p className="font-bold text-lg mb-2">{item.description}</p>
+                  {item.type === 'place' && (
+                    <>
+                      <p className="text-sm text-gray-600 mb-1">{item.address}</p>
+                      <p className="text-sm text-gray-500">{item.category}</p>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* 이미지 예시 영역 */}
           {showExample ? (
-            <div className="p-4 bg-gray-100 border rounded-xl z-10">
-              {/* 이미지가 있을 경우 이미지 크기만큼 공간 차지 */}
+            <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[610px]">
               {ImageSrc ? (
                 <div className="w-full h-[300px] mb-4">
                   <img
@@ -127,7 +145,6 @@ export default function DayList({
               ) : (
                 <div className="w-full h-[300px] mb-4 bg-red-100"></div>
               )}
-              {/* 텍스트 입력 영역 */}
               <div className="flex flex-col w-full">
                 <textarea
                   className="flex w-full h-44 resize-none p-2 mb-4 border rounded"
@@ -135,24 +152,17 @@ export default function DayList({
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                 />
-
-                {/* 파일 첨부 버튼 */}
                 <div className="flex justify-between">
                   <input
-                    key={ImageSrc} // 이 줄 추가
+                    key={ImageSrc}
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
                     className="flex mb-4"
                   />
-
                   <button
                     className="bg-blue-500 text-white w-16 rounded mb-4"
-                    onClick={(e) => {
-                      e.stopPropagation(); // 이벤트 전파 방지
-                      console.log("Button clicked");
-                      handleRegisterForActiveDay();
-                    }}
+                    onClick={handleRegisterForActiveDay}
                     disabled={!ImageSrc || !text.trim()}
                   >
                     등록
@@ -160,11 +170,27 @@ export default function DayList({
                 </div>
               </div>
             </div>
-          ) : (
-            <AddButtons
-              showExample={showExample}
-              setShowExample={setShowExample}
+          ) : showMap ? (
+            <KakaoMap
+              showMap={showMap}
+              setShowMap={setShowMap}
+              handlePlaceSelect={handlePlaceSelect}
             />
+          ) : (
+            <div className="relative bg-slate-800">
+              <button
+                className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5"
+                onClick={() => setShowMap(true)}
+              >
+                장소 등록하기 +
+              </button>
+              {!hasRegisteredImage && (
+                <ListAddPhoto setShowExample={setShowExample} />
+              )}
+              <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
+                메모 하기 +
+              </button>
+            </div>
           )}
         </div>
       )}
