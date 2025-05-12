@@ -1,6 +1,7 @@
 // client/src/componant/profile/miniprofile.js
 import {useState, useEffect} from "react";
 import { checkedToken } from "../function/checkedToken";
+import { useLocation } from "react-router-dom";
 
 
 
@@ -8,14 +9,25 @@ import { checkedToken } from "../function/checkedToken";
 export default function Miniprofile() {
     // 플렉스 요소 센터 정렬
     const flexCenter = "justify-center items-center";
+
+    // 현재 url 정보
+    const location = useLocation();
+
     // 프로필의 유저이름 상태관리 스테이트
     const [username, setUsername] = useState("");
     useEffect(()=>{
-        const getUsername = async ()=>{
-            await checkedToken(setUsername);
-        };
-       getUsername();
-    },[])
+        const searchParams = new URLSearchParams(location.search);
+        const usernameFromQuery = searchParams.get("username");
+
+        if(usernameFromQuery){
+            setUsername(usernameFromQuery);
+        }else{
+            const getUsername = async ()=>{
+                await checkedToken(setUsername);
+            };
+           getUsername();
+        }
+    },[location.search])
 
     return (
         <>

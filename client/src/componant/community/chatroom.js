@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Conversation from "./conversation";
 import { insertDateHeaders, formatDateKorean } from "./utilities/dateUtils";
-import { CheckedCurrentMemberButton, ClosedChatroombutton } from "./ui/button";
+import { CheckedCurrentMemberButton, ClosedChatroomButton } from "./ui/button";
 
 export default function Chatroom(props) {
 
@@ -100,7 +100,7 @@ export default function Chatroom(props) {
                         >   
                             방 나가기
                             {/* 나가기 버튼 클릭 모달 */}
-                            <ClosedChatroombutton
+                            <ClosedChatroomButton
                                 checkedClose={checkedClose}
                                 setCheckedClose={setCheckedClose}
                             />
