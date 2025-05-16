@@ -127,7 +127,7 @@ export default function Chatroom(props) {
 
                     {/* 채팅내용 입력 영역 */}
                     <div className={` flex items-center w-full h-[70px] border-t-[2px] border-solid border-gray-200`}>
-                        <textarea placeholder="내용을 입력하세요." className={`focus:outline-none resize-none pt-5 pl-5 w-[calc(100%_-_120px)]`}></textarea>
+                        <textarea placeholder="내용을 입력하세요." className={`focus:outline-none resize-none pt-5 pl-5 w-[calc(100%_-_120px)] rounded-3xl`}></textarea>
                         <img alt="클립" src="/images/클립.png" className={`w-[20px] h-[20px] mr-2`} />
                         <div className={`w-[70px] h-[35px] bg-black rounded-lg flex justify-center items-center`}>
                             <img alt="보내기" src="/images/보내기.png" className={`w-[20px] h-[20px]`} />
