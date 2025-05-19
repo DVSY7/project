@@ -10,6 +10,7 @@ import NaverRedirectPage from "./componant/routes/naverRedirectPage";
 import GoogleRedirectPage from "./componant/routes/googleRedirectPage";
 import CreateList from "./componant/createList";
 import DayDetails from "./componant/create/list/DayDetails";
+import AIManagement from "./componant/aiManagement";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/auth/google/callback" element={<GoogleRedirectPage/>}/>
           <Route path="/createList" element={<CreateList/>}/>
           <Route path="/day/:day" element={<DayDetails/>}/>
+          <Route path="/AIManagement" element={<AIManagement/>}/>
         </Routes>
       {/* </div> */}
     </BrowserRouter>
