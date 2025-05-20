@@ -57,35 +57,6 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect}) {
     });
   };
 
-  // 장소의 이미지를 가져오는 함수
-  const getPlaceImage = async (placeId) => {
-    try {
-      setIsLoading(true);
-      console.log('이미지 요청 장소 ID:', placeId);
-      
-      // 기본 이미지 URL 생성
-      const imageUrl = `https://map.kakao.com/etc/images/places/${placeId}_200.jpg`;
-      
-      // 이미지 URL이 유효한지 확인
-      const img = new Image();
-      const imageUrlPromise = new Promise((resolve) => {
-        img.onload = () => resolve(imageUrl);
-        img.onerror = () => {
-          console.log('이미지 로드 실패, 기본 이미지 사용');
-          resolve(`https://via.placeholder.com/200x200?text=${encodeURIComponent('이미지 없음')}`);
-        };
-        img.src = imageUrl;
-      });
-
-      return await imageUrlPromise;
-    } catch (error) {
-      console.error('이미지 가져오기 실패:', error);
-      return `https://via.placeholder.com/200x200?text=${encodeURIComponent('이미지 없음')}`;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // 장소 검색
   const searchPlaces = () => {
     if (!map || !keyword.trim()) return;

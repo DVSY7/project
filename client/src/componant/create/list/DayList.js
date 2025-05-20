@@ -159,13 +159,13 @@ export default function DayList({
             {day}
           </div>
         ))}
-        <button onClick={handleAddDay} className="border w-8">
+        <button onClick={handleAddDay} className="w-8">
           +
         </button>
       </div>
 
       {activeDay && (
-        <div className="relative overflow-y-auto max-h-[610px] bg-red-400">
+        <div className="relative overflow-y-auto max-h-[610px]">
           {!editingItem && !showExample && !showMap && (
             <div>
               {itemsForActiveDay.map((item) => (
@@ -194,7 +194,7 @@ export default function DayList({
                             href={item.placeUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center px-1 py-1 text-sm text-blue-600  rounded-lg hover:bg-blue-100 transition-colors"
+                            className="inline-flex items-center px-1 py-1 text-sm text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <span className="mr-1">🔗</span>
@@ -277,13 +277,17 @@ export default function DayList({
               </div>
             </div>
           ) : showMap ? (
+            <div className="relative">
+              {/* 닫기 버튼 */}
+              <button className="absolute top-0 right-2 z-10 text-2xl" onClick={() =>setShowMap(false)}>x</button>
             <KakaoMap
               showMap={showMap}
               setShowMap={setShowMap}
               handlePlaceSelect={handlePlaceSelect}
             />
+            </div>
           ) : !editingItem && (
-            <div className="relative bg-slate-800">
+            <div className="relative">
               <button
                 className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5"
                 onClick={() => setShowMap(true)}
@@ -293,9 +297,9 @@ export default function DayList({
               {!hasRegisteredImage && (
                 <ListAddPhoto setShowExample={setShowExample} />
               )}
-              <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
+              {/* <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
                 메모 하기 +
-              </button>
+              </button> */}
             </div>
           )}
         </div>
