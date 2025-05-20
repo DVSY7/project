@@ -1,10 +1,10 @@
 import { useState } from "react";
 import axios from "axios"; // axios를 import
 
-export default function ListAddPhoto({ showExample, setShowExample }) {
+export default function ListAddPhoto({ setShowExample }) {
   // 파일 상태 관리
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [uploadStatus, setUploadStatus] = useState(null);
+  const [ setSelectedPhoto] = useState(null);
+  const [ uploadStatus ] = useState(null);
 
 
 
