@@ -40,7 +40,7 @@ export default function IsPlanned(){
           />
         </div>
         <textarea
-          className="w-full h-[40%] resize-none border rounded-lg p-2 "
+          className="w-full h-[60%] resize-none border rounded-lg p-2 "
           placeholder="소개 글을 자유롭게 입력하세요"
         ></textarea>
       </div>

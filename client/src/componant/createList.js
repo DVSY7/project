@@ -1,13 +1,10 @@
 import { useState } from "react";
 import Menu from "./menu.js";
 import TopButtons from "./create/list/TopButtons.js";
-import ListAddPhoto from "./create/list/ListAddPhoto.js";
 import IsPlanned from "./create/list/IsPlanned.js";
 import TagManager from "./create/list/TagManager.js";
 import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
-import AddPlaceIndex from "./create/list/addPlace/AddPlaceIndex.js";
-import KakaoMap from "./create/list/KakaoMap.js";
 
 export default function CreateList() {
   // 예시 이미지 표시 여부
@@ -136,10 +133,8 @@ export default function CreateList() {
   };
 
   const [showMap, setShowMap] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
 
-  const handlePlaceSelect = (newItem) => {
-    setRegisteredItems((prev) => [...prev, newItem]);
-  };
 
   return (
     <>
@@ -217,11 +212,9 @@ export default function CreateList() {
                 </div>
               </div>
               {/* 오른쪽 영역 */}
-              <div className="border-l grid grid-rows-[2.5fr_3fr_0.5fr]  overflow-hidden">
-                {/* 상단 영역: 지도영역 */}
-                <div className="w-full h-full">{/* <KakaoMap /> */}</div>
-                {/* 중간 영역: 텍스트 입력란 */}
+              <div className="border-l grid grid-rows-[9fr_1fr]  overflow-hidden">
                 <div className="flex items-center justify-center">
+                  {/* 계획형 작성 란 */}
                   {isPlanned ? (
                     <IsPlanned />
                   ) : (

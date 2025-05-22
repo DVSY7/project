@@ -99,15 +99,6 @@ export default function DayList({
     });
   };
 
-  const handleStartEdit = (item) => {
-    setEditingItem(item);
-    setEditText(item.description);
-    setEditImage(item.image);
-    setShowExample(true);
-    setText(item.description);
-    setImageSrc(item.image);
-  };
-
   const handleCancelEdit = () => {
     setEditingItem(null);
     setEditText("");
@@ -184,10 +175,10 @@ export default function DayList({
                     <p className="font-bold text-lg mb-2">{item.description}</p>
                     {item.type === 'place' && (
                       <>
-                        <p className="text-sm text-gray-600 mb-1">📍 {item.address}</p>
-                        <p className="text-sm text-gray-500 mb-1">🏷️ {item.category}</p>
+                        <p className="text-sm text-gray-600 mb-1">{item.address}</p>
+                        <p className="text-sm text-gray-500 mb-1">{item.category}</p>
                         {item.phone && (
-                          <p className="text-sm text-gray-500 mb-1">📞 {item.phone}</p>
+                          <p className="text-sm text-gray-500 mb-1">{item.phone}</p>
                         )}
                         {item.placeUrl && (
                           <a
@@ -197,7 +188,7 @@ export default function DayList({
                             className="inline-flex items-center px-1 py-1 text-sm text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <span className="mr-1">🔗</span>
+                            <span></span>
                             상세보기
                           </a>
                         )}
@@ -206,7 +197,7 @@ export default function DayList({
                   </div>
                   <div className="flex items-center gap-2 pr-4">
                     <button
-                      onClick={() => handleStartEdit(item)}
+                      onClick={() => setShowMap(true)}
                       className="px-3 py-1 rounded hover:text-blue-600"
                     >
                       수정
@@ -224,7 +215,9 @@ export default function DayList({
           )}
 
           {showExample ? (
-            <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[610px]">
+            <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[610px] relative">
+              {/* 닫기 버튼 */}
+              <button className="absolute top-4 right-4" onClick={()=> setShowExample(false)}>✕</button>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold">
                   {editingItem ? "항목 수정하기" : "새로운 항목 추가하기"}
@@ -279,7 +272,7 @@ export default function DayList({
           ) : showMap ? (
             <div className="relative">
               {/* 닫기 버튼 */}
-              <button className="absolute top-0 right-2 z-10 text-2xl" onClick={() =>setShowMap(false)}>x</button>
+              <button className="absolute top-0 right-2 z-10 text-2xl" onClick={() =>setShowMap(false)}>✕</button>
             <KakaoMap
               showMap={showMap}
               setShowMap={setShowMap}
