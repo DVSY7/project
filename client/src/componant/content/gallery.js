@@ -50,7 +50,7 @@ export default function Gallery({ src }) {
   return (
     <div className={`
       h-full sm:overflow-y-auto sm:p-4 sm:pr-8
-      ${src==="profile"? "2xl:w-[65%] w-[800px]":""}
+      ${src === "profile" ? "2xl:w-[65%] w-[800px]" : ""}
     `}>
       {/* PC Masonry */}
       <Masonry
@@ -64,12 +64,12 @@ export default function Gallery({ src }) {
             onMouseEnter={() => setHoverIndex(idx)}
             onMouseLeave={() => setHoverIndex(null)}
             className={`relative rounded-2xl overflow-hidden
-              ${idx%3===1?'h-[500px]':idx%3===2?'h-[400px]':'h-[300px]'}
+              ${idx % 3 === 1 ? 'h-[500px]' : idx % 3 === 2 ? 'h-[400px]' : 'h-[300px]'}
             `}
           >
             <div className={`
               absolute inset-0 bg-black bg-opacity-50 z-10 text-white
-              ${hoverIndex===idx?'opacity-100':'opacity-0'}
+              ${hoverIndex === idx ? 'opacity-100' : 'opacity-0'}
               transition-opacity duration-300
             `}>
               <GalleryHover
@@ -94,15 +94,18 @@ export default function Gallery({ src }) {
       {/* Mobile 뷰 */}
       <div className="block sm:hidden overflow-y-auto">
         {items.map((item, idx) => (
-          <div key={idx} className="mb-4">
-            <img
-              className="w-full h-[60vh] object-cover"
-              src={encodeURI(item.thumbnail_url)}
-              alt={item.title}
-            />
+          <div key={idx}>
+            <div key={idx} className="mb-4">
+              <img
+                className="w-full h-[60vh] object-cover"
+                src={encodeURI(item.thumbnail_url)}
+                alt={item.title}
+              />
+            </div>
+            <div className={`h-[23vh] w-screen`}></div>
           </div>
+
         ))}
-        {hasMore && <div ref={observerRef} className="h-1" />}
       </div>
     </div>
   );
