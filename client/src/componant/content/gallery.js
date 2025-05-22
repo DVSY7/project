@@ -1,11 +1,18 @@
+// client/src/componant/content/gallery.js
+
 import Masonry from 'react-masonry-css';
 import { useEffect, useRef, useState } from 'react';
 import GalleryHover from './ui/galleryHover';
+import { galleryfetch } from './api/gallery';
 
-export default function Gallery(props) {
+export default function Gallery({ src }) {
+  const [items, setItems] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [hoverIndex, setHoverIndex] = useState(null);
+  const observerRef = useRef(null);
 
-  // 갤러리를 마운트한 페이지의 src
-  const { src } = props;
+  const PAGE_SIZE = 15;
 
   const breakpointColumnsObj = {
     default: src === "profile" ? 3 : 5,
@@ -16,101 +23,87 @@ export default function Gallery(props) {
     640: src === "profile" ? 1 : 1,
   };
 
-  //갤러리 호버 상태관리 스테이트
-  const [hoverIndex, setHoverIndex] = useState(null);
-
-  const [items, setItems] = useState([...Array(30).keys()]);
-  const observerRef = useRef(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+  // 페이지 바뀔 때마다 데이터 가져오기
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    const target = observerRef.current; // 💡 여기에 저장
-    if (!target) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setItems((prev) =>
-            prev.concat(Array.from({ length: 15 }, (_, i) => prev.length + i))
-          );
-        }
-      },
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 1.0,
+    const loadPage = async () => {
+      const newItems = await galleryfetch(page, PAGE_SIZE);
+      setItems(prev => [...prev, ...newItems]);
+      if (newItems.length < PAGE_SIZE) {
+        setHasMore(false);
       }
-    );
-
-    observer.observe(target);
-
-    return () => {
-      observer.unobserve(target); // ✅ 안정적으로 cleanup
     };
-  }, [items, windowWidth]); // ← 이건 유지해도 됨
+    loadPage();
+  }, [page]);
+
+  // 무한스크롤: observer가 보이고, 더 가져올 게 있으면 page++
+  useEffect(() => {
+    if (!hasMore) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setPage(p => p + 1);
+      }
+    }, { threshold: 1.0 });
+    if (observerRef.current) obs.observe(observerRef.current);
+    return () => obs.disconnect();
+  }, [hasMore]);
 
   return (
-    <>
-      <div className={` h-[100%] sm:h-[100%] sm:overflow-y-auto 2xl:overflow-x-hidden overflow-x-auto sm:p-4 sm:pr-8 ${src === "profile" ? "2xl:w-[65%] w-[800px]" : ""}`}>
-        {/* ✅ PC화면 무한스크롤 */}
-        <Masonry
-          breakpointCols={breakpointColumnsObj}
-          className="hidden sm:flex gap-5"
-          columnClassName="flex flex-col gap-5"
-        >
-          {/* 갤러리 요소 영역 */}
-          {items.map((i) => (
-            <div
-              key={i}
-              onMouseLeave={() => { setHoverIndex(null) }}
-              onMouseOver={() => { setHoverIndex(i) }}
-              className={`relative bg-red-500 rounded-2xl text-white text-center overflow-hidden ${i % 3 === 1
-                ? 'h-[500px]'
-                : i % 3 === 2
-                  ? 'h-[400px]'
-                  : 'h-[300px]'
-                }`}
-            >
-              {/* 갤러리 호버 요소 */}
-                <div className={`absolute inset-0 z-10 bg-black bg-opacity-50 ${hoverIndex === i ? "opacity-100":" opacity-0" } transition-opacity duration-500`}>
-                  <GalleryHover />
-                </div>
-              {/* 갤러리 이미지 요소 */}
-              <img
-                className="w-full h-full object-cover rounded-2xl"
-                src={`/images/이미지 (${i + 1}).jpg`}
-                alt="이미지"
-              ></img>
+    <div className={`
+      h-full sm:overflow-y-auto sm:p-4 sm:pr-8
+      ${src==="profile"? "2xl:w-[65%] w-[800px]":""}
+    `}>
+      {/* PC Masonry */}
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className="hidden sm:flex gap-5"
+        columnClassName="flex flex-col gap-5"
+      >
+        {items.map((item, idx) => (
+          <div
+            key={idx}
+            onMouseEnter={() => setHoverIndex(idx)}
+            onMouseLeave={() => setHoverIndex(null)}
+            className={`relative rounded-2xl overflow-hidden
+              ${idx%3===1?'h-[500px]':idx%3===2?'h-[400px]':'h-[300px]'}
+            `}
+          >
+            <div className={`
+              absolute inset-0 bg-black bg-opacity-50 z-10 text-white
+              ${hoverIndex===idx?'opacity-100':'opacity-0'}
+              transition-opacity duration-300
+            `}>
+              <GalleryHover
+                title={item.title}
+                username={item.username}
+                likes={item.likes}
+                views={item.views}
+                location={item.location}
+              />
             </div>
-          ))}
-          {/* 👇 무한 스크롤 감시 대상 요소 */}
-          <div ref={observerRef} className="h-]" />
-        </Masonry>
+            <img
+              className="w-full h-full object-cover"
+              src={encodeURI(item.thumbnail_url)}
+              alt={item.title}
+            />
+          </div>
+        ))}
+        {/* 무한스크롤 관찰 div */}
+      </Masonry>
+      {hasMore && <div ref={observerRef} className="h-1" />}
 
-        {/* ✅ 모바일화면 고정 리스트 */}
-        <div className="block sm:hidden h-full overflow-y-auto overflow-x-hidden">
-          {Array.from({ length: 100 }, (_, i) => (
-            <div key={i}>
-              <div className="bg-gray-200 h-[500px] w-screen ">
-                <img
-                  className="w-full h-full object-cover"
-                  src={`/images/이미지 (${i + 1}).jpg`}
-                  alt="이미지"
-                ></img>
-              </div>
-              <div className=" h-[23vh] w-screen"></div>
-            </div>
-          ))}
-        </div>
+      {/* Mobile 뷰 */}
+      <div className="block sm:hidden overflow-y-auto">
+        {items.map((item, idx) => (
+          <div key={idx} className="mb-4">
+            <img
+              className="w-full h-[60vh] object-cover"
+              src={encodeURI(item.thumbnail_url)}
+              alt={item.title}
+            />
+          </div>
+        ))}
+        {hasMore && <div ref={observerRef} className="h-1" />}
       </div>
-    </>
+    </div>
   );
 }

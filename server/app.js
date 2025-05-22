@@ -7,6 +7,7 @@ const userRoutes = require("./routes/userRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 const authRoutes = require("./routes/authRoutes");
 const searchRoutes = require("./routes/searchRoutes");
+const fetchRoutes = require('./routes/fetchRoutes');
 const db = require('./config/db');
 const cors = require('cors');
 
@@ -20,6 +21,7 @@ app.use('/api/users',userRoutes);
 app.use('/api/token',protectedRoutes);
 app.use('/api',searchRoutes);
 app.use('/auth',authRoutes);
+app.use('/api',fetchRoutes);
 
 
 module.exports = app;
