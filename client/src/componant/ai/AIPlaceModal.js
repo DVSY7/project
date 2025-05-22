@@ -2,27 +2,45 @@ export default function AIPlaceModal({open, onClose, place}){
     if(!open)  return null;
     return(
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-8 w-[800x] max-w-full relative">
-                <button className="absolute top-2 right-4 text-2xl" onClick={onClose}>x</button>
-        <div className="flex gap-8 h-[320px]">
+            <div className="bg-white rounded-lg py-9 w-[50%] h-[61%] max-w-full relative flex items-center justify-center">
+                {/* x닫기 버튼 */}
+                <button 
+                    className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors duration-200"
+                    onClick={onClose}
+                >
+                    <svg 
+                        className="w-5 h-5 text-gray-500" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                    >
+                        <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth={2} 
+                            d="M6 18L18 6M6 6l12 12" 
+                        />
+                    </svg>
+                </button>
+            <div className="flex gap-8 w-[80%] h-[80%]">
             {/* 왼쪽텍스트 */}
-            <div className="flex-1 relative w-96 max-w-full">
-                <div className="text-gray-400 text-sm">{place.engName}</div>
-                <div className="text-black-400 text-2xl font-bold mb-4">{place.korName}</div>
-                <div className=" text-sm mb-4 h-[175px] break-words leadng-[2] w-full">{place.desc}</div>
-                   {/* 일정생성 버튼*/}
-                <button className="bg-black text-white px-4 py-2 rounded-lg absolute bottom-0 text-sm">일정 만들기</button>
+            <div className="flex-1 flex-col relative w-full max-w-full">
+                <div className="text-gray-400 text-2xl font-thin">{place.engName}</div>
+                <div className="text-black-400 text-4xl font-bold mb-4">{place.korName}</div>
+                <div className="text-sm mb-4 h-[175px] whitespace-pre-line leading-relaxed text-justify">{place.desc}</div>
+                {/* 일정생성 버튼*/}
+                <button className="bg-black text-white px-10 py-4 rounded-lg absolute bottom-0 font-bold">일정 만들기</button>
             </div>
             {/* 이미지 */}
-            <div className="flex flex-col h-full relative">
-                <img src={place.image}  alt={place.korName} className="w-72 h-72 bg-black"/>
-                <div className="flex-1 flex justify-center items-center gap-1 pt-2">
-                    <button className="w-[50%] bg-gray-100 py-2 rounded-lg">항공권</button>
-                    <button className="w-[50%] bg-gray-100 py-2 rounded-lg">숙소</button>
+            <div className="flex-1 flex-col h-full relative">
+                <img src={place.image}  alt={place.korName} className="w-full h-[80%] bg-black"/>
+                <div className="flex-1 flex justify-center gap-1 pt-3">
+                    <button className="w-[50%] bg-gray-100 text-blue-600  px-10 py-4 rounded-lg">항공권</button>
+                    <button className="w-[50%] bg-gray-100 text-blue-600  px-10 py-4 rounded-lg">숙소</button>
                 </div>
             </div>
-        </div>
-        </div>
+            </div>
+            </div>
         </div>
     );
 }
