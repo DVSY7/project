@@ -1,4 +1,10 @@
+import { useState } from "react";
+import MultiStepPlanModal from "./MultiStepPlanModal";
+
 export default function AIPlaceModal({open, onClose, place}){
+
+    const [showPlanModal, setShowPlanModal] = useState(false);
+
     if(!open)  return null;
     return(
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
@@ -22,7 +28,7 @@ export default function AIPlaceModal({open, onClose, place}){
                         />
                     </svg>
                 </button>
-            <div className="flex gap-8 w-[80%] h-[80%]">
+            <div className="flex gap-8 w-[80%] h-[80%] bg-red-500">
             {/* 왼쪽텍스트 */}
             <div className="flex-1 flex-col relative w-full max-w-full">
                 <div className="text-gray-400 text-2xl font-thin">{place.engName}</div>
@@ -30,6 +36,17 @@ export default function AIPlaceModal({open, onClose, place}){
                 <div className="text-sm mb-4 h-[175px] whitespace-pre-line leading-relaxed text-justify">{place.desc}</div>
                 {/* 일정생성 버튼*/}
                 <button className="bg-black text-white px-10 py-4 rounded-lg absolute bottom-0 font-bold">일정 만들기</button>
+
+                {/* 사룔자 키워드 선택 팝업창 */}
+                {showPlanModal && (
+                    <MultiStepPlanModal
+                    onClose={() => setShowPlanModal(false)} 
+                    place={place}
+                    onComplete={(answers) => {
+                        setShowPlanModal(false)
+                    }}
+                    />
+                )}
             </div>
             {/* 이미지 */}
             <div className="flex-1 flex-col h-full relative">
