@@ -5,7 +5,7 @@ export default function SearchCategory({ onSelect }) {
 
   return (
     <>
-      <div
+      <div id="searchCategory"
         className={`flex flex-col justify-around items-center absolute w-[100px] h-[200px] bg-white z-20 translate-x-[-50px] translate-y-[20px] rounded-xl border-[1px] border-solid border-gray-500 font-sans font-bold text-xl`}
       >
         {options.map((option, idx) => (

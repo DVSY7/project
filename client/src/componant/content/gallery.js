@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import GalleryHover from './ui/galleryHover';
 import { galleryfetch } from './api/gallery';
 
-export default function Gallery({ src }) {
+export default function Gallery(props) {
+  const { src, sort,searchUser } = props;
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -23,17 +24,27 @@ export default function Gallery({ src }) {
     640: src === "profile" ? 1 : 1,
   };
 
+
+  // 정렬 기준이 바뀔 때 상태 초기화
+  useEffect(() => {
+    setItems([]);
+    setPage(1);
+    setHasMore(true);
+  }, [sort, searchUser]);
+
+
   // 페이지 바뀔 때마다 데이터 가져오기
   useEffect(() => {
     const loadPage = async () => {
-      const newItems = await galleryfetch(page, PAGE_SIZE);
+      const newItems = await galleryfetch(page, PAGE_SIZE, sort, searchUser);
       setItems(prev => [...prev, ...newItems]);
       if (newItems.length < PAGE_SIZE) {
         setHasMore(false);
       }
     };
     loadPage();
-  }, [page]);
+    console.log(items);
+  }, [page,sort,searchUser]);
 
   // 무한스크롤: observer가 보이고, 더 가져올 게 있으면 page++
   useEffect(() => {
@@ -75,6 +86,8 @@ export default function Gallery({ src }) {
               <GalleryHover
                 title={item.title}
                 username={item.username}
+                profile_image={item.profile_image}
+                date={item.date}
                 likes={item.likes}
                 views={item.views}
                 location={item.location}

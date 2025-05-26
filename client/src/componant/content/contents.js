@@ -3,18 +3,27 @@ import Miniprofile from "../profile/miniprofile";
 import Footer from "./footer";
 import Gallery from "./gallery";
 import Header from "./header";
+import {useState,useEffect} from "react";
 
 export default function Contents(props) {
     // 콘텐츠를 마운트한 페이지의 src,username
     const { src,username,searchName } = props;
+    // 선택된 정렬기준
+    const [sort, setSort] = useState("최신순");
+    // 검색된 유저
+    const [searchUser, setSearchUser] = useState("");
 
-    // console.log(src)
+    useEffect(()=>{
+        console.log(sort+1);
+    },[sort]);
 
     return (
         <>
             {/* 검색창 */}
             <Header 
                 username = {username}
+                setSort={setSort}
+                setSearchUser={setSearchUser}
             />
             {/* 콘텐츠 */}
             <div className="flex h-[75%]">
@@ -24,7 +33,11 @@ export default function Contents(props) {
                     <div className={`h-[35%] 2xl:w-full w-[400px] flex justify-center`}><Miniprofile searchName = {searchName}/></div>
                     <div className={`flex justify-center items-end h-[65%] 2xl:w-full w-[400px]`}><BucketList/></div>
                 </div>
-                <Gallery src={src} />
+                <Gallery 
+                src={src}
+                sort={sort}
+                searchUser={searchUser}
+                />
             </div>
             {/* 풋터 */}
             <Footer />
