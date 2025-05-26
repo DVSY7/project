@@ -60,7 +60,7 @@ export default function Gallery(props) {
 
   return (
     <div className={`
-      h-full sm:overflow-y-auto sm:p-4 sm:pr-8
+      h-full w-full sm:overflow-y-auto sm:p-4 sm:pr-8
       ${src === "profile" ? "2xl:w-[65%] w-[800px]" : ""}
     `}>
       {/* PC Masonry */}
@@ -105,7 +105,7 @@ export default function Gallery(props) {
       {hasMore && <div ref={observerRef} className="h-1" />}
 
       {/* Mobile 뷰 */}
-      <div className="block sm:hidden overflow-y-auto">
+      <div className="block sm:hidden overflow-y-auto h-full">
         {items.map((item, idx) => (
           <div key={idx}>
             <div key={idx} className="mb-4">
