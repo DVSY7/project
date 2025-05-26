@@ -4,6 +4,7 @@ import Masonry from 'react-masonry-css';
 import { useEffect, useRef, useState } from 'react';
 import GalleryHover from './ui/galleryHover';
 import { galleryfetch } from './api/gallery';
+import ShowGalleryModal from './ui/showGalleryModal';
 
 export default function Gallery(props) {
   const { src, sort,searchUser } = props;
@@ -12,6 +13,8 @@ export default function Gallery(props) {
   const [hasMore, setHasMore] = useState(true);
   const [hoverIndex, setHoverIndex] = useState(null);
   const observerRef = useRef(null);
+  // 갤러리 클릭 시 갤러리 클릭 상태 관리
+  const [clickedGallery, setClickedGallery] = useState(null);
 
   const PAGE_SIZE = 15;
 
@@ -91,8 +94,18 @@ export default function Gallery(props) {
                 likes={item.likes}
                 views={item.views}
                 location={item.location}
-              />
+                setClickedGallery={setClickedGallery}
+                index={idx}
+              />  
             </div>
+            {/* 갤러리 클릭 시 모달 띄우기 */}
+            {clickedGallery === idx && (
+              <ShowGalleryModal
+                username={item.username}
+                setClickedGallery={setClickedGallery}
+              />
+            )}
+            
             <img
               className="w-full h-full object-cover"
               src={encodeURI(item.thumbnail_url)}

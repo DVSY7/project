@@ -1,12 +1,15 @@
 //src/componant/content/utilities/galleryHover.js
 
 import { useState } from "react";
+import ShowGalleryModal from "./showGalleryModal";
 
 export default function GalleryHover(props) {
     
     const [clicked, setClicked] = useState(false);
-    const {title,date,likes,views,profile_image} = props;
+    const {title,date,likes,views,profile_image, setClickedGallery, index} = props;
     const dateOnly =new Date(date).toISOString().split('T')[0]; // 날짜를 YYYY-MM-DD 형식으로 변환
+    
+    
 
     return (
         <>
@@ -34,11 +37,13 @@ export default function GalleryHover(props) {
 
 
             {/* 갤러리 호버 컨텐츠 */}
-            <div className={` flex justify-center items-center w-full h-[50%] text-[1.5rem] px-4`}>
+            <div
+            // 갤러리 클릭 이벤트
+            onClick={() => {setClickedGallery(index)}} 
+            className={` flex justify-center items-center w-full h-[50%] text-[1.5rem] px-4`}>
                 <div>{title}</div>
             </div>
-
-
+    
 
             {/* 갤러리 호버 풋터 */}
             <div className={` h-[25%] w-full flex justify-between items-end pb-2`}>
