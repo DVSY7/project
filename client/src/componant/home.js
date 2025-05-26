@@ -24,7 +24,7 @@ export default function Home() {
         {/* 왼쪽: 가로 1 비율 (1/9) */}
         <Menu current_src={1} />
         {/* 오른쪽: 가로 8 비율 (8/9) */}
-        <div className=" flex flex-col flex-wrap row-span-9 sm:col-span-8 ">
+        <div className=" flex flex-col flex-wrap row-span-9 sm:col-span-8 2xl:pl-4 xl:pl-6 lg:pl-8 md:pl-12 sm:pl-16">
           <Contents
             src="home"
             username={`${username}`} />

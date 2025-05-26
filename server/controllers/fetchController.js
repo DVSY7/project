@@ -6,7 +6,10 @@ exports.gallery = async (req, res) => {
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 15;
+        const sort = req.query.sort;
         const offset = (page - 1) * limit;
+        const searchUser = req.query.searchUser || '';
+        const likeUser = `%${searchUser}%`;
 
         const [rows] = await db.query(`
        SELECT 
@@ -18,9 +21,11 @@ exports.gallery = async (req, res) => {
          ON g.id = gir.gallery_id AND gir.display_order = 1
        JOIN gallery_image gi
          ON gir.gallery_image_id = gi.id
-       WHERE g.is_public = 1
+       WHERE g.is_public = 1 AND g.username LIKE ?
+       ORDER BY g.${sort} 
       LIMIT ? OFFSET ?
-     `, [limit, offset]);
+     `, [likeUser, limit, offset]);
+     console.log(sort);
 
         return res.status(200).json(rows);
     } catch (error) {

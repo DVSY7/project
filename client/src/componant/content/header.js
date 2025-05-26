@@ -12,7 +12,7 @@ export default function Header(props) {
     const button_hover = "hover:bg-gray-200";
 
     // 토큰에서 검증된 유저이름
-    const { username } = props;
+    const { username,setSort,setSearchUser } = props;
 
     // 로그인 로그아웃 상태관리 스테이트
     const [Token, setToken] = useState(null);
@@ -116,8 +116,10 @@ export default function Header(props) {
                                 if (!searchImage) {
                                     handleTags(searchValues);
                                     setSearchValues("");
+                                    
                                 }else{
                                     search(searchValues);
+                                    setSearchUser(searchValues);
                                     setSearchValues("");
                                 }
                             }
@@ -137,6 +139,7 @@ export default function Header(props) {
 
                                 // 여기에 데이터베이스에 데이터 요청하는 코드작성
                                 search(searchValues);
+                                setSearchUser(searchValues);
                                 setSearchValues("");
                             }
                         }}
@@ -184,6 +187,7 @@ export default function Header(props) {
                                     setSelectedCategory(value);
                                     setSearchCategory(false);
                                     console.log("선택된 정렬 기준:",value);
+                                    setSort(value);
                                 }}
                                 
                             />}
