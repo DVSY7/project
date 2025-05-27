@@ -102,6 +102,7 @@ export default function Gallery(props) {
             {clickedGallery === idx && (
               <ShowGalleryModal
                 username={item.username}
+                id={item.id}
                 setClickedGallery={setClickedGallery}
               />
             )}
