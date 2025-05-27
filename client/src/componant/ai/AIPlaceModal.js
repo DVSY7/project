@@ -35,7 +35,12 @@ export default function AIPlaceModal({open, onClose, place}){
                 <div className="text-black-400 text-4xl font-bold mb-4">{place.korName}</div>
                 <div className="text-sm mb-4 h-[175px] whitespace-pre-line leading-relaxed text-justify">{place.desc}</div>
                 {/* 일정생성 버튼*/}
-                <button className="bg-black text-white px-10 py-4 rounded-lg absolute bottom-0 font-bold">일정 만들기</button>
+                <button 
+                    className="bg-black text-white px-10 py-4 rounded-lg absolute bottom-0 font-bold"
+                    onClick={() => setShowPlanModal(true)}
+                >
+                    일정 만들기
+                </button>
 
                 {/* 사룔자 키워드 선택 팝업창 */}
                 {showPlanModal && (
