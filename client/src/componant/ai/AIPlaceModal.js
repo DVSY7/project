@@ -1,13 +1,10 @@
 import { useState } from "react";
 import MultiStepPlanModal from "./MultiStepPlanModal";
 
-export default function AIPlaceModal({open, onClose, place}){
+export default function AIPlaceModal({onClose, place, onNext}){
 
-    const [showPlanModal, setShowPlanModal] = useState(false);
-
-    if(!open)  return null;
     return(
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <>
             <div className="bg-white rounded-lg py-9 w-[50%] h-[61%] max-w-full relative flex items-center justify-center">
                 {/* x닫기 버튼 */}
                 <button 
@@ -37,21 +34,11 @@ export default function AIPlaceModal({open, onClose, place}){
                 {/* 일정생성 버튼*/}
                 <button 
                     className="bg-black text-white px-10 py-4 rounded-lg absolute bottom-0 font-bold"
-                    onClick={() => setShowPlanModal(true)}
+                    // onClick={onNext}
+                    // onClick={() => console.log(2)}
                 >
                     일정 만들기
                 </button>
-
-                {/* 사룔자 키워드 선택 팝업창 */}
-                {showPlanModal && (
-                    <MultiStepPlanModal
-                    onClose={() => setShowPlanModal(false)} 
-                    place={place}
-                    onComplete={(answers) => {
-                        setShowPlanModal(false)
-                    }}
-                    />
-                )}
             </div>
             {/* 이미지 */}
             <div className="flex-1 flex-col h-full relative">
@@ -63,6 +50,6 @@ export default function AIPlaceModal({open, onClose, place}){
             </div>
             </div>
             </div>
-        </div>
+        </>
     );
 }

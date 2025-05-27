@@ -2,8 +2,8 @@ import '../App.css';
 import Footer from './content/footer';
 import Header from './content/header';
 import Menu from './menu';
-import AIPlaceModal from './ai/AIPlaceModal';
 import {useState} from 'react';
+import MultiStepPlanModal from './ai/MultiStepPlanModal';
 
 export default function AIManagement() {
 
@@ -135,10 +135,16 @@ export default function AIManagement() {
                   </div>
                   
                 ))}
-               <AIPlaceModal 
+               <MultiStepPlanModal 
                open={!!selectedPlace}
                onClose={()=>setSelectedPlace(null)}
-               place={selectedPlace}/>
+               place={selectedPlace}
+               onComplete={(answers) => {
+                console.log('여행계획 완료',answers);
+                setSelectedPlace(null);
+
+               }}
+               />
               </div>
             </div>
             <Footer/>
