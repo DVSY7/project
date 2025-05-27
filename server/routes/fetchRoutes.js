@@ -5,5 +5,7 @@ const fetchController = require('../controllers/fetchController'); // Fetch кіАл
 
 // gallery API
 router.get('/gallery', fetchController.gallery);
+// galleryImage API
+router.get('/galleryImage', fetchController.galleryImage);
 
 module.exports = router;

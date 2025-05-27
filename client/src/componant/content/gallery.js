@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import GalleryHover from './ui/galleryHover';
 import { galleryfetch } from './api/gallery';
 import ShowGalleryModal from './ui/showGalleryModal';
+import { galleryImageFetch } from './api/galleryImage';
 
 export default function Gallery(props) {
   const { src, sort,searchUser } = props;
@@ -15,6 +16,8 @@ export default function Gallery(props) {
   const observerRef = useRef(null);
   // 갤러리 클릭 시 갤러리 클릭 상태 관리
   const [clickedGallery, setClickedGallery] = useState(null);
+  // 갤러리 클릭 시 갤러리 이미지 상태관리
+  const [galleryImage, setGalleryImage] = useState([]);
 
   const PAGE_SIZE = 15;
 
@@ -34,7 +37,6 @@ export default function Gallery(props) {
     setPage(1);
     setHasMore(true);
   }, [sort, searchUser]);
-
 
   // 페이지 바뀔 때마다 데이터 가져오기
   useEffect(() => {
@@ -60,6 +62,11 @@ export default function Gallery(props) {
     if (observerRef.current) obs.observe(observerRef.current);
     return () => obs.disconnect();
   }, [hasMore]);
+
+  // 갤러리 클릭 시 데이터 가져오기
+  const fetchGalleryImage = async (galleryID) => {
+      return await galleryImageFetch(galleryID);
+  }
 
   return (
     <div className={`
@@ -87,6 +94,7 @@ export default function Gallery(props) {
               transition-opacity duration-300
             `}>
               <GalleryHover
+                id={item.id}
                 title={item.title}
                 username={item.username}
                 profile_image={item.profile_image}
@@ -94,8 +102,11 @@ export default function Gallery(props) {
                 likes={item.likes}
                 views={item.views}
                 location={item.location}
+                clickedGallery={clickedGallery}
                 setClickedGallery={setClickedGallery}
                 index={idx}
+                setGalleryImage={setGalleryImage}
+                fetchGalleryImage={fetchGalleryImage}
               />  
             </div>
             {/* 갤러리 클릭 시 모달 띄우기 */}
@@ -103,7 +114,10 @@ export default function Gallery(props) {
               <ShowGalleryModal
                 username={item.username}
                 id={item.id}
+                index = {idx}
+                clickedGallery={clickedGallery}
                 setClickedGallery={setClickedGallery}
+                galleryImage={galleryImage}
               />
             )}
             
