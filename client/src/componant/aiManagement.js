@@ -135,6 +135,10 @@ export default function AIManagement() {
                   </div>
                   
                 ))}
+               {/* <AIPlaceModal 
+               open={!!selectedPlace}
+               onClose={()=>setSelectedPlace(null)}
+               place={selectedPlace}/> */}
                <MultiStepPlanModal 
                open={!!selectedPlace}
                onClose={()=>setSelectedPlace(null)}

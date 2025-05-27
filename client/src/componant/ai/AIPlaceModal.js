@@ -34,7 +34,7 @@ export default function AIPlaceModal({onClose, place, onNext}){
                 {/* 일정생성 버튼*/}
                 <button 
                     className="bg-black text-white px-10 py-4 rounded-lg absolute bottom-0 font-bold"
-                    // onClick={onNext}
+                    onClick={onNext}
                     // onClick={() => console.log(2)}
                 >
                     일정 만들기
