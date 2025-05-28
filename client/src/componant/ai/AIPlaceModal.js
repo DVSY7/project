@@ -4,8 +4,7 @@ import MultiStepPlanModal from "./MultiStepPlanModal";
 export default function AIPlaceModal({onClose, place, onNext}){
 
     return(
-        <>
-            
+        <div className="bg-white rounded-lg py-9 w-[50%] h-[61%] max-w-full relative flex items-center justify-center">
                 {/* x닫기 버튼 */}
                 <button 
                     className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors duration-200"
@@ -25,7 +24,7 @@ export default function AIPlaceModal({onClose, place, onNext}){
                         />
                     </svg>
                 </button>
-            <div className="flex gap-8 w-[80%] h-[80%] bg-red-500">
+            <div className="flex gap-8 w-[80%] h-[80%]">
             {/* 왼쪽텍스트 */}
             <div className="flex-1 flex-col relative w-full max-w-full">
                 <div className="text-gray-400 text-2xl font-thin">{place.engName}</div>
@@ -49,7 +48,6 @@ export default function AIPlaceModal({onClose, place, onNext}){
                 </div>
             </div>
             </div>
-            
-        </>
+        </div>
     );
 }

@@ -1,21 +1,41 @@
+import { useState } from 'react';
 import React from 'react';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { ko } from 'date-fns/locale';
-import { addYears } from 'date-fns';
+import { addMonths, subMonths } from 'date-fns';
 
-const DateRangeStep = ({ dateRange, setDateRange, onNext }) => {
+const DateRangeStep = ({ dateRange, setDateRange, onNext, onBack }) => {
   const today = new Date();
-  const maxDate = addYears(today, 1); // 1년 후까지 선택 가능
+  const maxDate = addMonths(today, 6); // 1년 후까지 선택 가능
+
+  //현재 보여지는 달 상태 관리
+  const [shownDate, setShownDate] = useState(today);
+
+  //이전 달로 이동
+  const handlePrevMonth = () => {
+      setShownDate(prev => subMonths(prev, 1));
+  };
+
+  //다음 달로 이동
+  const handleNextMonth = () => {
+      setShownDate(prev => addMonths(prev, 1));
+  };
 
   return (
-    <div className="flex flex-col items-center p-5 w-full">
-      <h2 className="text-2xl font-semibold mb-5 text-gray-800">
-        여행 일정을 선택해주세요
-      </h2>
-      
-      <div className="w-full max-w-[600px] my-5">
+    <div className="bg-white rounded-lg w-[50%] h-[70%] max-w-full relative flex items-center justify-center bg-blue-400">
+    <div className="absolute flex flex-col items-center w-[80%]">
+      <div className="flex items-center bg-blue-200 w-full relative">
+        <button onClick={onBack} className='text-2xl bg-blue-500 py-4'>←</button>
+        <h1 className="text-3xl  text-gray-800 absolute left-1/2 -translate-x-1/2">
+          여행 기간이 어떻게 되시나요? 
+        </h1>
+      </div>
+      <span className='text-center py-3 text-gray-500'>여행 일자는 최대 10일까지 설정 가능합니다.<br/>
+      현지 여행 기간(여행지 도착 날짜, 여행지 출발 날짜)으로 입력해 주세요.</span>
+
+      <div className="w-full h-full max-w-[800px]">
         <DateRange
           ranges={[dateRange]}
           onChange={(item) => setDateRange(item.selection)}
@@ -25,17 +45,18 @@ const DateRangeStep = ({ dateRange, setDateRange, onNext }) => {
           minDate={today}
           maxDate={maxDate}
           rangeColors={['#FF385C']}
-          className="w-full"
+          className="w-full h-full"
+          monthDisplayFormat='yyyy년 M월'
         />
       </div>
 
-      <div className="w-full max-w-[600px] flex justify-end mt-5">
+      <div className="w-full max-w-[800px] flex justify-end">
         <button
           onClick={onNext}
           disabled={!dateRange.startDate || !dateRange.endDate}
           className={`
             px-6 py-3 rounded-lg text-white font-medium text-base
-            transition-colors duration-200
+            transition-colors duration-200 w-full
             ${!dateRange.startDate || !dateRange.endDate
               ? 'bg-gray-300 cursor-not-allowed'
               : 'bg-[#FF385C] hover:bg-[#E31C5F]'
@@ -46,6 +67,7 @@ const DateRangeStep = ({ dateRange, setDateRange, onNext }) => {
         </button>
       </div>
     </div>
+    </div> 
   );
 };
 
