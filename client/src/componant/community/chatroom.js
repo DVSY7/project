@@ -28,28 +28,28 @@ export default function Chatroom(props) {
     // 채팅내용을 가져올 변수
     const messaging = [
         {
-            name: "상열",
+            username: "상열",
             profile: "/images/미니프로필.png",
             message: "안녕하세요",
             datetime: "2025-05-08T14:30:00",
             rating: "4.5",
         },
         {
-            name: "레이첼",
+            username: "레이첼",
             profile: "/images/미니프로필.png",
             message: "어서오세요. 환영합니다. \n 용건은?",
             datetime: "2025-05-08T14:31:00",
             rating: "4.5",
         },
         {
-            name: "상열",
+            username: "상열",
             profile: "/images/미니프로필.png",
             message: "케이크 만들기 같이하고 싶어요!",
             datetime: "2025-05-09T14:32:00",
             rating: "4.5",
         },
         {
-            name: "레이첼",
+            username: "레이첼",
             profile: "/images/미니프로필.png",
             message: "좋아요 같이해봐요!",
             datetime: "2025-05-09T14:31:00",

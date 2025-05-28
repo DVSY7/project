@@ -21,6 +21,9 @@ export default function Gallery(props) {
 
   const PAGE_SIZE = 15;
 
+  // 갤러리 프로필 이미지 클릭 시 상태관리
+  const [clickedProfile, setClickedProfile] = useState({});
+
   const breakpointColumnsObj = {
     default: src === "profile" ? 3 : 5,
     1536: src === "profile" ? 3 : 5,
@@ -29,7 +32,6 @@ export default function Gallery(props) {
     768: src === "profile" ? 1 : 2,
     640: src === "profile" ? 1 : 1,
   };
-
 
   // 정렬 기준이 바뀔 때 상태 초기화
   useEffect(() => {
@@ -82,7 +84,11 @@ export default function Gallery(props) {
         {items.map((item, idx) => (
           <div
             key={idx}
-            onMouseEnter={() => setHoverIndex(idx)}
+            onMouseEnter={() => {
+              if(clickedProfile !== false){
+                setHoverIndex(idx)
+              }
+            }}
             onMouseLeave={() => setHoverIndex(null)}
             className={`relative rounded-2xl overflow-hidden
               ${idx % 3 === 1 ? 'h-[500px]' : idx % 3 === 2 ? 'h-[400px]' : 'h-[300px]'}
@@ -107,6 +113,8 @@ export default function Gallery(props) {
                 index={idx}
                 setGalleryImage={setGalleryImage}
                 fetchGalleryImage={fetchGalleryImage}
+                clickedProfile = {clickedProfile}
+                setClickedProfile = {setClickedProfile}
               />  
             </div>
             {/* 갤러리 클릭 시 모달 띄우기 */}

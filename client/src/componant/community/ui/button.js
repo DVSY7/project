@@ -42,7 +42,7 @@ export function CheckedCurrentMemberButton(props) {
     const conversationMember = Array.from({ length: 5 }, (_, i) => i);
 
     // 프로필 클릭 상태관리 스테이트
-    const [clickedProfile, setClickedProfile] = useState(conversationMember.map(() => false));
+    const [clickedProfile, setClickedProfile] = useState({});
 
     // 참여인원 버튼 클릭 시 랜더링
     if (!checkedMember) return (null);
@@ -64,12 +64,8 @@ export function CheckedCurrentMemberButton(props) {
                             return (
                                 <React.Fragment key = {key}>
                                     <div
-                                    onClick={()=> {setClickedProfile(prev => {
-                                        const updateClickedMember = [...prev];
-                                        updateClickedMember[key] = true;
-                                        return updateClickedMember;
-                                    }
-                                        )}} 
+                                    onClick={()=> {
+                                        setClickedProfile(prev => ({...prev, [key] : true}))}} 
                                     className={`${key === 0 && "mt-5"} flex hover:bg-gray-200 transition-colors duration-300 items-center bg-white border-[1px] border-gray-200 rounded-md min-h-[70px] h-[70px] w-[550px] my-2`}>
                                         <img alt="미니프로필" src={"images/미니프로필.png"} className={`h-[50px] w-[50px] mx-4`}></img>
                                         SAMPLE DATA {Member}

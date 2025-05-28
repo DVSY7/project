@@ -12,7 +12,7 @@ export default function ProfileModal(props) {
     // 모달 닫기 함수
     const handleClicked = ()=>{
         setClickedProfile(prev => {
-            const updateClickedMember = [...prev];
+            const updateClickedMember = {...prev};
             updateClickedMember[MemberKey] = false;
             return updateClickedMember;
         })
@@ -30,7 +30,6 @@ export default function ProfileModal(props) {
         },
         "친구추가": ()=>{console.log("친구추가 동작")}
     }
-
     // 프로필 클릭 시 랜더링
     if (!clickedProfile[MemberKey]) { return null };
     return (
@@ -38,7 +37,7 @@ export default function ProfileModal(props) {
             {/* 프로필 모달 전체영역 */}
             <div
                 onClick={handleClicked}
-                key={MemberKey} className={`flex justify-center items-center bg-black bg-opacity-0 text-black z-50 absolute w-screen h-screen left-0 top-0`}>
+                key={MemberKey} className={`flex justify-center items-center bg-black bg-opacity-50 text-black z-50 fixed w-screen h-screen left-0 top-0`}>
                 {/* 프로필 모달 요소영역 */}
                 <div onClick={(e)=>{e.stopPropagation()}} className={`flex flex-col bg-white justify-center items-center w-[600px] h-[800px] rounded-xl`}>
                     {/* 프로필 닫기 영역 */}
@@ -56,7 +55,7 @@ export default function ProfileModal(props) {
                         {/* 프로필 이미지 */}
                         <img alt="미니프로필" src="images/미니프로필.png" className={`w-[400px]`}></img>
                         {/* 프로필 이름 */}
-                        <p className={`text-[2.2rem]`}>Profile.Name</p>
+                        <p className={`text-[2.2rem]`}>{MemberKey}</p>
                     </div>
                     {/* 프로필 옵션영역 */}
                     <div className={`flex justify-around border-t-[2px] border-gray-200 h-[120px] w-full`}>

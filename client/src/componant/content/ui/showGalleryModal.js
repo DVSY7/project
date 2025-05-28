@@ -34,7 +34,7 @@ export default function ShowGalleryModal(props) {
                         setClickedGallery(index - 1);
                         handleClickByKey(index - 1);
                     }}
-                    className={`flex justify-center items-center absolute bg-white opacity-0 hover:opacity-50 top-0 left-0 h-full w-[7%] z-20 transition-all duration-500`}>
+                    className={`flex justify-center items-center absolute bg-white opacity-0 hover:opacity-50 top-0 left-0 h-full w-[5%] z-20 transition-all duration-500`}>
                         {/* 왼쪽이동 버튼 이미지 */}
                         <img className={`w-[50px] h-[50px]`} src="images/왼쪽이동.png" alt="왼쪽이동"></img>
                     </div>
@@ -44,7 +44,7 @@ export default function ShowGalleryModal(props) {
                         setClickedGallery(index + 1);
                         handleClickByKey(index + 1);
                     }}
-                    className={`flex justify-center items-center absolute bg-black opacity-0 hover:opacity-50 top-0 right-0 h-full w-[7%] z-18 transition-all duration-500`}
+                    className={`flex justify-center items-center absolute bg-black opacity-0 hover:opacity-50 top-0 right-0 h-full w-[5%] z-18 transition-all duration-500`}
                     >
                         {/* 오른쪽이동 버튼 이미지 */}
                         <img className={`w-[50px] h-[50px]`} src="images/오른쪽이동.png" alt="오른쪽이동"></img>
@@ -115,7 +115,7 @@ export default function ShowGalleryModal(props) {
                                             <img className={`w-[40px] h-[40px]`} src={`images/미니프로필.png`} alt="미니프로필"></img>
                                         </div>
                                         {/* 갤러리 댓글 내용 */}
-                                        <div className={`w-[70%] pl-2`}>
+                                        <div className={`w-[60%] pl-2`}>
                                             {/* 갤러리 댓글 유저이름 */}
                                             <div className={`pt-1`}>Sample UserName{idx+1} <span className={`font-sans text-[0.8rem] ml-1`}>3시간</span></div>
                                             {/* 갤러리 댓글 본문 */}
