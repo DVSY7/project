@@ -51,14 +51,14 @@ export default function GalleryHover(props) {
                             // tools 객체에서 해당하는 key의 함수를 가져옴옴
                             const handleClick = tools.func[funcKey];
 
-                            return (<img 
+                            return (<img
+                                key={index} 
                                 onClick={()=>{
                                     // 도구 클릭 시 실행되는 함수
                                     handleClick();  
                                 }} alt={`${type}`} 
                                 className={`w-[20px] h-[20px] mr-3`} 
                                 src={`/images/${type}.png`}>
-
                                 </img>
                                 )
                         })}

@@ -1,6 +1,6 @@
 // src/componant/content/ui/showGalleryModal.js
 
-import {useState} from "react";
+import {useState,useEffect} from "react";
 
 export default function ShowGalleryModal(props) {
     const { username,setClickedGallery, galleryImage, index } = props;
@@ -10,10 +10,6 @@ export default function ShowGalleryModal(props) {
     // 갤러리 이미지 컨트롤러 상태관리
     const [clickedImage, setClickedImage] = useState(0);
 
-    if(!galleryImage || galleryImage.length === 0) {
-        return null; // 갤러리 이미지가 없으면 모달을 렌더링하지 않음
-    }
-
     const handleClickByKey = (targetKey) => {
         const element = document.querySelector(`[data-key="${targetKey}"]`);
         if(element){
@@ -21,7 +17,12 @@ export default function ShowGalleryModal(props) {
         }
     }
 
-    console.log(index);
+
+    if(!galleryImage || galleryImage.length === 0) {
+        return null; // 갤러리 이미지가 없으면 모달을 렌더링하지 않음
+    }
+
+    console.log("index",index);
     return (
         <>
             <div key={username}
@@ -65,7 +66,7 @@ export default function ShowGalleryModal(props) {
                             // 이미지를 누르면 현재이미지 인덱스 + 1 마지막 이미지로 넘어가면 처음이미지로 돌아가도록 설정
                             clickedImage < galleryImage.length - 1 ? setClickedImage(clickedImage + 1) : setClickedImage(0);
                         }}
-                        className={`w-full h-full rounded-l-md cursor-pointer`} src={`${galleryImage[clickedImage].image_url}`} alt="갤러리이미지"></img>
+                        className={`opacity-100 w-full h-full rounded-l-md cursor-pointer transition-opacity duration-500`} src={`${galleryImage[clickedImage].image_url}`} alt="갤러리이미지"></img>
                         {/* 갤러리 이미지 컨트롤러 */}
                         <div className={`absolute bottom-4 w-full h-[50px] flex justify-center items-center `}>
                             {/* 갤러리 이미지 컨트롤러 버튼 */}

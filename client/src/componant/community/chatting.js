@@ -1,3 +1,5 @@
+//client/src/componant/community/chatting.js
+
 export default function Chatting(props) {
     // 전달받은 flexCenter 값
         const {flexCenter} = props;
@@ -9,7 +11,7 @@ export default function Chatting(props) {
     
     // 전달받은 handleChangeList 값
         const {handleChangeList} = props;
-    
+
     return (
         <>
             {/* 대화가 존재하지 않을 시 */}

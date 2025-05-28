@@ -1,6 +1,18 @@
+//client/src/componant/community/friend.js
+
+import {useState} from "react";
+import ProfileModal from "./ui/profileModal";
+import { CommunityButtons } from "./ui/button";
+
 export default function Friend(props) {
     // 친구목록 탭을 관리하기 위해 전달받은 값
     const { selectedTab, communityTab, friendList, flexCenter } = props;
+
+    // 차단버튼 상태관리
+    const [checkedAction, setCheckedAction] = useState({});
+
+    // 프로필 모달 상태관리 
+    const [clickedProfile, setClickedProfile] = useState({});
 
     return (
         <>
@@ -18,7 +30,18 @@ export default function Friend(props) {
                         {/* 프로필 사진 영역 */}
                         <div className={`${flexCenter} w-[80px] h-full`}>
                             {/* 프로필 사진 요소 */}
-                            <img src="/images/미니프로필.png" alt='미니프로필' className={`w-[60px] h-[60px]`}></img>
+                            <img 
+                            onClick={()=>{
+                                setClickedProfile(prev=> ({...prev,[friend.name]:true}))
+                            }}
+                            src="/images/미니프로필.png" alt='미니프로필' className={`w-[60px] h-[60px]`}></img>
+                            {/* 프로필 모달 */}
+                            <ProfileModal
+                            clickedProfile = {clickedProfile}
+                            setClickedProfile = {setClickedProfile}
+                            friendList = {friendList}
+                            MemberKey = {friend.name}
+                            />
                         </div>
                         {/* 닉네임/별점 영역 */}
                         <div className={`flex flex-col w-[calc(100%_-_140px)] h-full`}>
@@ -30,8 +53,19 @@ export default function Friend(props) {
                         {/* 차단버튼 영역 */}
                         <div className={`w-[60px] h-full`}>
                             {/* 차단버튼 요소 */}
-                            <div className={`${flexCenter} w-[50px] h-[24px] mt-2 border border-solid border-gray-300 rounded-md font-sans text-[0.7rem]`}>차단</div>
+                            <div
+                            onClick={()=>{setCheckedAction(prev => ({...prev,[i]:true}));}} 
+                            className={`${flexCenter} w-[50px] h-[24px] mt-2 border border-solid border-gray-300 rounded-md font-sans text-[0.7rem]`}>차단</div>
                         </div>
+                        {/* 차단버튼 모달 */}
+                        <CommunityButtons
+                        checkedAction = {checkedAction}
+                        setCheckedAction = {setCheckedAction}
+                        title = {"친구차단"}
+                        message = {"정말 차단 하시겠습니까?"}
+                        action = {"차단하기"}
+                        index = {i}
+                        />
                     </div>
                 )
             })}

@@ -23,26 +23,26 @@ export default function Community() {
   const chattingList = [
     { id: 1, name: "상열" },
     { id: 2, name: "레이첼" },
-    { id: 3, name: "상열" },
-    { id: 4, name: "레이첼" },
-    { id: 5, name: "상열" },
-    { id: 6, name: "레이첼" },
+    { id: 3, name: "태익" },
+    { id: 4, name: "장승혁" },
+    { id: 5, name: "정다정" },
+    { id: 6, name: "박효원" },
   ]
   // 친구목록 정보
   const friendList = [
     { id: 1, name: "김상열" },
     { id: 2, name: "김원재" },
-    { id: 1, name: "김상열" },
-    { id: 2, name: "김원재" },
-    { id: 1, name: "김상열" },
-    { id: 2, name: "김원재" },
+    { id: 3, name: "김해원" },
+    { id: 4, name: "김동윤" },
+    { id: 5, name: "정윤수" },
+    { id: 6, name: "김레이첼" },
   ]
   // 차단목록 정보
   const blockedList = [
     {id: 1, name: "레이첼"},
     {id: 2, name: "김해원"},
-    {id: 1, name: "레이첼"},
-    {id: 2, name: "김해원"},
+    {id: 3, name: "정윤수"},
+    {id: 4, name: "한아름"},
   ]
 
   // 탭메뉴 상태관리 
@@ -50,6 +50,12 @@ export default function Community() {
 
   // 대화창 선택 시 상태관리
   const [selectedList, setSelectedList] = useState("");
+
+  // 검색 창 노출 상태관리
+  const [search, setSearch] = useState(false);
+
+  // 검색어 상태관리
+  const [searchKeyWord, setSearchKeyWord] = useState("");
 
   // 탭메뉴 상태관리 함수
   const handleChangeTab = (item) => {
@@ -89,7 +95,17 @@ export default function Community() {
                       }} className={`${flexCenter} ${isActive ? "bg-gray-200" : "bg-white"} border border-solid border-gray-300 h-[30px] w-[60px] rounded-md ml-3 text-[0.9rem]`}>{item}</div>
                     )
                   })}
-                  <div className={`ml-auto mr-2`}><img src={`/images/검색.png`} alt='검색' className={`w-6 h-6 opacity-50`}></img></div>
+                  {/* 검색어 입력란 */}
+                  <input 
+                  onChange={(e)=>{setSearchKeyWord(e.target.value);}}
+                  type='text' className={`${search || searchKeyWord !== "" ? "opacity-100" : "opacity-0"}  w-[200px] ml-3 pl-2 border-[3px] outline-none border-gray-500 h-[30px] rounded-md`}></input>
+                  {/* 검색버튼 영역 */}
+                  <div className={`ml-auto mr-2`}>
+                    <img 
+                    onClick={()=> {setSearch(prev => !prev); console.log(search);}}
+                    src={`/images/검색.png`} alt='검색' className={`w-6 h-6 opacity-50`}></img>
+                  </div>
+                  
                 </div>
               </div>
 

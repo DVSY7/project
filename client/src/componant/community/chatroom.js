@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Conversation from "./conversation";
 import { insertDateHeaders, formatDateKorean } from "./utilities/dateUtils";
-import { CheckedCurrentMemberButton, ClosedChatroomButton } from "./ui/button";
+import { CheckedCurrentMemberButton, CommunityButtons } from "./ui/button";
 
 export default function Chatroom(props) {
 
@@ -15,7 +15,7 @@ export default function Chatroom(props) {
     const [checkedMember, setCheckedMember] = useState(false);
 
     // 나가기 버튼 상태관리 스테이트
-    const [checkedClose, setCheckedClose] = useState(false);
+    const [checkedAction, setCheckedAction] = useState({});
 
     // selectedList 값이 변동이 있을때만 실행
     useEffect(() => {
@@ -94,15 +94,18 @@ export default function Chatroom(props) {
 
                         <div
                             onClick={() => {
-                                setCheckedClose(true);
+                                setCheckedAction(prev => ({...prev, [chattingList.id] : true}));
                             }}
                             className={`${flexCenter} mx-2 mr-4 bg-black text-white rounded-md w-[80px] h-[30px] text-[0.8rem] font-bold cursor-pointer`}
                         >   
                             방 나가기
                             {/* 나가기 버튼 클릭 모달 */}
-                            <ClosedChatroomButton
-                                checkedClose={checkedClose}
-                                setCheckedClose={setCheckedClose}
+                            <CommunityButtons
+                                checkedAction={checkedAction}
+                                setCheckedAction={setCheckedAction}
+                                title={`${chatroom}님의 대화방`}
+                                message = {"정말 나가시겠습니까?"}
+                                action = {"나가기"}
                             />
                         </div>
                     </div>

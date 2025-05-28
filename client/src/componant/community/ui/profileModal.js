@@ -1,13 +1,17 @@
 // client/src/componant/community/ui/profileModal.js
 import { useNavigate } from "react-router-dom";
+import {useState} from "react";
+import { CommunityButtons } from "./button";
 
 
 
 // 프로필 클릭시 나타나는 모달
 export default function ProfileModal(props) {
 
-    const { clickedProfile, setClickedProfile, MemberKey } = props;
+    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[] } = props;
     const navigate = useNavigate();
+
+    const [checkedAction, setCheckedAction] = useState({});
 
     // 모달 닫기 함수
     const handleClicked = ()=>{
@@ -18,18 +22,43 @@ export default function ProfileModal(props) {
         })
     }
 
+    // 이미 친구인지 확인하는 변수
+    const isFriend = friendList.some(member => member.name === MemberKey);
+
+    // 친구리스트 차단리스트 구분 변수
+    const isChecked = blockedList.some(member => member.name === MemberKey) 
+    ? "차단해제" 
+    // 이미 추가된 사용자면 차단버튼으로 설정
+    : isFriend ? "차단" : "친구추가";
+
+    
     // 프로필 옵션 관리 변수
     const profileOptions = [
         {option: "정보보기", img: "images/검색.png"},
-        {option: "친구추가", img: "images/친구추가.png"},
+        {option: isChecked, img: `images/${isChecked}.png`},
     ]
     // 포로필 옵션동작 함수
     const optionHandlers = {
         "정보보기": ()=>{console.log("정보보기 동작");
             navigate(`/profile?username=${MemberKey}`);
         },
-        "친구추가": ()=>{console.log("친구추가 동작")}
+        "친구추가": ()=>{console.log("친구추가 동작");
+            handleChangeFunc();
+        },
+        "차단해제": ()=>{console.log("차단해제 동작");
+            handleChangeFunc();
+        },
+        "차단": ()=>{console.log("차단 동작");
+            handleChangeFunc();
+        }
     }
+
+    // 클릭한 버튼에 따라 동작하는 함수
+    const handleChangeFunc = ()=>{
+        setCheckedAction(prev => ({...prev, [MemberKey]: true}));
+    }
+
+    
     // 프로필 클릭 시 랜더링
     if (!clickedProfile[MemberKey]) { return null };
     return (
@@ -70,6 +99,15 @@ export default function ProfileModal(props) {
                             </div>
                             )
                         })}
+                        {/* 버튼클릭 시 확인메세지 모달 */}
+                        {<CommunityButtons
+                        checkedAction = {checkedAction}
+                        setCheckedAction = {setCheckedAction}
+                        title = {`${isChecked}`}
+                        message = {`${MemberKey}님을 ${isChecked} 하시겠습니까?`}
+                        action = {`${isChecked}`}
+                        index = {MemberKey}
+                        />}
                     </div>
                 </div>
             </div>
