@@ -2,6 +2,7 @@ import { useState } from "react";
 import { DateRange } from "react-date-range";
 import DateRangeStep from "./DateRangeStep";
 import AIPlaceModal from "./AIPlaceModal";
+import WhoWithStep from "./WhoWithStep";
 
 export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
     const [step, setStep] = useState(1);
@@ -24,7 +25,7 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
             onClose();
             setStep(3);
         } else if (step == 3) {
-            
+
         }
     };
 
@@ -50,6 +51,12 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
                         setDateRange={setDateRange}
                         onNext={handleNext}
                         onBack={handleBack}
+                    />
+                )}
+                {step === 3 && (
+                    <WhoWithStep 
+                    onNext={handleNext}
+                    onBack={handleBack}
                     />
                 )}
                 
