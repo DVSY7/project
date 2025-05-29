@@ -22,6 +22,9 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
                 endDate: dateRange.endDate
             });
             onClose();
+            setStep(3);
+        } else if (step == 3) {
+            
         }
     };
 

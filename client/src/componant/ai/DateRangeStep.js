@@ -4,36 +4,31 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { ko } from 'date-fns/locale';
-import { addMonths, subMonths } from 'date-fns';
+import { addMonths, subMonths, addDays, getDay } from 'date-fns';
 
 const DateRangeStep = ({ dateRange, setDateRange, onNext, onBack }) => {
   const today = new Date();
   const maxDate = addMonths(today, 6); // 1년 후까지 선택 가능
 
-  //현재 보여지는 달 상태 관리
-  const [shownDate, setShownDate] = useState(today);
-
-  //이전 달로 이동
-  const handlePrevMonth = () => {
-      setShownDate(prev => subMonths(prev, 1));
-  };
-
-  //다음 달로 이동
-  const handleNextMonth = () => {
-      setShownDate(prev => addMonths(prev, 1));
-  };
+  const getMaxDate = () => {
+    if(dateRange.startDate) {
+      return addDays(dateRange.startDate, 9);
+    }
+    return maxDate;
+  }  
 
   return (
-    <div className="bg-white rounded-lg w-[50%] h-[70%] max-w-full relative flex items-center justify-center bg-blue-400">
-    <div className="absolute flex flex-col items-center w-[80%]">
-      <div className="flex items-center bg-blue-200 w-full relative">
-        <button onClick={onBack} className='text-2xl bg-blue-500 py-4'>←</button>
+    <div className="bg-white rounded-lg w-[45%] h-[80%] max-w-full relative flex items-center justify-center bg-blue-400">
+    <div className="absolute flex flex-col items-center w-[87%] h-full py-16">
+      <div className="flex items-center w-full relative">
+        <button onClick={onBack} className='text-2xl py-4'>←</button>
         <h1 className="text-3xl  text-gray-800 absolute left-1/2 -translate-x-1/2">
           여행 기간이 어떻게 되시나요? 
         </h1>
       </div>
       <span className='text-center py-3 text-gray-500'>여행 일자는 최대 10일까지 설정 가능합니다.<br/>
       현지 여행 기간(여행지 도착 날짜, 여행지 출발 날짜)으로 입력해 주세요.</span>
+
 
       <div className="w-full h-full max-w-[800px]">
         <DateRange
@@ -43,10 +38,11 @@ const DateRangeStep = ({ dateRange, setDateRange, onNext, onBack }) => {
           direction="horizontal"
           locale={ko}
           minDate={today}
-          maxDate={maxDate}
+          maxDate={getMaxDate()}
           rangeColors={['#FF385C']}
           className="w-full h-full"
           monthDisplayFormat='yyyy년 M월'
+          maxDateRange={10}
         />
       </div>
 

@@ -1,0 +1,17 @@
+.react-date-range .rdrCalendarWrapper .rdrDay.rdrWeekend {
+  color: #0000FF !important;
+}
+
+.react-date-range .rdrCalendarWrapper .rdrDay.rdrWeekend:first-child {
+  color: #FF0000 !important;
+}
+
+.react-date-range .rdrCalendarWrapper .rdrDay.rdrWeekend:last-child {
+  color: #0000FF !important;
+}
+
+/* 선택된 날짜의 스타일도 유지 */
+.react-date-range .rdrCalendarWrapper .rdrDay.rdrWeekend.rdrSelected,
+.react-date-range .rdrCalendarWrapper .rdrDay.rdrWeekend.rdrInRange {
+  color: white !important;
+}
