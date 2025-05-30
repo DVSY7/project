@@ -17,15 +17,14 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
         if (step === 1) {
             setStep(2);
         } else if (step === 2) {
+            setStep(3);
+        } else if (step === 3) {
             onComplete({
                 place,
                 startDate: dateRange.startDate,
                 endDate: dateRange.endDate
             });
             onClose();
-            setStep(3);
-        } else if (step == 3) {
-
         }
     };
 

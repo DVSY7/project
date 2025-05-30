@@ -1,6 +1,3 @@
-import { useState } from "react";
-import MultiStepPlanModal from "./MultiStepPlanModal";
-
 export default function AIPlaceModal({onClose, place, onNext}){
 
     return(
