@@ -32,7 +32,7 @@ export default function Block(props) {
                             onClick={()=>{
                                 setClickedProfile(prev => ({...prev,[blocked.name]:true}));
                             }}
-                            src="/images/미니프로필.png" alt='미니프로필' className={`w-[60px] h-[60px]`}></img>
+                            src={`images/profile/profile (${i +1}).jpg`} alt='미니프로필' className={`w-[60px] h-[60px] rounded-[50%] bg-cover bg-center`}></img>
                             {/* 프로필모달 */}
                             <ProfileModal
                             clickedProfile = {clickedProfile}

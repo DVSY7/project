@@ -20,7 +20,7 @@ export default function Chatting(props) {
             ) : ""}
 
             {/* 대화목록 반복문 */}
-            {chattingList.map((info) => {
+            {chattingList.map((info,idx) => {
                 const isSelectedList = selectedList === info.id;
                 const isSelectedTab = selectedTab === communityTab[1];
                 return (
@@ -35,8 +35,8 @@ export default function Chatting(props) {
                         <div className={`flex  w-[full] h-[calc(100%_-_40px)]`}>
 
                             {/* 프로필 이미지 */}
-                            <div className={`${flexCenter} h-full w-[80px] `}>
-                                <img src={`/images/미니프로필.png`} alt='미니프로필' className={` w-[60px] h-[60px]`}></img>
+                            <div className={`${flexCenter} h-full w-[80px]`}>
+                                <img src={`/images/profile/profile (${idx + 1}).jpg`} alt='미니프로필' className={` w-[60px] h-[60px] rounded-[50%] bg-cover bg-center`}></img>
                             </div>
 
                             {/* 닉네임/대화내용 */}

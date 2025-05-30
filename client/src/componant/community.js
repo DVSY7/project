@@ -4,7 +4,7 @@ import Chatroom from './community/chatroom';
 import Chatting from './community/chatting';
 import Friend from './community/friend';
 import Menu from './menu';
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function Community() {
   // 플렉스 요소 가로세로 센터
@@ -19,6 +19,13 @@ export default function Community() {
     "채팅",
     "차단",
   ]
+
+  // 커뮤니티 탭 필터링 요소
+  const communityTabFilter = [
+    "전체",
+    "친구",
+  ]
+
   // 대화목록 정보
   const chattingList = [
     { id: 1, name: "상열" },
@@ -47,6 +54,16 @@ export default function Community() {
 
   // 탭메뉴 상태관리 
   const [selectedTab, setSelectedTab] = useState("채팅");
+  // 탭메뉴 필터링 상태관리
+  const [selectedTabFilter, setSelectedTabFilter] = useState("전체");
+  // 탭메뉴 토글 상태관리
+  const [toggleFilter, setToggleFilter] = useState(false);
+
+  // 탭메뉴 필터링 함수
+  const handleChangeFilter = {
+    "전체" : ()=>{ setSelectedTabFilter("전체")},
+    "친구" : ()=>{ setSelectedTabFilter("친구")},
+  }
 
   // 대화창 선택 시 상태관리
   const [selectedList, setSelectedList] = useState("");
@@ -67,6 +84,14 @@ export default function Community() {
     setSelectedList(item);
   }
 
+  // 검색창 포커스 이동 함수
+  const RefFocus = useRef(null);
+  const handleFocus = ()=>{
+    if(RefFocus.current){
+      RefFocus.current.focus();
+    }
+  }
+
 
   return (
     <>
@@ -85,7 +110,28 @@ export default function Community() {
             <div className={`${shadow} rounded-3xl w-[87%] h-[93%]`}>
               {/* 커뮤니티 탭 영역 */}
               <div className={`flex justify-end flex-col w-full h-[100px]`}>
-                <div className={`${flexColCenter} h-[55px] ml-6 w-full font-sans`}><span className={`font-sans font-bold`}>전체</span><span>(40)</span> <span className={`text-[0.5rem] mx-1`}>▼</span></div>
+                {/* 선택된 탭이 채팅일 경우에만 랜더링 */}
+                {selectedTab === "채팅" && 
+                <div 
+                onClick={()=> { setToggleFilter(prev => !prev) }}
+                className={`${flexColCenter} h-[55px] ml-6 w-[80px] font-sans cursor-pointer`}><span className={`font-sans font-bold`}>{selectedTabFilter}</span><span>(40)</span> <span className={`text-[0.5rem] mx-1`}>{toggleFilter ? "▲" : "▼"}</span></div>}
+                {/* 채팅목록 필터링 */}
+                <div className={`ml-7 translate-y-[-200%] h-1 relative`}>
+                  <div className={`inline-flex flex-col border-[1px] border-gray-300 rounded-md`}>
+                    {communityTabFilter.map((item, idx) => {
+                      // 선택된 탭이 "채팅이고" 토글이 true 일때만 랜더링
+                      if(selectedTab !== "채팅" || !toggleFilter)return(null);
+                      return(
+                        <span 
+                        key={idx}
+                        // 클릭된 값이 필터에 반영되고 토글 false 
+                        onClick={()=>{handleChangeFilter[`${item}`](); setToggleFilter(false);}}
+                        className={`${idx === 0 ? "rounded-t-md":`${idx === communityTabFilter.length -1 ? "rounded-b-md" : ""}`} bg-white px-4 py-1 hover:bg-gray-200`}>{item}</span>
+                      )
+                    })}
+                  </div>
+                </div>
+
                 <div className={`flex items-center w-full h-[45px] border-b border-solid border-gray-200 px-3`}>
                   {communityTab.map((item) => {
                     const isActive = selectedTab === item;
@@ -97,12 +143,13 @@ export default function Community() {
                   })}
                   {/* 검색어 입력란 */}
                   <input 
+                  ref={RefFocus}
                   onChange={(e)=>{setSearchKeyWord(e.target.value);}}
-                  type='text' className={`${search || searchKeyWord !== "" ? "opacity-100" : "opacity-0"}  w-[200px] ml-3 pl-2 border-[3px] outline-none border-gray-500 h-[30px] rounded-md`}></input>
+                  type='text' className={`${search || searchKeyWord !==  "" ? "opacity-100" : "opacity-0"}  w-[150px] ml-3 pl-2 border-[3px] outline-none border-gray-500 h-[30px] rounded-md`}></input>
                   {/* 검색버튼 영역 */}
                   <div className={`ml-auto mr-2`}>
                     <img 
-                    onClick={()=> {setSearch(prev => !prev); console.log(search);}}
+                    onClick={()=> {setSearch(prev => !prev);handleFocus(); console.log(search);}}
                     src={`/images/검색.png`} alt='검색' className={`w-6 h-6 opacity-50`}></img>
                   </div>
                   

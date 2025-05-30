@@ -34,7 +34,7 @@ export default function Friend(props) {
                             onClick={()=>{
                                 setClickedProfile(prev=> ({...prev,[friend.name]:true}))
                             }}
-                            src="/images/미니프로필.png" alt='미니프로필' className={`w-[60px] h-[60px]`}></img>
+                            src={`/images/profile/profile (${i +1}).jpg`} alt='미니프로필' className={`w-[60px] h-[60px] rounded-[50%] bg-cover bg-center`}></img>
                             {/* 프로필 모달 */}
                             <ProfileModal
                             clickedProfile = {clickedProfile}
