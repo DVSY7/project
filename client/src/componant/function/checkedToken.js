@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export async function checkedToken(setUsername){
+export async function checkedToken(setUsername,setName){
 
     const token = localStorage.getItem('token');
     if(!token){
@@ -17,6 +17,9 @@ export async function checkedToken(setUsername){
 
         console.log(`인증된 데이터 :`, response.data);
         setUsername(response.data.username.name);
+        if(setName !== undefined){
+            setName(response.data.username.username);
+        }
     }catch(error){
         console.error(`토큰 오류`, error);
         alert("토근이 만료되었습니다. 다시 로그인 해주세요.");

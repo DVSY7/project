@@ -6,13 +6,13 @@ import { CommunityButtons } from "./ui/button";
 
 export default function Friend(props) {
     // 친구목록 탭을 관리하기 위해 전달받은 값
-    const { selectedTab, communityTab, friendList, flexCenter } = props;
+    const { selectedTab, communityTab, flexCenter, friendList, setActionList } = props;
 
     // 차단버튼 상태관리
     const [checkedAction, setCheckedAction] = useState({});
 
     // 프로필 모달 상태관리 
-    const [clickedProfile, setClickedProfile] = useState({});
+    const [clickedProfile, setClickedProfile] = useState({});   
 
     return (
         <>
@@ -32,15 +32,16 @@ export default function Friend(props) {
                             {/* 프로필 사진 요소 */}
                             <img 
                             onClick={()=>{
-                                setClickedProfile(prev=> ({...prev,[friend.name]:true}))
+                                setClickedProfile(prev=> ({...prev,[friend.friend_id]:true}))
                             }}
-                            src={`/images/profile/profile (${i +1}).jpg`} alt='미니프로필' className={`w-[60px] h-[60px] rounded-[50%] bg-cover bg-center`}></img>
+                            src={`${friend.profile_image_url}`} alt='미니프로필' className={`w-[60px] h-[60px] rounded-[50%] bg-cover bg-center`}></img>
                             {/* 프로필 모달 */}
                             <ProfileModal
                             clickedProfile = {clickedProfile}
                             setClickedProfile = {setClickedProfile}
                             friendList = {friendList}
-                            MemberKey = {friend.name}
+                            MemberKey = {friend.friend_id}
+                            profile_image = {friend.profile_image_url}
                             />
                         </div>
                         {/* 닉네임/별점 영역 */}
@@ -62,9 +63,11 @@ export default function Friend(props) {
                         checkedAction = {checkedAction}
                         setCheckedAction = {setCheckedAction}
                         title = {"친구차단"}
-                        message = {"정말 차단 하시겠습니까?"}
-                        action = {"차단하기"}
+                        message = {`${friend.name}님을 차단 하시겠습니까?`}
+                        action = {"차단"}
                         index = {i}
+                        setActionList = {setActionList}
+                        userID = {friend.friend_id}
                         />
                     </div>
                 )

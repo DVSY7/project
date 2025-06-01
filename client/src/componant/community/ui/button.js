@@ -3,12 +3,24 @@
 import { useState } from "react";
 import ProfileModal from "./profileModal";
 import React from "react";
+import { actionList } from "../api/actionListAPI";
 
 
-// 나가기 버튼 모달 컴포넌트
+// 커뮤니티 버튼 모달 컴포넌트
 export function CommunityButtons(props) {
 
     const { checkedAction, setCheckedAction, title, message, action, index } = props;
+
+    // ActionList 동작 props
+    const {setActionList} = props;
+    // 동작을 반영할 정보 props
+    const {userID} = props;
+
+    // Action 이벤트 함수
+    const handleChangeAction = {
+        "차단": async ()=>{console.log(action); await actionList("AddBlocked", userID);},
+        "해제": async ()=>{console.log(action); await actionList("RemoveBlocked", userID);},
+    }
 
     if (!checkedAction[index]) return (null);
     return (
@@ -18,7 +30,13 @@ export function CommunityButtons(props) {
                     <div className={`flex justify-center items-center text-[1.7rem] h-[60px] border-b-[2px] border-gray-200`}>{title}</div>
                     <div className={`flex justify-center text-[1.3rem]`} >{message}</div>
                     <div className={`flex justify-end text-white`}>
-                        <button className={`p-2 px-3 my-2 mx-1 bg-blue-500 text-[1.1rem] rounded-md`}>{action}</button>
+
+                        {/* action 버튼 */}
+                        <button 
+                        onClick={async ()=> {await handleChangeAction[action](); setCheckedAction(prev => ({...prev, [index]:false})); setActionList(Date.now());}}
+                        className={`p-2 px-3 my-2 mx-1 bg-blue-500 text-[1.1rem] rounded-md`}>{action}</button>
+
+                        {/* 취소버튼 */}
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();

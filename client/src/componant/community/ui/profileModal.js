@@ -8,7 +8,7 @@ import { CommunityButtons } from "./button";
 // 프로필 클릭시 나타나는 모달
 export default function ProfileModal(props) {
 
-    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[] } = props;
+    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[], profile_image } = props;
     const navigate = useNavigate();
 
     const [checkedAction, setCheckedAction] = useState({});
@@ -23,14 +23,23 @@ export default function ProfileModal(props) {
     }
 
     // 이미 친구인지 확인하는 변수
-    const isFriend = friendList.some(member => member.name === MemberKey);
+    const isFriend = friendList.some(member => member.friend_id === MemberKey);
 
     // 친구리스트 차단리스트 구분 변수
-    const isChecked = blockedList.some(member => member.name === MemberKey) 
-    ? "차단해제" 
+    const isChecked = blockedList.some(member => member.friend_id === MemberKey) 
+    ? "해제" 
     // 이미 추가된 사용자면 차단버튼으로 설정
     : isFriend ? "차단" : "친구추가";
 
+    // 프로필 이름 설정
+    const profile = {
+        "차단": friendList.filter(member => member.friend_id === MemberKey),
+        "해제": blockedList.filter(member => member.friend_id === MemberKey),
+        "친구추가" : []
+    };
+    // 설정된 프로필 이름 변수
+    const selectedProfile = profile[isChecked][0];
+    const profileName = selectedProfile? selectedProfile.name : "이름없음";
     
     // 프로필 옵션 관리 변수
     const profileOptions = [
@@ -45,7 +54,7 @@ export default function ProfileModal(props) {
         "친구추가": ()=>{console.log("친구추가 동작");
             handleChangeFunc();
         },
-        "차단해제": ()=>{console.log("차단해제 동작");
+        "해제": ()=>{console.log("차단해제 동작");
             handleChangeFunc();
         },
         "차단": ()=>{console.log("차단 동작");
@@ -82,9 +91,9 @@ export default function ProfileModal(props) {
                     {/* 프로필 정보영역 */}
                     <div className={`flex flex-col justify-center items-center h-[630px] w-full`}>
                         {/* 프로필 이미지 */}
-                        <img alt="미니프로필" src="images/미니프로필.png" className={`w-[400px]`}></img>
+                        <img alt="미니프로필" src={profile_image} className={`w-[400px] h-[400px] rounded-[50%]`}></img>
                         {/* 프로필 이름 */}
-                        <p className={`text-[2.2rem]`}>{MemberKey}</p>
+                        <p className={`text-[2.2rem]`}>{profileName !== undefined ? profileName : null}</p>
                     </div>
                     {/* 프로필 옵션영역 */}
                     <div className={`flex justify-around border-t-[2px] border-gray-200 h-[120px] w-full`}>
@@ -104,7 +113,7 @@ export default function ProfileModal(props) {
                         checkedAction = {checkedAction}
                         setCheckedAction = {setCheckedAction}
                         title = {`${isChecked}`}
-                        message = {`${MemberKey}님을 ${isChecked} 하시겠습니까?`}
+                        message = {`${profileName !== undefined ? profileName : null}님을 ${isChecked} 하시겠습니까?`}
                         action = {`${isChecked}`}
                         index = {MemberKey}
                         />}

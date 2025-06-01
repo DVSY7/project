@@ -53,3 +53,45 @@ exports.galleryImage = async (req, res) => {
       return res.status(500).json({ message: '갤러리 이미지 요청 에러' });
     }
 }
+
+// 커뮤니티 친구목록 가져오기
+exports.friendList = async (req, res) => {
+  try{
+    const userName = req.query.username;
+    const status = req.query.status;
+    const [rows] = await db.query(`
+      SELECT f.friend_id, p.profile_image_url, u.name FROM friends f
+      JOIN users me 
+      ON f.user_id = me.id
+      JOIN users u
+      ON f.friend_id = u.id
+      JOIN profiles p
+      ON u.id = p.user_id
+      WHERE me.username = ? and f.status = ?`,[userName, status]);
+      return res.status(200).json(rows);
+  }catch(error){
+    console.error('친구목록 요청 실패:', error);
+    return res.status(500).json({message: '갤러리 이미지 요청 에러'});
+  }
+}
+
+// 친구관리 Action 반영하기
+exports.ActionList = async (req, res) => {
+  try{
+    const userID = req.body.requestID;
+    const data = req.body.requestValue;
+
+    console.log({"요청받은 유저":userID, "요청받은 값" : data});
+    await db.query(`
+      UPDATE friends f
+      JOIN users u
+      ON f.friend_id = u.id
+      SET f.status = ?
+      WHERE f.friend_id = ?
+      `,[data,userID]);
+
+  }catch(error){
+    console.log("Action 실패 : ", error);
+    res.status(500).json("Action 요청 실패");
+  }
+}

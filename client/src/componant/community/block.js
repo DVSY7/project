@@ -6,7 +6,7 @@ import { CommunityButtons } from "./ui/button";
 
 export default function Block(props) {
     // props로 전달받은 값
-    const { flexCenter, selectedTab, communityTab, blockedList } = props;
+    const { flexCenter, selectedTab, communityTab, blockedList, setActionList } = props;
     // 프로필 모달 상태관리
     const [clickedProfile, setClickedProfile] = useState({});
     // 차단해제버튼 상태관리
@@ -30,15 +30,16 @@ export default function Block(props) {
                             {/* 프로필 사진 요소 */}
                             <img 
                             onClick={()=>{
-                                setClickedProfile(prev => ({...prev,[blocked.name]:true}));
+                                setClickedProfile(prev => ({...prev,[blocked.friend_id]:true}));
                             }}
-                            src={`images/profile/profile (${i +1}).jpg`} alt='미니프로필' className={`w-[60px] h-[60px] rounded-[50%] bg-cover bg-center`}></img>
+                            src={`${blocked.profile_image_url}`} alt='미니프로필' className={`w-[60px] h-[60px] rounded-[50%] bg-cover bg-center`}></img>
                             {/* 프로필모달 */}
                             <ProfileModal
                             clickedProfile = {clickedProfile}
                             setClickedProfile = {setClickedProfile}
-                            MemberKey = {blocked.name}
+                            MemberKey = {blocked.friend_id}
                             blockedList = {blockedList}
+                            profile_image = {blocked.profile_image_url}
                             />
                         </div>
                         {/* 닉네임/별점 영역 */}
@@ -59,9 +60,11 @@ export default function Block(props) {
                         checkedAction = {checkedAction}
                         setCheckedAction = {setCheckedAction}
                         title = {"차단해제"}
-                        message = {"정말 해제 하시겠습니까?"}
-                        action = {"해제하기"}
+                        message = {`${blocked.name}님을 차단해제 하시겠습니까?`}
+                        action = {"해제"}
                         index = {i}
+                        setActionList = {setActionList}
+                        userID = {blocked.friend_id}
                         />
                     </div>
                 )

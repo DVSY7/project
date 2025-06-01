@@ -4,9 +4,24 @@ import Chatroom from './community/chatroom';
 import Chatting from './community/chatting';
 import Friend from './community/friend';
 import Menu from './menu';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { checkedToken } from './function/checkedToken';
+import { fetchList } from './community/api/fetchListAPI';
 
 export default function Community() {
+
+  // 페이지를 사용하는 유저 상태관리
+  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+
+  // 페이지 이동 시 토큰 검증
+  useEffect(()=>{
+    const getUsername = async ()=>{
+      await checkedToken(setUsername,setName);
+    }
+    getUsername();
+  },[]);
+
   // 플렉스 요소 가로세로 센터
   const flexCenter = "flex justify-center items-center";
   // 플렉스 요소 세로 센터
@@ -35,22 +50,28 @@ export default function Community() {
     { id: 5, name: "정다정" },
     { id: 6, name: "박효원" },
   ]
+
   // 친구목록 정보
-  const friendList = [
-    { id: 1, name: "김상열" },
-    { id: 2, name: "김원재" },
-    { id: 3, name: "김해원" },
-    { id: 4, name: "김동윤" },
-    { id: 5, name: "정윤수" },
-    { id: 6, name: "김레이첼" },
-  ]
+  const [friendList, setFriendList] = useState([]);
   // 차단목록 정보
-  const blockedList = [
-    {id: 1, name: "레이첼"},
-    {id: 2, name: "김해원"},
-    {id: 3, name: "정윤수"},
-    {id: 4, name: "한아름"},
-  ]
+  const [blockedList, setBlockedList] = useState([]);
+  // 차단 & 해제 동작 업데이트
+  const [actionList, setActionList] = useState(Date.now());
+
+   useEffect(()=>{
+        const getList = async ()=>{
+            try{
+                const friendsData = await fetchList("friendList",name);
+                const blockedData = await fetchList("blockList",name);
+                setFriendList(friendsData);
+                setBlockedList(blockedData);
+                console.log("목록 불러오기 실행");
+            }catch(error){
+                console.error("친구목록 불러오기 실패",error);
+            }
+        }
+        getList();
+    },[name,actionList]);
 
   // 탭메뉴 상태관리 
   const [selectedTab, setSelectedTab] = useState("채팅");
@@ -138,7 +159,7 @@ export default function Community() {
                     return (
                       <div key={item} onClick={() => {
                         handleChangeTab(item);
-                      }} className={`${flexCenter} ${isActive ? "bg-gray-200" : "bg-white"} border border-solid border-gray-300 h-[30px] w-[60px] rounded-md ml-3 text-[0.9rem]`}>{item}</div>
+                      }} className={`${flexCenter} ${isActive ? "bg-gray-200" : "bg-white"} border border-solid border-gray-300 h-[30px] w-[60px] rounded-md ml-3 text-[0.9rem] cursor-pointer`}>{item}</div>
                     )
                   })}
                   {/* 검색어 입력란 */}
@@ -179,6 +200,7 @@ export default function Community() {
                   communityTab={communityTab}
                   flexCenter={flexCenter}
                   friendList={friendList}
+                  setActionList={setActionList}
                 />
 
 
@@ -188,6 +210,7 @@ export default function Community() {
                 communityTab = {communityTab}
                 flexCenter = {flexCenter}
                 blockedList = {blockedList}
+                setActionList = {setActionList}
                 />
 
               </div>
@@ -206,7 +229,7 @@ export default function Community() {
             </div>
           </div>
 
-
+        
 
         </div>
       </div>

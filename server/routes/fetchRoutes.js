@@ -7,5 +7,13 @@ const fetchController = require('../controllers/fetchController'); // Fetch кіАл
 router.get('/gallery', fetchController.gallery);
 // galleryImage API
 router.get('/galleryImage', fetchController.galleryImage);
+// friendList API
+router.get('/friendList', fetchController.friendList);
+// blockList API
+router.get('/blockList', fetchController.friendList);
+// AddBlocked API
+router.post('/AddBlocked', fetchController.ActionList);
+// RemoveBlocked API 
+router.post('/RemoveBlocked', fetchController.ActionList);
 
 module.exports = router;
