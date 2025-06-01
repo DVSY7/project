@@ -89,6 +89,7 @@ exports.ActionList = async (req, res) => {
       SET f.status = ?
       WHERE f.friend_id = ?
       `,[data,userID]);
+    res.status(200).json({message : "요청처리 완료!"})
 
   }catch(error){
     console.log("Action 실패 : ", error);

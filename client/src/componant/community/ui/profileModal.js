@@ -8,7 +8,7 @@ import { CommunityButtons } from "./button";
 // 프로필 클릭시 나타나는 모달
 export default function ProfileModal(props) {
 
-    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[], profile_image } = props;
+    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[], profile_image,setActionList } = props;
     const navigate = useNavigate();
 
     const [checkedAction, setCheckedAction] = useState({});
@@ -40,6 +40,7 @@ export default function ProfileModal(props) {
     // 설정된 프로필 이름 변수
     const selectedProfile = profile[isChecked][0];
     const profileName = selectedProfile? selectedProfile.name : "이름없음";
+    const friend_id = selectedProfile? selectedProfile.friend_id : "아이디없음";
     
     // 프로필 옵션 관리 변수
     const profileOptions = [
@@ -116,6 +117,8 @@ export default function ProfileModal(props) {
                         message = {`${profileName !== undefined ? profileName : null}님을 ${isChecked} 하시겠습니까?`}
                         action = {`${isChecked}`}
                         index = {MemberKey}
+                        userID = {friend_id}
+                        setActionList = {setActionList}
                         />}
                     </div>
                 </div>

@@ -40,6 +40,7 @@ export default function Block(props) {
                             MemberKey = {blocked.friend_id}
                             blockedList = {blockedList}
                             profile_image = {blocked.profile_image_url}
+                            setActionList = {setActionList}
                             />
                         </div>
                         {/* 닉네임/별점 영역 */}
