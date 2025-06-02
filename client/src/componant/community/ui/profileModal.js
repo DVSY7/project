@@ -1,6 +1,6 @@
 // client/src/componant/community/ui/profileModal.js
 import { useNavigate } from "react-router-dom";
-import {useState} from "react";
+import {useState,useRef} from "react";
 import { CommunityButtons } from "./button";
 
 
@@ -68,14 +68,43 @@ export default function ProfileModal(props) {
         setCheckedAction(prev => ({...prev, [MemberKey]: true}));
     }
 
-    
+    const handleMoveProfile = (direction) => {
+    const currentList = [...friendList, ...blockedList];
+    const memberIds = currentList.map(member => member.friend_id);
+    const currentIndex = memberIds.indexOf(MemberKey);
+
+    if (currentIndex === -1 || memberIds.length === 0) return;
+
+    let newIndex;
+    if (direction === "next") {
+        newIndex = (currentIndex + 1) % memberIds.length;  // 다음 → 끝이면 0번으로
+    } else {
+        newIndex = (currentIndex - 1 + memberIds.length) % memberIds.length; // 이전 → 0번이면 마지막으로
+    }
+
+    const newMemberKey = memberIds[newIndex];
+
+    setClickedProfile(prev => {
+        const updated = Object.fromEntries(
+            Object.keys(prev).map(key => [key, false])
+        );
+        updated[newMemberKey] = true;
+        return updated;
+    });
+};
+
+    const currentRef = useRef(null);
+
+
     // 프로필 클릭 시 랜더링
     if (!clickedProfile[MemberKey]) { return null };
     return (
         <>
             {/* 프로필 모달 전체영역 */}
             <div
-                onClick={handleClicked}
+                ref={currentRef}
+                id={MemberKey}
+                onClick={()=>{handleClicked(); console.log("LW",currentRef.current.id);}}
                 key={MemberKey} className={`flex justify-center items-center bg-black bg-opacity-50 text-black z-50 fixed w-screen h-screen left-0 top-0`}>
                 {/* 프로필 모달 요소영역 */}
                 <div onClick={(e)=>{e.stopPropagation()}} className={`flex flex-col bg-white justify-center items-center w-[600px] h-[800px] rounded-xl`}>
@@ -109,6 +138,22 @@ export default function ProfileModal(props) {
                             </div>
                             )
                         })}
+
+                        {/* 왼쪽 이동 버튼 */}
+                        <button
+                        onClick={() => handleMoveProfile("prev")}
+                        className="absolute left-[20%] top-1/2 transform -translate-y-1/2 text-3xl bg-white rounded-full px-4 py-2 shadow opacity-50 hover:opacity-100 duration-300"
+                        >
+                        ◀
+                        </button>
+
+                        {/* 오른쪽 이동 버튼 */}
+                        <button
+                        onClick={() => handleMoveProfile("next")}
+                        className="absolute right-[20%] top-1/2 transform -translate-y-1/2 text-3xl bg-white rounded-full px-4 py-2 shadow opacity-50 hover:opacity-100 duration-300"
+                        >
+                        ▶
+                        </button>
                         {/* 버튼클릭 시 확인메세지 모달 */}
                         {<CommunityButtons
                         checkedAction = {checkedAction}

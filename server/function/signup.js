@@ -16,7 +16,7 @@ exports.signupCheck = async (id,username,name,email) => {
     const token = jwt.sign(
         {id:id, username:email, name:name},
         JWT_SECRET,
-        {expiresIn: "1h"}
+        {expiresIn: "3h"}
     );
 
     return token;

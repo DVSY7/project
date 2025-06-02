@@ -22,6 +22,10 @@ export default function Friend(props) {
                 ("")}
 
             {/* 가져온 정보가 있다면 */}
+            {/* 친구 수 헤더 */}
+            {selectedTab === communityTab[0] && 
+            <div className={`w-full ml-12`}>전체 {friendList.length}</div>
+            }
             {/* 친구목록 반복문 */}
             {friendList.map((friend, i) => {
                 const isSelectedTab = selectedTab === communityTab[0]

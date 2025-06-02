@@ -9,7 +9,9 @@ export const fetchList = async (listType,userName) => {
     // 친구리스트
     "friendList" : "accepted",
     // 차단리스트
-    "blockList" : "blocked"
+    "blockList" : "blocked",
+    // 채팅리스트
+    "chattingList" : "chatting"
   };
 
   try {

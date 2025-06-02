@@ -42,15 +42,7 @@ export default function Community() {
   ]
 
   // 대화목록 정보
-  const chattingList = [
-    { id: 1, name: "상열" },
-    { id: 2, name: "레이첼" },
-    { id: 3, name: "태익" },
-    { id: 4, name: "장승혁" },
-    { id: 5, name: "정다정" },
-    { id: 6, name: "박효원" },
-  ]
-
+  const [chattingList, setChattingList] = useState([]);
   // 친구목록 정보
   const [friendList, setFriendList] = useState([]);
   // 차단목록 정보
@@ -63,8 +55,10 @@ export default function Community() {
             try{
                 const friendsData = await fetchList("friendList",name);
                 const blockedData = await fetchList("blockList",name);
+                const chattingData = await fetchList("chattingList",name);
                 setFriendList(friendsData);
                 setBlockedList(blockedData);
+                setChattingList(chattingData);
                 console.log("목록 불러오기 실행");
             }catch(error){
                 console.error("친구목록 불러오기 실패",error);
@@ -135,7 +129,7 @@ export default function Community() {
                 {selectedTab === "채팅" && 
                 <div 
                 onClick={()=> { setToggleFilter(prev => !prev) }}
-                className={`${flexColCenter} h-[55px] ml-6 w-[80px] font-sans cursor-pointer`}><span className={`font-sans font-bold`}>{selectedTabFilter}</span><span>(40)</span> <span className={`text-[0.5rem] mx-1`}>{toggleFilter ? "▲" : "▼"}</span></div>}
+                className={`${flexColCenter} h-[55px] ml-6 w-[80px] font-sans cursor-pointer`}><span className={`font-sans font-bold`}>{selectedTabFilter}</span><span>({chattingList.length})</span> <span className={`text-[0.5rem] mx-1`}>{toggleFilter ? "▲" : "▼"}</span></div>}
                 {/* 채팅목록 필터링 */}
                 <div className={`ml-7 translate-y-[-200%] h-1 relative`}>
                   <div className={`inline-flex flex-col border-[1px] border-gray-300 rounded-md`}>

@@ -18,7 +18,10 @@ export default function Block(props) {
             {blockedList.length === 0 && selectedTab === communityTab[2] ?
                 (<div className={`${flexCenter} w-full h-full font-sans text-black text-opacity-50`}>차단목록이 존재하지 않습니다.</div>) :
                 ("")}
-
+            {/* 전체 목록 헤더 */}
+            {selectedTab === communityTab[2] &&
+                <div className={`w-full ml-12`}>전체 {blockedList.length}</div>
+            }
             {/* 차단목록이 있을 시 */}
             {/* 차단목록 반복문 */}
             {blockedList.map((blocked, i) => {

@@ -59,6 +59,7 @@ exports.friendList = async (req, res) => {
   try{
     const userName = req.query.username;
     const status = req.query.status;
+
     const [rows] = await db.query(`
       SELECT f.friend_id, p.profile_image_url, u.name FROM friends f
       JOIN users me 
@@ -72,6 +73,69 @@ exports.friendList = async (req, res) => {
   }catch(error){
     console.error('친구목록 요청 실패:', error);
     return res.status(500).json({message: '갤러리 이미지 요청 에러'});
+  }
+}
+
+// 채팅목록 가져오기
+exports.chattingList = async (req, res) =>{
+  try{
+    const userName = req.query.username;
+
+    if(!userName){
+      res.status(200).json([]);
+    }
+
+    const [userRows] = await db.query(`
+      SELECT u.id FROM users u
+      WHERE u.username = ?
+      `,[userName]);
+    const userID = userRows[0].id;
+
+    const [rows] = await db.query(`
+      WITH last_messages AS (
+        SELECT
+        message_id,
+        chat_room_id,
+        content,
+        created_at,
+        ROW_NUMBER() OVER (PARTITION BY chat_room_id ORDER BY created_at DESC) AS rn
+        FROM messages
+      ),
+      unread_counts AS (
+        SELECT
+          m.chat_room_id,
+          COUNT(*) AS unread_count
+        FROM messages m
+        LEFT JOIN message_reads mr
+          ON m.message_id = mr.message_id AND mr.user_id = ?
+        WHERE mr.message_id IS NULL -- 읽지 않은 메세지
+        GROUP BY m.chat_room_id
+      )
+
+      SELECT
+        cr.chat_room_id,
+        cr.title,
+        cr.theme,
+        cr.max_members,
+        cr.current_members,
+        cr.owner_id,
+        p.profile_image_url,
+        lm.content AS last_message,
+        lm.created_at AS last_message_time, -- 마지막 메세지 시간
+        COALESCE(uc.unread_count, 0) AS unread_count -- 읽지 않은 메세지 수
+      FROM user_rooms ur
+      JOIN chat_rooms cr ON ur.chat_room_id = cr.chat_room_id
+      LEFT JOIN last_messages lm ON cr.chat_room_id = lm.chat_room_id AND lm.rn = 1
+      LEFT JOIN profiles p ON cr.owner_id = p.user_id
+      LEFT JOIN unread_counts uc ON cr.chat_room_id = uc.chat_room_id
+      WHERE ur.user_id = ? AND ur.is_active = 1;
+      `, [userID, userID]);
+
+    console.log("채팅목록 요청 중 : ",userID);
+    res.status(200).json(rows);
+  }catch(error){
+    console.error("채팅목록 요청 실패:",error);
+    res.status(500).json({message:"채팅목록 요청 오류"});
   }
 }
 
