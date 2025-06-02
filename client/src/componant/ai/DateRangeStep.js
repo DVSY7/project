@@ -4,7 +4,7 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { ko } from 'date-fns/locale';
-import { addMonths, subMonths, addDays, getDay } from 'date-fns';
+import { addMonths, addDays} from 'date-fns';
 
 const DateRangeStep = ({ dateRange, setDateRange, onNext, onBack }) => {
   const today = new Date();
@@ -16,6 +16,10 @@ const DateRangeStep = ({ dateRange, setDateRange, onNext, onBack }) => {
     }
     return maxDate;
   }  
+
+  const handleNext = () => {
+    onNext();
+  }
 
   return (
     <div className="bg-white rounded-lg w-[45%] h-[80%] max-w-full relative flex items-center justify-center bg-blue-400">
@@ -48,7 +52,7 @@ const DateRangeStep = ({ dateRange, setDateRange, onNext, onBack }) => {
 
       <div className="w-full max-w-[800px] flex justify-end">
         <button
-          onClick={onNext}
+          onClick={handleNext}
           disabled={!dateRange.startDate || !dateRange.endDate}
           className={`
             px-6 py-3 rounded-lg text-white font-medium text-base

@@ -5,6 +5,16 @@ export default function WhoWithStep({onNext, onBack}){
     const options = ["혼자", "친구와", "연인과", "배우자와", "아이와", "부모님과", "기타"];
     const [selected, setSelected] = useState(null);
 
+    const handleSelect = (opt) => {
+        if(selected.includes(opt)){
+            setSelected(selected.filter(item => item !== opt))
+        }
+    }
+
+
+    const handleNext = () => {
+        onNext(selected); // 선택됟 동반자 값을 부모 컴포넌트로 전달
+    }
 
     return(
     <div className="bg-white rounded-lg w-[45%] h-[80%] max-w-full relative flex items-center justify-center bg-blue-400">
@@ -27,7 +37,7 @@ export default function WhoWithStep({onNext, onBack}){
             </div>
             <div className="basis-1/6 w-full flex flex-col justify-end">
                 <button
-                onClick={onNext}
+                onClick={handleNext}
                 disabled={!selected}
                 className={`
                    py-3 rounded-lg text-white font-medium text-base
