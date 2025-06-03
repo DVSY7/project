@@ -8,7 +8,7 @@ import { CommunityButtons } from "./button";
 // 프로필 클릭시 나타나는 모달
 export default function ProfileModal(props) {
 
-    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[],chattingList =[], profile_image,setActionList } = props;
+    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[],chattingList =[], profile_image,setActionList, requestComponent} = props;
     const navigate = useNavigate();
 
     const [checkedAction, setCheckedAction] = useState({});
@@ -21,7 +21,6 @@ export default function ProfileModal(props) {
             return updateClickedMember;
         })
     }
-
 
     // 이미 친구인지 확인하는 변수
     const isFriend = friendList.some(member => member.friend_id === MemberKey);
@@ -52,7 +51,7 @@ export default function ProfileModal(props) {
     // 포로필 옵션동작 함수
     const optionHandlers = {
         "정보보기": ()=>{console.log("정보보기 동작");
-            navigate(`/profile?username=${MemberKey}`);
+            navigate(`/profile?username=${profileName}`);
         },
         "친구추가": ()=>{console.log("친구추가 동작");
             handleChangeFunc();
@@ -72,13 +71,11 @@ export default function ProfileModal(props) {
     }
 
     const handleMoveProfile = (direction) => {
-    const currentList =  [...chattingList];
+    const currentList = chattingList.length !== 0 ? [...chattingList] : [...blockedList, ...friendList];
     const memberIds = currentList.map(member => member.friend_id);
     const currentIndex = memberIds.indexOf(MemberKey);
 
-    console.log("현재인덱스",currentIndex);
-    console.log("채팅리스트",chattingList);
-    console.log("현재 멤버", memberIds);
+    console.log("채팅리스트", currentList);
 
     if (currentIndex === -1 || memberIds.length === 0) return;
 
@@ -103,6 +100,8 @@ export default function ProfileModal(props) {
 
     const currentRef = useRef(null);
 
+    console.log("클릭된 프로필",clickedProfile);
+    console.log(chattingList);
 
     // 프로필 클릭 시 랜더링
     if (!clickedProfile[MemberKey]) { return null };
@@ -112,7 +111,7 @@ export default function ProfileModal(props) {
             <div
                 ref={currentRef}
                 id={MemberKey}
-                onClick={()=>{handleClicked(); console.log("LW",currentRef.current.id);}}
+                onClick={()=>{handleClicked();}}
                 key={MemberKey} className={`flex justify-center items-center bg-black bg-opacity-50 text-black z-50 fixed w-screen h-screen left-0 top-0`}>
                 {/* 프로필 모달 요소영역 */}
                 <div onClick={(e)=>{e.stopPropagation()}} className={`flex flex-col bg-white justify-center items-center w-[600px] h-[800px] rounded-xl`}>
@@ -147,21 +146,27 @@ export default function ProfileModal(props) {
                             )
                         })}
 
-                        {/* 왼쪽 이동 버튼 */}
-                        <button
-                        onClick={() => handleMoveProfile("prev")}
-                        className="absolute left-[20%] top-1/2 transform -translate-y-1/2 text-3xl bg-white rounded-full px-4 py-2 shadow opacity-50 hover:opacity-100 duration-300"
-                        >
-                        ◀
-                        </button>
+                        {/* 대화창에서 누르면 버튼 비활성화 */}
+                        {requestComponent !== "conversation" && 
+                        <>
+                            {/* 왼쪽 이동 버튼 */}
+                            <button
+                            onClick={() => handleMoveProfile("prev")}
+                            className="absolute left-[20%] top-1/2 transform -translate-y-1/2 text-3xl bg-white rounded-full px-4 py-2 shadow opacity-50 hover:opacity-100 duration-300"
+                            >
+                            ◀
+                            </button>
 
-                        {/* 오른쪽 이동 버튼 */}
-                        <button
-                        onClick={() => handleMoveProfile("next")}
-                        className="absolute right-[20%] top-1/2 transform -translate-y-1/2 text-3xl bg-white rounded-full px-4 py-2 shadow opacity-50 hover:opacity-100 duration-300"
-                        >
-                        ▶
-                        </button>
+                            {/* 오른쪽 이동 버튼 */}
+                            <button
+                            onClick={() => handleMoveProfile("next")}
+                            className="absolute right-[20%] top-1/2 transform -translate-y-1/2 text-3xl bg-white rounded-full px-4 py-2 shadow opacity-50 hover:opacity-100 duration-300"
+                            >
+                            ▶
+                            </button>
+                            
+                        </>
+                        }
                         {/* 버튼클릭 시 확인메세지 모달 */}
                         {<CommunityButtons
                         checkedAction = {checkedAction}

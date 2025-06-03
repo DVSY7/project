@@ -125,7 +125,7 @@ exports.chattingList = async (req, res) =>{
         WHERE lm.rn = 1
       )
 
-      SELECT
+      SELECT DISTINCT
         cr.chat_room_id,
         cr.title,
         cr.theme,
@@ -209,7 +209,7 @@ exports.chatMessage = async (req, res) =>{
     console.log("메시지 요청 성공! : ",rows);
 
     if(rows.length === 0){
-      return null;
+      return res.status(200).json([]);
     }
 
     return res.status(200).json(rows);

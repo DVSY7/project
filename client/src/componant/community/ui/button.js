@@ -54,14 +54,17 @@ export function CommunityButtons(props) {
 // 참여인원 확인 모달 컴포넌트
 export function CheckedCurrentMemberButton(props) {
 
-    const { checkedMember, setCheckedMember } = props;
-
-    // 반복문 실행을 위한 셈플 배열
-    const conversationMember = Array.from({ length: 5 }, (_, i) => i);
+    const { 
+        checkedMember, 
+        setCheckedMember, 
+        chattingList,
+        friendList,
+        blockedList,
+        setActionList
+    } = props;
 
     // 프로필 클릭 상태관리 스테이트
     const [clickedProfile, setClickedProfile] = useState({});
-
     // 참여인원 버튼 클릭 시 랜더링
     if (!checkedMember) return (null);
     return (
@@ -73,28 +76,34 @@ export function CheckedCurrentMemberButton(props) {
                     <div className={`flex h-[50px] items-center text-[1.2rem] font-sans border-b-[2px] border-gray-200`}>
                         <span className={`ml-4`}>대화상대</span>
                         {/* 이부분에 백엔드 필요 */}
-                        <span className={`ml-2`}>5</span>
+                        <span className={`ml-2`}>{chattingList.length}</span>
                     </div>
                     {/* 대화상대 목록영역 */}
                     <div
                       className={`flex flex-col items-start ml-4 h-[650px] overflow-y-auto font-sans text-[1.2rem]`}>
-                        {conversationMember.map((Member, key) => {
+                        {Object.entries(chattingList).map(([_,Member], key) => {
                             return (
                                 <React.Fragment key = {key}>
                                     <div
                                     onClick={()=> {
-                                        setClickedProfile(prev => ({...prev, [key] : true}))}} 
+                                        setClickedProfile(prev => ({...prev, [Member.friend_id] : true}))}} 
                                     className={`${key === 0 && "mt-5"} flex hover:bg-gray-200 transition-colors duration-300 items-center bg-white border-[1px] border-gray-200 rounded-md min-h-[70px] h-[70px] w-[550px] my-2`}>
-                                        <img alt="미니프로필" src={"images/미니프로필.png"} className={`h-[50px] w-[50px] mx-4`}></img>
-                                        SAMPLE DATA {Member}
+                                        <img alt="미니프로필" src={`${Member.profile_image_url}`} className={`h-[50px] w-[50px] rounded-[50%] mx-4`}></img>
+                                        {Member.name}
                                         <div className={`flex justify-center items-center ml-auto mr-3 bg-gray-300 w-[60px] h-[40px] rounded-md`}>
                                             <img alt="친구추가" src="images/친구추가.png" className={`w-[30px] h-[30px] ml-2`}></img>
                                         </div>
+                                        {console.log("선택된 프로필",clickedProfile)}
                                     </div>
                                     <ProfileModal
-                                        MemberKey = {key}
+                                        MemberKey = {Member.friend_id}
                                         clickedProfile = {clickedProfile}
+                                        chattingList = {chattingList}
+                                        friendList = {friendList}
+                                        blockedList = {blockedList}
                                         setClickedProfile = {setClickedProfile}
+                                        profile_image = {Member.profile_image_url}
+                                        setActionList = {setActionList}
                                     />
                                 </React.Fragment>
                             )

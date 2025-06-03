@@ -26,8 +26,9 @@ export default function Chatting(props) {
                 const isSelectedList = selectedList === info.title;
                 const isSelectedTab = selectedTab === communityTab[1];
 
+                console.log(info);
                 return (
-                    <div key={info.title} onClick={() => { handleChangeList(info.title) }} className={`w-[90%] h-[110px] ${isSelectedList ? "bg-gray-200" : "bg-white"} ${isSelectedTab ? "block" : "hidden"} rounded-lg border border-solid border-gray-300 mb-2`}>
+                    <div key={info.chat_room_id} onClick={() => { handleChangeList(info.title) }} className={`w-[90%] h-[110px] ${isSelectedList ? "bg-gray-200" : "bg-white"} ${isSelectedTab ? "block" : "hidden"} rounded-lg border border-solid border-gray-300 mb-2`}>
 
                         {/* 카테고리와 참여인원 */}
                         <div className={`flex items-center justify-between px-3 h-[40px] w-full font-sans`}>
@@ -45,7 +46,7 @@ export default function Chatting(props) {
                             {/* 닉네임/대화내용 */}
                             <div className={`w-[calc(100%_-_160px)] h-full`}>
                                 <div className={`font-sans font-bold m-1`}>{info.sender_name}</div>
-                                <div className={`ml-1`}>{info.last_message}</div>
+                                <div className={`ml-1 truncate`}>{info.last_message}</div>
                             </div>
 
                             {/* 대화 시간 */}
