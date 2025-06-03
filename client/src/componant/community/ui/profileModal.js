@@ -8,7 +8,7 @@ import { CommunityButtons } from "./button";
 // 프로필 클릭시 나타나는 모달
 export default function ProfileModal(props) {
 
-    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[], profile_image,setActionList } = props;
+    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[],chattingList =[], profile_image,setActionList } = props;
     const navigate = useNavigate();
 
     const [checkedAction, setCheckedAction] = useState({});
@@ -21,6 +21,7 @@ export default function ProfileModal(props) {
             return updateClickedMember;
         })
     }
+
 
     // 이미 친구인지 확인하는 변수
     const isFriend = friendList.some(member => member.friend_id === MemberKey);
@@ -35,8 +36,9 @@ export default function ProfileModal(props) {
     const profile = {
         "차단": friendList.filter(member => member.friend_id === MemberKey),
         "해제": blockedList.filter(member => member.friend_id === MemberKey),
-        "친구추가" : []
+        "친구추가" : chattingList.filter(member => member.friend_id === MemberKey)
     };
+
     // 설정된 프로필 이름 변수
     const selectedProfile = profile[isChecked][0];
     const profileName = selectedProfile? selectedProfile.name : "이름없음";
@@ -63,15 +65,20 @@ export default function ProfileModal(props) {
         }
     }
 
+
     // 클릭한 버튼에 따라 동작하는 함수
     const handleChangeFunc = ()=>{
         setCheckedAction(prev => ({...prev, [MemberKey]: true}));
     }
 
     const handleMoveProfile = (direction) => {
-    const currentList = [...friendList, ...blockedList];
+    const currentList =  [...chattingList];
     const memberIds = currentList.map(member => member.friend_id);
     const currentIndex = memberIds.indexOf(MemberKey);
+
+    console.log("현재인덱스",currentIndex);
+    console.log("채팅리스트",chattingList);
+    console.log("현재 멤버", memberIds);
 
     if (currentIndex === -1 || memberIds.length === 0) return;
 
@@ -83,6 +90,7 @@ export default function ProfileModal(props) {
     }
 
     const newMemberKey = memberIds[newIndex];
+    console.log("새로운 인덱스:",newMemberKey);
 
     setClickedProfile(prev => {
         const updated = Object.fromEntries(

@@ -219,6 +219,10 @@ export default function Community() {
                   selectedList = {selectedList}
                   chattingList = {chattingList}
                   flexCenter = {flexCenter}
+                  userName = {username}
+                  friendList = {friendList}
+                  blockedList = {blockedList}
+                  setActionList = {setActionList}
                   />
             </div>
           </div>

@@ -9,6 +9,16 @@ export function formatDateKorean(dateStr){
     });
 }
 
+// 시간을 한국시간:분 으로 변환
+export function formatDateTime(dateStr){
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString("ko-KR",{
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+        });
+}
+
 export function insertDateHeaders(message){
     const result = [];
     let lastDate = null;

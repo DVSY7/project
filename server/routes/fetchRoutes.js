@@ -17,5 +17,7 @@ router.get('/chattingList', fetchController.chattingList);
 router.post('/AddBlocked', fetchController.ActionList);
 // RemoveBlocked API 
 router.post('/RemoveBlocked', fetchController.ActionList);
+// chatMessage API
+router.get('/chatmessage', fetchController.chatMessage);
 
 module.exports = router;

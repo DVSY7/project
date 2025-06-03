@@ -82,7 +82,7 @@ exports.chattingList = async (req, res) =>{
     const userName = req.query.username;
 
     if(!userName){
-      res.status(200).json([]);
+      return res.status(200).json([]);
     }
 
     const [userRows] = await db.query(`
@@ -97,6 +97,7 @@ exports.chattingList = async (req, res) =>{
         message_id,
         chat_room_id,
         content,
+        sender_id,
         created_at,
         ROW_NUMBER() OVER (PARTITION BY chat_room_id ORDER BY created_at DESC) AS rn
         FROM messages
@@ -110,6 +111,18 @@ exports.chattingList = async (req, res) =>{
           ON m.message_id = mr.message_id AND mr.user_id = ?
         WHERE mr.message_id IS NULL -- 읽지 않은 메세지
         GROUP BY m.chat_room_id
+      ),
+      sender_info AS (
+        SELECT 
+          lm.sender_id AS sender_id,
+          u.name AS sender_name,
+          p.profile_image_url AS sender_profile_image_url
+        FROM last_messages lm
+        LEFT JOIN users u
+          ON lm.sender_id = u.id
+        LEFT JOIN profiles p
+          ON lm.sender_id = p.user_id
+        WHERE lm.rn = 1
       )
 
       SELECT
@@ -119,6 +132,10 @@ exports.chattingList = async (req, res) =>{
         cr.max_members,
         cr.current_members,
         cr.owner_id,
+        ou.name AS owner_name,
+        lm.sender_id,
+        si.sender_name,
+        si.sender_profile_image_url,
         p.profile_image_url,
         lm.content AS last_message,
         lm.created_at AS last_message_time, -- 마지막 메세지 시간
@@ -127,15 +144,17 @@ exports.chattingList = async (req, res) =>{
       JOIN chat_rooms cr ON ur.chat_room_id = cr.chat_room_id
       LEFT JOIN last_messages lm ON cr.chat_room_id = lm.chat_room_id AND lm.rn = 1
       LEFT JOIN profiles p ON cr.owner_id = p.user_id
+      LEFT JOIN users ou ON ou.id = cr.owner_id
+      LEFT JOIN sender_info si ON si.sender_id = lm.sender_id
       LEFT JOIN unread_counts uc ON cr.chat_room_id = uc.chat_room_id
       WHERE ur.user_id = ? AND ur.is_active = 1;
-      `, [userID, userID]);
+      `, [userID, userID, userID]);
 
     console.log("채팅목록 요청 중 : ",userID);
-    res.status(200).json(rows);
+    return res.status(200).json(rows);
   }catch(error){
     console.error("채팅목록 요청 실패:",error);
-    res.status(500).json({message:"채팅목록 요청 오류"});
+    return res.status(500).json({message:"채팅목록 요청 오류"});
   }
 }
 
@@ -153,10 +172,49 @@ exports.ActionList = async (req, res) => {
       SET f.status = ?
       WHERE f.friend_id = ?
       `,[data,userID]);
-    res.status(200).json({message : "요청처리 완료!"})
+    return res.status(200).json({message : "요청처리 완료!"})
 
   }catch(error){
     console.log("Action 실패 : ", error);
-    res.status(500).json("Action 요청 실패");
+    return res.status(500).json("Action 요청 실패");
+  }
+}
+
+// 채팅 가져오기
+exports.chatMessage = async (req, res) =>{
+
+  // 필요한정보
+  // profile
+  // datetime
+  // username
+  // message
+
+  try{
+    const chatroomID = req.query.chatroom;
+    
+    const [rows] = await db.query(`
+      SELECT 
+      u.name AS name,
+      u.id AS friend_id,
+      p.profile_image_url AS profile_image_url,
+      m.created_at AS datetime,
+      m.content AS message
+      FROM users u
+      JOIN profiles p
+      ON u.id = p.user_id
+      JOIN messages m
+      ON m.sender_id = u.id
+      WHERE m.chat_room_id = ?
+      `,[chatroomID]);
+    console.log("메시지 요청 성공! : ",rows);
+
+    if(rows.length === 0){
+      return null;
+    }
+
+    return res.status(200).json(rows);
+  }catch(error){
+    console.log("메세지 요청 실패:",error);
+    return res.status(500).json({"메세지 요청 에러":error});
   }
 }
