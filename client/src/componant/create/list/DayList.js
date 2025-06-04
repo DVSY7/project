@@ -2,40 +2,81 @@ import KakaoMap from "./KakaoMap";
 import ListAddPhoto from "./ListAddPhoto";
 import { useState } from "react";
 
-export default function DayList({
-  days,
-  activeDay,
-  setActiveDay,
-  handleAddDay,
-  registeredItems,
-  setRegisteredItems,
-  showExample,
-  setShowExample,
-  ImageSrc,
-  setImageSrc,
-  text,
-  setText,
-  handleImageUpload,
-  showMap,
-  setShowMap,
-}) {
+export default function DayList() {
+
+   // 예시 이미지 표시 여부
+   const [showExample, setShowExample] = useState(false);
+   // 이미지 URL 상태
+   const [ImageSrc, setImageSrc] = useState(null);
+   // 텍스트 상태
+   const [text, setText] = useState("");
+   // 등록된 항목 상태
+   const [registeredItems, setRegisteredItems] = useState([]);
+
+
   const [editingItem, setEditingItem] = useState(null);
   const [editText, setEditText] = useState("");
   const [editImage, setEditImage] = useState(null);
 
-  const handleDayClick = (day) => {
-    setActiveDay(day);
-  };
+    // 일차 목록 스태이트
+    const [days, setDays] = useState(["1일차"]);
+    // 현재 활성화된 날짜
+    const [activeDay, setActiveDay] = useState("1일차");
+  
+    // 버튼 표시 여부 스테이트
+    const [showAddDayButton, setShowAddDayButton] = useState(true);
 
+    const [showMap, setShowMap] = useState(false);
+
+      //이미지 업로드 핸들러
+  // CreateList.js 내부의 handleImageUpload 함수 수정
+  const handleImageUpload = (e) => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+    e.preventDefault(); // 기본 동작 방지 (페이지 이동, 제출 등)
+
+    const file = e.target.files?.[0]; // 첫번째 파일 선택
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageSrc(reader.result);
+      // 파일 선택기 초기화 (중복 첨부 방지용)
+      e.target.value = null;
+    };
+    reader.readAsDataURL(file); // 파일을 base64 문자열로 읽음 (미리보기용)
+  };
+  
+    // 일차 추가 함수
+    const handleAddDay = () => {
+      const newDay = `${days.length + 1}일차`;
+      setDays([...days, newDay]);
+    };
+  
+    // 클릭한 날자 활성화
+    const handleDayClick = (day) => {
+      setActiveDay(day);
+    };
+
+  // 이미지 등록 로직
   const handleRegisterForActiveDay = () => {
-    if (ImageSrc && text.trim() !== "") {
+
+    if(!ImageSrc){
+        alert("이미지를 첨부해주세요");
+        return;
+    }else if(text.trim() === ""){
+      alert("텍스트를 입력해주세요");
+      return;
+    }
+
+    // 이미지와 글이 모두 입력된 경우에만 등록 가능
       setRegisteredItems((prevItems) => {
         const existingItems = prevItems[activeDay] || [];
         
+        // 수정 할 때
         if (editingItem) {
           return {
-            ...prevItems,
-            [activeDay]: existingItems.map(item =>
+            ...prevItems, //기존에 있던 모든 날짜의 항목들을 그대로 복사
+            [activeDay]: existingItems.map(item => // activaDay에 해당하는 값만 덮어쓰기
               item.id === editingItem.id
                 ? { ...item, description: text, image: ImageSrc }
                 : item
@@ -43,11 +84,13 @@ export default function DayList({
           };
         }
 
+        // 이미지 등록 하루 한개 제한
         const hasImage = existingItems.some(item => item.type === 'image');
         if (hasImage) {
           return prevItems;
         }
 
+        // 새로 등록할 때
         return {
           ...prevItems,
           [activeDay]: [
@@ -57,13 +100,11 @@ export default function DayList({
         };
       });
 
+      // 초기화
       setEditingItem(null);
       setImageSrc(null);
       setText("");
       setShowExample(false);
-    } else {
-      setShowExample(false);
-    }
   };
 
   const handlePlaceSelect = (item) => {
@@ -90,13 +131,18 @@ export default function DayList({
   };
 
   const handleDeleteItem = (itemId) => {
-    setRegisteredItems((prevItems) => {
-      const existingItems = prevItems[activeDay] || [];
-      return {
-        ...prevItems,
-        [activeDay]: existingItems.filter(item => item.id !== itemId),
-      };
-    });
+    if(window.confirm("정말 삭제하시겠습니까?")){
+      setRegisteredItems((prevItems) => {
+        const existingItems = prevItems[activeDay] || [];
+        return {
+          ...prevItems,
+          [activeDay]: existingItems.filter(item => item.id !== itemId),
+        };
+      });
+    }else{
+      return;
+    }
+   
   };
 
   const handleCancelEdit = () => {
@@ -156,7 +202,7 @@ export default function DayList({
       </div>
 
       {activeDay && (
-        <div className="relative overflow-y-auto max-h-[610px]">
+        <div className="relative max-h-[610px]">
           {!editingItem && !showExample && !showMap && (
             <div>
               {itemsForActiveDay.map((item) => (
@@ -188,8 +234,7 @@ export default function DayList({
                             className="inline-flex items-center px-1 py-1 text-sm text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <span></span>
-                            상세보기
+                            <span>상세보기</span>
                           </a>
                         )}
                       </>
@@ -261,7 +306,6 @@ export default function DayList({
                     <button
                       className="bg-blue-500 text-white px-4 rounded mb-4 hover:bg-blue-600"
                       onClick={editingItem ? handleSaveEdit : handleRegisterForActiveDay}
-                      disabled={!ImageSrc || !text.trim()}
                     >
                       {editingItem ? "수정 완료" : "등록"}
                     </button>

@@ -7,35 +7,19 @@ import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
 
 export default function CreateList() {
-  // 예시 이미지 표시 여부
-  const [showExample, setShowExample] = useState(false);
-  // 이미지 URL 상태
-  const [ImageSrc, setImageSrc] = useState(null);
-  // 텍스트 상태
-  const [text, setText] = useState("");
-  // 등록된 항목 상태
-  const [registeredItems, setRegisteredItems] = useState([]);
 
-  //이미지 업로드 핸들러
-  // CreateList.js 내부의 handleImageUpload 함수 수정
-  const handleImageUpload = (e) => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    e.preventDefault();
+  // 계획형, 비계획형 상태관리 스테이트
+  const [isPlanned, setIsPlanned] = useState(true);
+  // 혼자하기, 같이하기 상태관리 스테이트
+  const [Group, setGroup] = useState(true);
+   // 인원 수 선택 항목변수
+   const selectNumber = [2, 4, 8, 12, 16, 20, 30, 50, 100, "기타"];
+  // 대면, 비대면 여부 상태관리 스테이트
+  const [Offline, setOffline] = useState(true);
 
-    const file = e.target.files?.[0];
-    if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImageSrc(reader.result);
-      // 파일 선택기 초기화 (중복 첨부 방지용)
-      e.target.value = null;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // 인원 수 선택 항목변수
-  const selectNumber = [2, 4, 8, 12, 16, 20, 30, 50, 100, "기타"];
+  //선택된 관심사 상태
+  const [selectedInterest, setSelectedInterest] = useState("");
   // 관심사 선택 항목변수
   const selectInterest = [
     "여행 & 탐험",
@@ -49,29 +33,6 @@ export default function CreateList() {
     "기타",
   ];
 
-  //선택된 관심사 상태
-  const [selectedInterest, setSelectedInterest] = useState("");
-
-  // 계획형, 비계획형 상태관리 스테이트
-  const [isPlanned, setIsPlanned] = useState(true);
-  // 혼자하기, 같이하기 상태관리 스테이트
-  const [Group, setGroup] = useState(true);
-  // 대면, 비대면 여부 상태관리 스테이트
-  const [Offline, setOffline] = useState(true);
-
-  // 일차 목록 스태이트
-  const [days, setDays] = useState(["1일차"]);
-  // 현재 활성화된 날짜
-  const [activeDay, setActiveDay] = useState("1일차");
-
-  // 버튼 표시 여부 스테이트
-  const [showAddDayButton, setShowAddDayButton] = useState(true);
-
-  // 일차 추가 함수
-  const handleAddDay = () => {
-    const newDay = `${days.length + 1}일차`;
-    setDays([...days, newDay]);
-  };
 
   // 태그 목록
   const [tags, setTags] = useState([]);
@@ -121,7 +82,7 @@ export default function CreateList() {
   // 태그 삭제 함수
   const handleDeleteTag = (index) => {
     // 해당 인덱스의 태그 제거
-    const updatedTags = tags.filter((_, i) => i !== index);
+    const updatedTags = tags.filter((_, i) => i !== index); // 삭제할 태그만 삭제, 나머지 남김
     setTags(updatedTags);
   };
 
@@ -131,9 +92,6 @@ export default function CreateList() {
       handleAddTag();
     }
   };
-
-  const [showMap, setShowMap] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
 
 
   return (
@@ -172,24 +130,7 @@ export default function CreateList() {
 
                 {/* 일차 추가 버튼 */}
                 <div className="grid grid-rows-[1fr_10fr]">
-                  <DayList
-                    days={days}
-                    showAddDayButton={showAddDayButton}
-                    handleAddDay={handleAddDay}
-                    activeDay={activeDay}
-                    setActiveDay={setActiveDay}
-                    showExample={showExample}
-                    setShowExample={setShowExample}
-                    ImageSrc={ImageSrc} // 이미지 URL 상태 전달
-                    setImageSrc={setImageSrc}
-                    text={text} // 텍스트 상태 전달
-                    setText={setText} // 텍스트 상태 업데이트 함수 전달
-                    handleImageUpload={handleImageUpload} // 이미지 업로드 함수 전달
-                    registeredItems={registeredItems}
-                    setRegisteredItems={setRegisteredItems}
-                    showMap={showMap}
-                    setShowMap={setShowMap}
-                  />
+                  <DayList />
                 </div>
                 {/* 하단 영역 */}
                 <div className="mt-5">
