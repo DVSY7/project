@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Conversation from "./conversation";
 import { insertDateHeaders, formatDateKorean } from "./utilities/dateUtils";
 import { CheckedCurrentMemberButton, CommunityButtons } from "./ui/button";
@@ -39,7 +39,7 @@ export default function Chatroom(props) {
     const [messageText, setMessageText] = useState("");
 
     // 채팅서버 설정
-    const socket = io("http://localhost:5000",{
+    const socket = io("http://112.76.56.81:5000",{
         transports: ['websocket'],
         autoConnect: false,
     });
@@ -71,7 +71,9 @@ export default function Chatroom(props) {
     }, [chatroomID]);
 
     // 날짜 구분 로직 추가
-    const formattedMessages = insertDateHeaders(messaging);
+    const formattedMessages = useMemo(()=>{
+        return insertDateHeaders(messaging);
+    },[messaging]); 
 
     // socket에 연결하는 로직
     useEffect(()=>{
@@ -112,6 +114,15 @@ export default function Chatroom(props) {
         // 입력창 비우기
         setMessageText("");
     }
+
+    // 메세지 전송 후 스크롤
+    const messageEndRef = useRef(null);
+
+    useEffect(()=> {
+        if(messageEndRef.current){
+            messageEndRef.current.scrollIntoView({behavior: "smooth"});
+        }
+    },[messaging]);
 
 
     return (
@@ -188,6 +199,7 @@ export default function Chatroom(props) {
                                         chattingList = {messaging}
                                         setActionList = {setActionList}
                                     />
+                                    <div ref={messageEndRef} className={`h-[10px]`}></div>
                                 </div>
                             );
                         })}
@@ -196,7 +208,17 @@ export default function Chatroom(props) {
                     {/* 채팅내용 입력 영역 */}
                     <div className={` flex items-center w-full h-[70px] border-t-[2px] border-solid border-gray-200`}>
                         <textarea
-                        value={messageText} 
+                        value={messageText}
+                        onKeyDown={(e) => {
+                            if(e.key === 'Enter'){
+                                if(e.shiftKey){
+                                    return;
+                                }else{
+                                    e.preventDefault(); // 기본 Enter 줄바꿈 방지
+                                    handleSendMessage();
+                                }
+                            }
+                        }} 
                         onChange={(e)=> {setMessageText(e.target.value); console.log(messageText)}}
                         placeholder="내용을 입력하세요." className={`focus:outline-none resize-none pt-5 pl-5 w-[calc(100%_-_120px)] rounded-3xl`}></textarea>
                         <img alt="클립" src="/images/클립.png" className={`w-[20px] h-[20px] mr-2`} />
