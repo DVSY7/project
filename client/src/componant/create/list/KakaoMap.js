@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 
-export default function KakaoMap({showMap, setShowMap, handlePlaceSelect}) {
+export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editingPlace}) {
   const mapContainer = useRef(null);
   const [keyword, setKeyword] = useState("");
   const [map, setMap] = useState(null);
@@ -9,6 +9,13 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect}) {
   const [infowindow, setInfowindow] = useState(null);
   const [places, setPlaces] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // 수정 모드일 때 초기화
+  useEffect(() => {
+    if (editingPlace) {
+      setKeyword(editingPlace.description);
+    }
+  }, [editingPlace]);
 
   // 지도 초기화
   useEffect(() => {
@@ -37,9 +44,14 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect}) {
 
         const newInfowindow = new window.kakao.maps.InfoWindow({ zIndex: 1 });
         setInfowindow(newInfowindow);
+
+        // 수정 모드일 때 기존 장소 표시
+        if (editingPlace) {
+          searchPlaces();
+        }
       });
     };
-  }, []);
+  }, [editingPlace]);
 
   // 장소의 상세 정보를 가져오는 함수
   const getPlaceDetail = async (placeId) => {

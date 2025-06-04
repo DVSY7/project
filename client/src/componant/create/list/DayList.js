@@ -4,8 +4,8 @@ import { useState } from "react";
 
 export default function DayList() {
 
-   // 예시 이미지 표시 여부
-   const [showExample, setShowExample] = useState(false);
+   // 사진 첨부 표시 여부
+   const [showImageInput, setshowImageInput] = useState(false);
    // 이미지 URL 상태
    const [ImageSrc, setImageSrc] = useState(null);
    // 텍스트 상태
@@ -27,6 +27,8 @@ export default function DayList() {
     const [showAddDayButton, setShowAddDayButton] = useState(true);
 
     const [showMap, setShowMap] = useState(false);
+    // 장소 수정 
+    const [editingPlace,setEditingPlace] = useState(null);
 
       //이미지 업로드 핸들러
   // CreateList.js 내부의 handleImageUpload 함수 수정
@@ -104,7 +106,7 @@ export default function DayList() {
       setEditingItem(null);
       setImageSrc(null);
       setText("");
-      setShowExample(false);
+      setshowImageInput(false);
   };
 
   const handlePlaceSelect = (item) => {
@@ -118,6 +120,19 @@ export default function DayList() {
       const imageItems = existingItems.filter(i => i.type === 'image');
       const normalItems = existingItems.filter(i => i.type !== 'image');
 
+      // 수정인 경우우
+      if (editingPlace){
+        return {
+          ...prevItems,
+          [activeDay]:existingItems.map(placeItem =>
+            placeItem.id === editingPlace.id
+            ? {...item, type:'place', id: placeItem.id}
+            : placeItem
+          ),
+        }
+      }
+
+      // 새로 등록인 경우
       return {
         ...prevItems,
         [activeDay]: [
@@ -130,6 +145,8 @@ export default function DayList() {
     setShowMap(false);
   };
 
+
+  // 삭제 할 경우
   const handleDeleteItem = (itemId) => {
     if(window.confirm("정말 삭제하시겠습니까?")){
       setRegisteredItems((prevItems) => {
@@ -149,7 +166,7 @@ export default function DayList() {
     setEditingItem(null);
     setEditText("");
     setEditImage(null);
-    setShowExample(false);
+    setshowImageInput(false);
     setText("");
     setImageSrc(null);
   };
@@ -182,6 +199,20 @@ export default function DayList() {
 
   const hasRegisteredImage = itemsForActiveDay.some(item => item.type === 'image');
 
+  const handleEditItem = (item) => {
+    setEditingItem(item);
+    setEditText(item.description);
+    setEditImage(item.image);
+    if(item.type === 'image') {
+      setshowImageInput(true);
+      setText(item.description);
+      setImageSrc(item.image);
+    }else if(item.type === 'place'){
+      setEditingPlace(item);
+      setShowMap(true)
+    }
+  }
+
   return (
     <>
       <div className="flex items-center">
@@ -203,7 +234,7 @@ export default function DayList() {
 
       {activeDay && (
         <div className="relative max-h-[610px]">
-          {!editingItem && !showExample && !showMap && (
+          {!editingItem && !showImageInput && !showMap && (
             <div>
               {itemsForActiveDay.map((item) => (
                 <div
@@ -242,7 +273,7 @@ export default function DayList() {
                   </div>
                   <div className="flex items-center gap-2 pr-4">
                     <button
-                      onClick={() => setShowMap(true)}
+                      onClick={() => handleEditItem(item)}
                       className="px-3 py-1 rounded hover:text-blue-600"
                     >
                       수정
@@ -259,10 +290,10 @@ export default function DayList() {
             </div>
           )}
 
-          {showExample ? (
+          {showImageInput ? (
             <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[610px] relative">
               {/* 닫기 버튼 */}
-              <button className="absolute top-4 right-4" onClick={()=> setShowExample(false)}>✕</button>
+              <button className="absolute top-4 right-4" onClick={()=> setshowImageInput(false)}>✕</button>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold">
                   {editingItem ? "항목 수정하기" : "새로운 항목 추가하기"}
@@ -321,6 +352,7 @@ export default function DayList() {
               showMap={showMap}
               setShowMap={setShowMap}
               handlePlaceSelect={handlePlaceSelect}
+              editingPlace={editingPlace}
             />
             </div>
           ) : !editingItem && (
@@ -332,7 +364,7 @@ export default function DayList() {
                 장소 등록하기 +
               </button>
               {!hasRegisteredImage && (
-                <ListAddPhoto setShowExample={setShowExample} />
+                <ListAddPhoto setshowImageInput={setshowImageInput} />
               )}
               {/* <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
                 메모 하기 +

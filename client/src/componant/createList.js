@@ -7,16 +7,8 @@ import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
 
 export default function CreateList() {
-
   // 계획형, 비계획형 상태관리 스테이트
   const [isPlanned, setIsPlanned] = useState(true);
-  // 혼자하기, 같이하기 상태관리 스테이트
-  const [Group, setGroup] = useState(true);
-   // 인원 수 선택 항목변수
-   const selectNumber = [2, 4, 8, 12, 16, 20, 30, 50, 100, "기타"];
-  // 대면, 비대면 여부 상태관리 스테이트
-  const [Offline, setOffline] = useState(true);
-
 
   //선택된 관심사 상태
   const [selectedInterest, setSelectedInterest] = useState("");
@@ -110,15 +102,7 @@ export default function CreateList() {
               <div className="grid grid-rows-[1fr_6.5fr_0.5fr] p-4 pl-10">
                 {/* 상단 영역 */}
                 <div className="flex grid grid-rows-[0.5fr_1fr]">
-                  <TopButtons
-                    isPlanned={isPlanned}
-                    setIsPlanned={setIsPlanned}
-                    Group={Group}
-                    setGroup={setGroup}
-                    Offline={Offline}
-                    setOffline={setOffline}
-                    selectNumber={selectNumber}
-                  />
+                  <TopButtons isPlanned={isPlanned} setIsPlanned={setIsPlanned} />
                   {/* 제목, 프로필, 관심사 선택 영역 */}
                   <TitleAndSelectInterest
                     selectInterest={selectInterest}
