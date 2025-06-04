@@ -4,19 +4,19 @@ import { useState } from "react";
 
 export default function DayList() {
 
-   // 사진 첨부 표시 여부
-   const [showImageInput, setshowImageInput] = useState(false);
-   // 이미지 URL 상태
-   const [ImageSrc, setImageSrc] = useState(null);
-   // 텍스트 상태
-   const [text, setText] = useState("");
-   // 등록된 항목 상태
-   const [registeredItems, setRegisteredItems] = useState([]);
+    // 사진 첨부 표시 여부
+    const [showImageInput, setshowImageInput] = useState(false);
+    // 이미지 URL 상태
+    const [ImageSrc, setImageSrc] = useState(null);
+    // 텍스트 상태
+    const [text, setText] = useState("");
+    // 등록된 항목 상태
+    const [registeredItems, setRegisteredItems] = useState([]);
 
 
-  const [editingItem, setEditingItem] = useState(null);
-  const [editText, setEditText] = useState("");
-  const [editImage, setEditImage] = useState(null);
+    const [editingItem, setEditingItem] = useState(null);
+    const [editText, setEditText] = useState("");
+    const [editImage, setEditImage] = useState(null);
 
     // 일차 목록 스태이트
     const [days, setDays] = useState(["1일차"]);
@@ -30,23 +30,23 @@ export default function DayList() {
     // 장소 수정 
     const [editingPlace,setEditingPlace] = useState(null);
 
-      //이미지 업로드 핸들러
-  // CreateList.js 내부의 handleImageUpload 함수 수정
-  const handleImageUpload = (e) => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    e.preventDefault(); // 기본 동작 방지 (페이지 이동, 제출 등)
+    //이미지 업로드 핸들러
+    // CreateList.js 내부의 handleImageUpload 함수 수정
+    const handleImageUpload = (e) => {
+      e.stopPropagation(); // 이벤트 버블링 중지
+      e.preventDefault(); // 기본 동작 방지 (페이지 이동, 제출 등)
 
-    const file = e.target.files?.[0]; // 첫번째 파일 선택
-    if (!file) return;
+      const file = e.target.files?.[0]; // 첫번째 파일 선택
+      if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImageSrc(reader.result);
-      // 파일 선택기 초기화 (중복 첨부 방지용)
-      e.target.value = null;
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageSrc(reader.result);
+        // 파일 선택기 초기화 (중복 첨부 방지용)
+        e.target.value = null;
+      };
+      reader.readAsDataURL(file); // 파일을 base64 문자열로 읽음 (미리보기용)
     };
-    reader.readAsDataURL(file); // 파일을 base64 문자열로 읽음 (미리보기용)
-  };
   
     // 일차 추가 함수
     const handleAddDay = () => {
@@ -59,16 +59,16 @@ export default function DayList() {
       setActiveDay(day);
     };
 
-  // 이미지 등록 로직
-  const handleRegisterForActiveDay = () => {
+    // 이미지 등록 로직
+    const handleRegisterForActiveDay = () => {
 
-    if(!ImageSrc){
-        alert("이미지를 첨부해주세요");
+      if(!ImageSrc){
+          alert("이미지를 첨부해주세요");
+          return;
+      }else if(text.trim() === ""){
+        alert("텍스트를 입력해주세요");
         return;
-    }else if(text.trim() === ""){
-      alert("텍스트를 입력해주세요");
-      return;
-    }
+      }
 
     // 이미지와 글이 모두 입력된 경우에만 등록 가능
       setRegisteredItems((prevItems) => {
@@ -110,17 +110,15 @@ export default function DayList() {
   };
 
   const handlePlaceSelect = (item) => {
+
     setRegisteredItems((prevItems) => {
       const existingItems = prevItems[activeDay] || [];
-      const isDuplicate = existingItems.some(
+      const isDuplicate = existingItems.some( // some : 배열 중 하나라도 만족하는 요소가 있으면 true
         (i) => i.image === item.image && i.description === item.description
       );
-      if (isDuplicate) return prevItems;
+      if (isDuplicate) return prevItems; // 증복이면 기존 항목을 그대로 반환, 추가 안함
 
-      const imageItems = existingItems.filter(i => i.type === 'image');
-      const normalItems = existingItems.filter(i => i.type !== 'image');
-
-      // 수정인 경우우
+      // 수정인 경우
       if (editingPlace){
         return {
           ...prevItems,
@@ -136,9 +134,8 @@ export default function DayList() {
       return {
         ...prevItems,
         [activeDay]: [
-          ...imageItems,
+          ...existingItems,
           { ...item, type: 'place', id: Date.now() },
-          ...normalItems,
         ],
       };
     });
