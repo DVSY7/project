@@ -75,7 +75,6 @@ export default function ProfileModal(props) {
     const memberIds = currentList.map(member => member.friend_id);
     const currentIndex = memberIds.indexOf(MemberKey);
 
-    console.log("채팅리스트", currentList);
 
     if (currentIndex === -1 || memberIds.length === 0) return;
 
@@ -87,7 +86,6 @@ export default function ProfileModal(props) {
     }
 
     const newMemberKey = memberIds[newIndex];
-    console.log("새로운 인덱스:",newMemberKey);
 
     setClickedProfile(prev => {
         const updated = Object.fromEntries(
@@ -100,8 +98,6 @@ export default function ProfileModal(props) {
 
     const currentRef = useRef(null);
 
-    console.log("클릭된 프로필",clickedProfile);
-    console.log(chattingList);
 
     // 프로필 클릭 시 랜더링
     if (!clickedProfile[MemberKey]) { return null };

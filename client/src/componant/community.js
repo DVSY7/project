@@ -7,6 +7,7 @@ import Menu from './menu';
 import { useState, useRef, useEffect } from "react";
 import { checkedToken } from './function/checkedToken';
 import { fetchList } from './community/api/fetchListAPI';
+import { fetchUserInfo } from './community/api/fetchUserInfo';
 
 export default function Community() {
 
@@ -47,6 +48,8 @@ export default function Community() {
   const [friendList, setFriendList] = useState([]);
   // 차단목록 정보
   const [blockedList, setBlockedList] = useState([]);
+  // 유저 정보
+  const [userInfo, setUserInfo] = useState();
   // 차단 & 해제 동작 업데이트
   const [actionList, setActionList] = useState(Date.now());
 
@@ -56,9 +59,13 @@ export default function Community() {
                 const friendsData = await fetchList("friendList",name);
                 const blockedData = await fetchList("blockList",name);
                 const chattingData = await fetchList("chattingList",name);
+                const UserInfo = await fetchUserInfo(name);
+                
                 setFriendList(friendsData);
                 setBlockedList(blockedData);
                 setChattingList(chattingData);
+                setUserInfo(UserInfo[0]);
+
                 console.log("목록 불러오기 실행");
             }catch(error){
                 console.error("친구목록 불러오기 실패",error);
@@ -66,6 +73,8 @@ export default function Community() {
         }
         getList();
     },[name,actionList]);
+
+    console.log(userInfo.user_id);
 
   // 탭메뉴 상태관리 
   const [selectedTab, setSelectedTab] = useState("채팅");
@@ -223,6 +232,7 @@ export default function Community() {
                   friendList = {friendList}
                   blockedList = {blockedList}
                   setActionList = {setActionList}
+                  userInfo = {userInfo}
                   />
             </div>
           </div>

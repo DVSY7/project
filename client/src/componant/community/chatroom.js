@@ -3,12 +3,16 @@ import Conversation from "./conversation";
 import { insertDateHeaders, formatDateKorean } from "./utilities/dateUtils";
 import { CheckedCurrentMemberButton, CommunityButtons } from "./ui/button";
 import { fetchMessageAPI } from "./api/fetchMessageAPI";
+import io from "socket.io-client";
+
 export default function Chatroom(props) {
 
     // 전달된 대화방과 해당하는 유저정보
     const { chattingList, selectedList, flexCenter } = props;
     // 모달을 관리하기 위한 props
     const {friendList, blockedList, setActionList} = props;
+    // 채팅 송신을 위한 props
+    const {userInfo} = props;
 
     // 현재 로그인한 유저
     const {userName} = props;
@@ -33,6 +37,12 @@ export default function Chatroom(props) {
 
     // 채팅에 입력한 내용 상태관리
     const [messageText, setMessageText] = useState("");
+
+    // 채팅서버 설정
+    const socket = io("http://localhost:5000",{
+        transports: ['websocket'],
+        autoConnect: false,
+    });
 
     // selectedList 값이 변동이 있을때만 실행
     useEffect(() => {
@@ -62,6 +72,47 @@ export default function Chatroom(props) {
 
     // 날짜 구분 로직 추가
     const formattedMessages = insertDateHeaders(messaging);
+
+    // socket에 연결하는 로직
+    useEffect(()=>{
+        if(!chatroomID)return;
+
+        socket.connect();
+
+        // 방 참여
+        socket.emit("join_room", chatroomID);
+
+        // 메세지 수신
+        socket.on("receive_message", (msg) => {
+            setMessaging((prev) => [...prev, msg]);
+        });
+
+        return () => {
+            socket.emit("leave_room", chatroomID);
+            socket.off("receive_message");
+            socket.disconnect();
+        }
+    },[chatroomID])
+
+    // 메세지 전송 함수
+    const handleSendMessage = () => {
+        if(!messageText.trim()) return;
+
+        const newMessage = {
+            chat_room_id: chatroomID,
+            sender_id: userInfo.user_id,
+            profile_image_url: userInfo.profile_image,
+            name: userInfo.user_name,
+            message: messageText,
+            datetime: new Date().toISOString(),
+        };
+
+        socket.emit("send_message", newMessage);
+        setMessaging((prev) => [...prev, newMessage]);
+        // 입력창 비우기
+        setMessageText("");
+    }
+
 
     return (
         <>
@@ -144,11 +195,14 @@ export default function Chatroom(props) {
 
                     {/* 채팅내용 입력 영역 */}
                     <div className={` flex items-center w-full h-[70px] border-t-[2px] border-solid border-gray-200`}>
-                        <textarea 
-                        onChange={(e)=> {setMessageText(e.target.value); console.log(JSON.stringify(e.target.value))}}
+                        <textarea
+                        value={messageText} 
+                        onChange={(e)=> {setMessageText(e.target.value); console.log(messageText)}}
                         placeholder="내용을 입력하세요." className={`focus:outline-none resize-none pt-5 pl-5 w-[calc(100%_-_120px)] rounded-3xl`}></textarea>
                         <img alt="클립" src="/images/클립.png" className={`w-[20px] h-[20px] mr-2`} />
-                        <div className={`w-[70px] h-[35px] bg-black rounded-lg flex justify-center items-center`}>
+                        <div 
+                        onClick={handleSendMessage}
+                        className={`w-[70px] h-[35px] bg-black rounded-lg flex justify-center items-center`}>
                             <img alt="보내기" src="/images/보내기.png" className={`w-[20px] h-[20px]`} />
                         </div>
                     </div>

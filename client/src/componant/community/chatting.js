@@ -26,7 +26,6 @@ export default function Chatting(props) {
                 const isSelectedList = selectedList === info.title;
                 const isSelectedTab = selectedTab === communityTab[1];
 
-                console.log(info);
                 return (
                     <div key={info.chat_room_id} onClick={() => { handleChangeList(info.title) }} className={`w-[90%] h-[110px] ${isSelectedList ? "bg-gray-200" : "bg-white"} ${isSelectedTab ? "block" : "hidden"} rounded-lg border border-solid border-gray-300 mb-2`}>
 

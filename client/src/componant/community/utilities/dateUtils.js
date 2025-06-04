@@ -19,18 +19,25 @@ export function formatDateTime(dateStr){
         });
 }
 
-export function insertDateHeaders(message){
-    const result = [];
-    let lastDate = null;
+export const insertDateHeaders = (messages) => {
+  const newMessages = [];
+  let lastDate = null;
 
-    message.forEach((msg) => {
-        const date = msg.datetime.split("T")[0];
-        if(date !== lastDate){
-            result.push({type : "date-stamp",date});
-            lastDate = date;
-        }
-        result.push({...msg, type : "message"});
-    });
+  messages.forEach((msg) => {
+    const timestamp = msg?.timestamp;
+    if (!timestamp || typeof timestamp !== "string") {
+      // 무시하거나 기본값 사용
+      newMessages.push(msg);
+      return;
+    }
 
-    return result;
-}
+    const date = timestamp.split("T")[0];
+    if (date !== lastDate) {
+      newMessages.push({ type: "date-stamp", date });
+      lastDate = date;
+    }
+    newMessages.push(msg);
+  });
+
+  return newMessages;
+};

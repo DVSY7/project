@@ -26,7 +26,6 @@ export default function Conversation(props) {
                 alt="미니프로필" src={message.profile_image_url} className={`w-[50px] h-[50px] rounded-[50%] ${userName !== currentUserName ? "order-3 mr-4" : "ml-4"}`}>
                 </img>
                 {/* 프로필 클릭 모달 */}
-                {console.log("대화에서 클릭",clickedProfile)}
                 {clickedProfile[message.friend_id] && (
                     <ProfileModal
                         requestComponent = "conversation"

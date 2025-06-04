@@ -19,5 +19,6 @@ export const actionList = async (actionType, userID)=>{
         return response.data;
     }catch(error){
         console.error("Action 반영 실패:", error, {userID : userID});
+        return null;
     }
 }

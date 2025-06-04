@@ -218,3 +218,25 @@ exports.chatMessage = async (req, res) =>{
     return res.status(500).json({"메세지 요청 에러":error});
   }
 }
+
+// 유저정보 가져오기
+exports.userInfo = async (req, res) =>{
+  try{
+    const userName = req.query.username;
+    const [rows] = await db.query(`
+      SELECT
+      u.id AS user_id,
+      u.name AS user_name,
+      p.profile_image_url AS profile_image
+      FROM users u
+      JOIN profiles p
+      ON u.id = p.user_id
+      WHERE u.username = ?
+      `,[userName]);
+
+    return res.status(200).json(rows);
+  }catch(error){
+    return res.status(500).json({message:"유저정보 요청 실패:",error});
+
+  }
+}
