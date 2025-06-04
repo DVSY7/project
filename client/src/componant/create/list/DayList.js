@@ -287,7 +287,7 @@ export default function DayList() {
             </div>
           )}
 
-          {showImageInput ? (
+          {showImageInput && (
             <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[610px] relative">
               {/* 닫기 버튼 */}
               <button className="absolute top-4 right-4" onClick={()=> setshowImageInput(false)}>✕</button>
@@ -341,7 +341,10 @@ export default function DayList() {
                 </div>
               </div>
             </div>
-          ) : showMap ? (
+          ) 
+        }
+          
+         { showMap && (
             <div className="relative">
               {/* 닫기 버튼 */}
               <button className="absolute top-0 right-2 z-10 text-2xl" onClick={() =>setShowMap(false)}>✕</button>
@@ -352,7 +355,11 @@ export default function DayList() {
               editingPlace={editingPlace}
             />
             </div>
-          ) : !editingItem && (
+          ) 
+        }
+          
+          
+          {!editingItem && !showImageInput && !showMap && (
             <div className="relative">
               <button
                 className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5"
@@ -363,9 +370,6 @@ export default function DayList() {
               {!hasRegisteredImage && (
                 <ListAddPhoto setshowImageInput={setshowImageInput} />
               )}
-              {/* <button className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5">
-                메모 하기 +
-              </button> */}
             </div>
           )}
         </div>
