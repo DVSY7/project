@@ -74,8 +74,6 @@ export default function Community() {
         getList();
     },[name,actionList]);
 
-    console.log(userInfo.user_id);
-
   // 탭메뉴 상태관리 
   const [selectedTab, setSelectedTab] = useState("채팅");
   // 탭메뉴 필터링 상태관리

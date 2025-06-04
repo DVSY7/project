@@ -77,6 +77,7 @@ export function CheckedCurrentMemberButton(props) {
                         <span className={`ml-4`}>대화상대</span>
                         {/* 이부분에 백엔드 필요 */}
                         <span className={`ml-2`}>{chattingList.length}</span>
+                        {console.log(chattingList)}
                     </div>
                     {/* 대화상대 목록영역 */}
                     <div
@@ -93,7 +94,6 @@ export function CheckedCurrentMemberButton(props) {
                                         <div className={`flex justify-center items-center ml-auto mr-3 bg-gray-300 w-[60px] h-[40px] rounded-md`}>
                                             <img alt="친구추가" src="images/친구추가.png" className={`w-[30px] h-[30px] ml-2`}></img>
                                         </div>
-                                        {console.log("선택된 프로필",clickedProfile)}
                                     </div>
                                     <ProfileModal
                                         MemberKey = {Member.friend_id}

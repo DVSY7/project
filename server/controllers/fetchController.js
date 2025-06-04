@@ -193,19 +193,19 @@ exports.chatMessage = async (req, res) =>{
     const chatroomID = req.query.chatroom;
     
     const [rows] = await db.query(`
-      SELECT 
-      u.name AS name,
-      u.id AS friend_id,
-      p.profile_image_url AS profile_image_url,
-      m.created_at AS datetime,
-      m.content AS message
-      FROM users u
-      JOIN profiles p
-      ON u.id = p.user_id
-      JOIN messages m
-      ON m.sender_id = u.id
-      WHERE m.chat_room_id = ?
-      `,[chatroomID]);
+      SELECT DISTINCT
+    u.name AS name,
+    u.id AS friend_id,
+    p.profile_image_url AS profile_image_url,
+    m.created_at AS datetime,
+    m.content AS message
+FROM user_rooms ur
+JOIN users u ON ur.user_id = u.id
+LEFT JOIN profiles p ON u.id = p.user_id
+LEFT JOIN messages m ON m.sender_id = u.id AND m.chat_room_id = ?
+WHERE ur.chat_room_id = ?
+ORDER BY datetime DESC;
+      `,[chatroomID,chatroomID]);
     console.log("메시지 요청 성공! : ",rows);
 
     if(rows.length === 0){
@@ -223,6 +223,7 @@ exports.chatMessage = async (req, res) =>{
 exports.userInfo = async (req, res) =>{
   try{
     const userName = req.query.username;
+    if(!userName)return null;
     const [rows] = await db.query(`
       SELECT
       u.id AS user_id,

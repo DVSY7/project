@@ -15,6 +15,7 @@ export default function Conversation(props) {
     // 프로필 클릭 상태관리
     const [clickedProfile, setClickedProfile] = useState({});
 
+    if(!message.message)return null;
     return (
         <>
             <div className={`flex ${userName !== currentUserName ? "justify-end" : ""} mt-2`}>

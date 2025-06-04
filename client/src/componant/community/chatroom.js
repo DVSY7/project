@@ -97,7 +97,7 @@ export default function Chatroom(props) {
     // 메세지 전송 함수
     const handleSendMessage = () => {
         if(!messageText.trim()) return;
-
+        
         const newMessage = {
             chat_room_id: chatroomID,
             sender_id: userInfo.user_id,
