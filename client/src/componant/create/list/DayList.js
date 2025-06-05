@@ -51,7 +51,9 @@ export default function DayList() {
     // 일차 추가 함수
     const handleAddDay = () => {
       const newDay = `${days.length + 1}일차`;
-      setDays([...days, newDay]);
+      if(days.length < 10 ){ // 10일차 까지만
+        setDays([...days, newDay]);
+      }
     };
   
     // 클릭한 날자 활성화
@@ -120,6 +122,7 @@ export default function DayList() {
 
       // 수정인 경우
       if (editingPlace){
+        alert("장소 수정이 완료되었습니다");
         return {
           ...prevItems,
           [activeDay]:existingItems.map(placeItem =>
@@ -224,9 +227,12 @@ export default function DayList() {
             {day}
           </div>
         ))}
-        <button onClick={handleAddDay} className="w-8">
+        {days.length > 10 && (
+          <button onClick={handleAddDay} className="w-8">
           +
         </button>
+        )}
+        
       </div>
 
       {activeDay && (
@@ -335,7 +341,6 @@ export default function DayList() {
                           handleRegisterForActiveDay();
                         }
                       }}
-                      
                     >
                       {editingItem ? "수정 완료" : "등록"}
                     </button>
