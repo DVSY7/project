@@ -98,6 +98,7 @@ export default function Chatroom(props) {
             console.log("[소켓] join_room emit:", chatroomID);
         });
 
+        // 메세지 수신하는 부분
         socket.on("receive_message", (msg) => {
             console.log("[소켓] receive_message 수신:", msg);
             setMessaging((prev) => [...prev, msg]);
@@ -120,6 +121,7 @@ export default function Chatroom(props) {
         };
     }, [chatroomID]);
 
+    // 메세지 송신함수
     const handleSendMessage = () => {
         if (!messageText.trim()) return;
 
