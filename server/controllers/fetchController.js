@@ -194,17 +194,17 @@ exports.chatMessage = async (req, res) =>{
     
     const [rows] = await db.query(`
       SELECT DISTINCT
-    u.name AS name,
-    u.id AS friend_id,
-    p.profile_image_url AS profile_image_url,
-    m.created_at AS datetime,
-    m.content AS message
-FROM user_rooms ur
-JOIN users u ON ur.user_id = u.id
-LEFT JOIN profiles p ON u.id = p.user_id
-LEFT JOIN messages m ON m.sender_id = u.id AND m.chat_room_id = ?
-WHERE ur.chat_room_id = ?
-ORDER BY datetime DESC;
+      u.name AS name,
+      u.id AS friend_id,
+      p.profile_image_url AS profile_image_url,
+      m.created_at AS datetime,
+      m.content AS message
+      FROM user_rooms ur
+      JOIN users u ON ur.user_id = u.id
+      LEFT JOIN profiles p ON u.id = p.user_id
+      LEFT JOIN messages m ON m.sender_id = u.id AND m.chat_room_id = ?
+      WHERE ur.chat_room_id = ?
+      ORDER BY datetime ASC;
       `,[chatroomID,chatroomID]);
     console.log("메시지 요청 성공! : ",rows);
 

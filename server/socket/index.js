@@ -19,14 +19,12 @@ module.exports = (io) =>{
             try{
                 const {chat_room_id, sender_id, message, datetime} = data;
                 await db.query(`
-                    INSERT IN messages(chat_room_id, sender_id, content, create_at)
+                    INSERT INTO messages(chat_room_id, sender_id, content, created_at)
                     VALUES(?,?,?,?)
                     `,[chat_room_id, sender_id, message, datetime]);
-                console.log("메세지 저장 중 :", data.name);
-                return data.status(200).json({message: "메세지 저장 성공!"});
+                console.log("메세지 저장 성공 :", data.name);
             }catch(error){
                 console.error("메세지 저장 실패:", error);
-                return;
             }
         });
 

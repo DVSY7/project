@@ -78,7 +78,7 @@ export default function Chatroom(props) {
     useEffect(() => {
         // 소켓 생성
         if (!socketRef.current) {
-            socketRef.current = io("http://112.76.56.79:5000", {
+            socketRef.current = io("http://localhost:5000", {
                 transports: ["websocket"], // 안정적인 연결 방식 사용
                 autoConnect: false,        // 직접 connect() 호출
             });
@@ -138,7 +138,7 @@ export default function Chatroom(props) {
             profile_image_url: userInfo.profile_image,
             name: userInfo.user_name,
             message: messageText,
-            datetime: new Date().toISOString(),
+            datetime: new Date().toISOString().slice(0,19).replace("T", " "),
         };
 
         socket.emit("send_message", newMessage);
@@ -178,7 +178,7 @@ export default function Chatroom(props) {
                             onClick={() => {
                                 setCheckedMember(true);
                             }}
-                            className={`${flexCenter} ml-auto bg-black text-white rounded-md w-[80px] h-[30px] text-[0.8rem] font-bold cursor-pointer`}
+                            className={`${flexCenter} ml-auto bg-black hover:bg-blue-500 transition-colors duration-300 text-white rounded-md w-[80px] h-[30px] text-[0.8rem] font-bold cursor-pointer`}
                         >
                             참여인원
                             {/* 참여인원 버튼 클릭 모달 */}
@@ -196,7 +196,7 @@ export default function Chatroom(props) {
                             onClick={() => {
                                 setCheckedAction(prev => ({ ...prev, [chattingList.id]: true }));
                             }}
-                            className={`${flexCenter} mx-2 mr-4 bg-black text-white rounded-md w-[80px] h-[30px] text-[0.8rem] font-bold cursor-pointer`}
+                            className={`${flexCenter} mx-2 mr-4 bg-black hover:bg-blue-500 transition-colors duration-300 text-white rounded-md w-[80px] h-[30px] text-[0.8rem] font-bold cursor-pointer`}
                         >
                             방 나가기
                             {/* 나가기 버튼 클릭 모달 */}
@@ -255,7 +255,7 @@ export default function Chatroom(props) {
                         <img alt="클립" src="/images/클립.png" className={`w-[20px] h-[20px] mr-2`} />
                         <div 
                         onClick={handleSendMessage}
-                        className={`w-[70px] h-[35px] bg-black rounded-lg flex justify-center items-center`}>
+                        className={`w-[70px] h-[35px] bg-black hover:bg-blue-500 transition-colors duration-300 cursor-pointer rounded-lg flex justify-center items-center`}>
                             <img alt="보내기" src="/images/보내기.png" className={`w-[20px] h-[20px]`} />
                         </div>
                     </div>
