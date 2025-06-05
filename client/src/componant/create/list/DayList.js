@@ -227,7 +227,7 @@ export default function DayList() {
             {day}
           </div>
         ))}
-        {days.length > 10 && (
+        {days.length < 10 && (
           <button onClick={handleAddDay} className="w-8">
           +
         </button>
