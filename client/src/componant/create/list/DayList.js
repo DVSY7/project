@@ -290,19 +290,13 @@ export default function DayList() {
           {showImageInput && (
             <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[610px] relative">
               {/* 닫기 버튼 */}
-              <button className="absolute top-4 right-4" onClick={()=> setshowImageInput(false)}>✕</button>
+              {!editingItem && (
+                <button className="absolute top-4 right-4" onClick={()=> setshowImageInput(false)}>✕</button>)}
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold">
                   {editingItem ? "항목 수정하기" : "새로운 항목 추가하기"}
                 </h2>
-                {editingItem && (
-                  <button
-                    onClick={handleCancelEdit}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    ✕
-                  </button>
-                )}
+             
               </div>
               {ImageSrc ? (
                 <div className="w-full h-[300px] mb-4">
@@ -333,7 +327,15 @@ export default function DayList() {
                   <div className="flex gap-2">
                     <button
                       className="bg-blue-500 text-white px-4 rounded mb-4 hover:bg-blue-600"
-                      onClick={editingItem ? handleSaveEdit : handleRegisterForActiveDay}
+                      onClick={()=>{
+                        if(editingItem){
+                          handleSaveEdit();
+                          alert("수정이 완료되었습니다");
+                        }else{
+                          handleRegisterForActiveDay();
+                        }
+                      }}
+                      
                     >
                       {editingItem ? "수정 완료" : "등록"}
                     </button>
