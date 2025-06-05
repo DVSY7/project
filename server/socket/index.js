@@ -9,7 +9,9 @@ module.exports = (io) =>{
             console.log(`${socket.id} joined room: ${roomID}`);
         });
 
+        // 이부분이 출력안됌
         socket.on("send_message", (data) =>{
+            console.log("send_message", data)
             io.to(data.chat_room_id).emit("receive_message", data);
         });
 

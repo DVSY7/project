@@ -1,3 +1,5 @@
+//client/src/componant/community/chatroom.js
+
 import { useEffect, useState, useMemo, useRef } from "react";
 import Conversation from "./conversation";
 import { insertDateHeaders, formatDateKorean } from "./utilities/dateUtils";
@@ -38,11 +40,6 @@ export default function Chatroom(props) {
     // 채팅에 입력한 내용 상태관리
     const [messageText, setMessageText] = useState("");
 
-    // 채팅서버 설정
-    const socket = io("http://112.76.56.81:5000",{
-        transports: ['websocket'],
-        autoConnect: false,
-    });
 
     // selectedList 값이 변동이 있을때만 실행
     useEffect(() => {
@@ -75,31 +72,64 @@ export default function Chatroom(props) {
         return insertDateHeaders(messaging);
     },[messaging]); 
 
-    // socket에 연결하는 로직
-    useEffect(()=>{
-        if(!chatroomID)return;
+    const socketRef = useRef();
 
+    // socket에 연결하는 로직
+    useEffect(() => {
+        // 소켓 생성
+        if (!socketRef.current) {
+            socketRef.current = io("http://112.76.56.79:5000", {
+                transports: ["websocket"], // 안정적인 연결 방식 사용
+                autoConnect: false,        // 직접 connect() 호출
+            });
+        }
+
+        const socket = socketRef.current;
+
+
+        if (!chatroomID) return;
+
+        console.log("[소켓] 연결 시도 (connect) - 방 ID:", chatroomID);
         socket.connect();
 
-        // 방 참여
-        socket.emit("join_room", chatroomID);
+        socket.on("connect", () => {
+            console.log("[소켓] 연결 성공:", socket.id);
+            socket.emit("join_room", chatroomID);
+            console.log("[소켓] join_room emit:", chatroomID);
+        });
 
-        // 메세지 수신
         socket.on("receive_message", (msg) => {
+            console.log("[소켓] receive_message 수신:", msg);
             setMessaging((prev) => [...prev, msg]);
         });
 
+        socket.on("disconnect", () => {
+            console.log("[소켓] 연결 해제됨");
+        });
+
+        socket.on("connect_error", (err) => {
+            console.error("[소켓] 연결 오류:", err.message);
+        });
+
         return () => {
+            console.log("[소켓] leave_room emit:", chatroomID);
             socket.emit("leave_room", chatroomID);
             socket.off("receive_message");
             socket.disconnect();
-        }
-    },[chatroomID])
+            console.log("[소켓] 연결 해제 (disconnect)");
+        };
+    }, [chatroomID]);
 
-    // 메세지 전송 함수
     const handleSendMessage = () => {
-        if(!messageText.trim()) return;
-        
+        if (!messageText.trim()) return;
+
+        const socket = socketRef.current;
+
+        if (!socket || !socket.connected) {
+            console.warn("소켓 연결되지 않음. 메시지 전송 불가.");
+            return;
+        }
+
         const newMessage = {
             chat_room_id: chatroomID,
             sender_id: userInfo.user_id,
@@ -110,10 +140,9 @@ export default function Chatroom(props) {
         };
 
         socket.emit("send_message", newMessage);
-        setMessaging((prev) => [...prev, newMessage]);
-        // 입력창 비우기
+        // setMessaging((prev) => [...prev, newMessage]);
         setMessageText("");
-    }
+    };
 
     // 메세지 전송 후 스크롤
     const messageEndRef = useRef(null);

@@ -223,7 +223,7 @@ ORDER BY datetime DESC;
 exports.userInfo = async (req, res) =>{
   try{
     const userName = req.query.username;
-    if(!userName)return null;
+    if(!userName)return res.status(500).json({message:"유저정보 없음"});
     const [rows] = await db.query(`
       SELECT
       u.id AS user_id,

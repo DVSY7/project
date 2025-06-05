@@ -12,6 +12,7 @@ const io = socketIO(server, {
   cors: {
     origin: "*",
     method: ["GET", "POST"],
+    credentials: true,
   },
 });
 
