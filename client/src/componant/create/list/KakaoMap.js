@@ -100,68 +100,76 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
     });
   };
 
-  // 장소 클릭 시 지도 이동 + 아이템 등록
-  // 비동기(async) 처리
-  const handlePlaceClick = async (place) => {
-    // 비동기 작업 싲가을 알리는 로딩 상태 표시
-    try {
+  const moveMakerAndShowInfo = (place) => {
+    // 하나라도 없으면 실행 중단 (에러방지용)
+    if(!map || !marker || !infowindow) return;
+
+    // 선택한 장소의 위도, 경도 
+    const moveLatLon = new window.kakao.maps.LatLng(place.y, place.x);
+    // 지도 중심을 해당 장소 좌표로 이동
+    map.Setcenter(moveLatLon);
+    // 마커 위치 해당 장소로 이동
+    marker.setPosition(moveLatLon);
+    // 마커를 지도에 표시
+    marker.setMap(map);
+    // 인포 윈도우에 표시할  html설정
+    infowindow.setContent(
+      `<div style="">${place.place_name}</div>`
+    );
+    // 마커 위에 인포윈도우 표시
+    infowindow.open(map,marker);
+  }
+
+  // 장소 등록하는 로직
+  const registerPlace = async (place) => {
+    try{
       setIsLoading(true);
-      console.log('선택된 장소:', place);
+      console.log("선택된 장소: ", place);
 
-      const moveLatLon = new window.kakao.maps.LatLng(place.y, place.x);
-      map.setCenter(moveLatLon);
-      marker.setPosition(moveLatLon);
-      marker.setMap(map);
-
-      infowindow.setContent(
-        `<div style="padding:5px;font-size:12px;">${place.place_name}</div>`
-      );
-      infowindow.open(map, marker);
-
-
-      // 아이템 등록 (상세 정보 포함)
       const newItem = {
-        image: `https://via.placeholder.com/200x200?text=${encodeURIComponent(place.place_name)}`,
         description: place.place_name,
-        type: 'place',
+        type: "place",
         address: place.address_name,
         category: place.category_name,
         placeId: place.id,
         phone: place.phone,
         placeUrl: `https://place.map.kakao.com/${place.id}`
+        
       };
 
-      console.log('등록할 아이템:', newItem);
+      console.log("둥록할 아이템", newItem);
 
       // 검색 결과 숨기기
       setPlaces([]);
-
-      // 부모 컴포넌트로 전달
+      // 부모로 전달
       handlePlaceSelect(newItem);
+      // 지도 닫기
       setShowMap(false);
-    } catch (error) {
-      console.error('장소 등록 실패:', error);
-      // 에러 발생 시 기본 정보만으로 등록
-      const newItem = {
-        image: `https://via.placeholder.com/200x200?text=${encodeURIComponent(place.place_name)}`,
+
+    }catch(error){
+
+      console.log("장소등록 실패", error);
+
+      const fallbackItem = {
         description: place.place_name,
-        type: 'place',
+        type: "place",
         address: place.address_name,
         category: place.category_name,
         placeId: place.id,
         phone: place.phone,
         placeUrl: `https://place.map.kakao.com/${place.id}`
-      };
-      handlePlaceSelect(newItem);
+      }
+
+      handlePlaceSelect(fallbackItem);
       setShowMap(false);
-    }
-    // 성공이든 실패든 로딩 상태를 해제 
-    finally {
+    }finally{
       setIsLoading(false);
     }
   };
-
   
+  const handlePlaceClick = (place) => {
+    registerPlace(place);
+  }
 
   return (
     <div className="relative border rounded-xl z-10 h-[610px]">
@@ -192,7 +200,7 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
               <div
                 key={place.id}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b"
-                onClick={() => handlePlaceClick(place)}
+                onClick={() => moveMakerAndShowInfo}
               >
                 <div className="font-medium">{place.place_name}</div>
                 <div className="text-sm text-gray-500">{place.address_name}</div>
@@ -206,6 +214,7 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
                   >
                     상세보기
                   </a>
+                  <span>등록하기</span>
                 </div>
               </div>
             ))}
@@ -217,7 +226,6 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
         {/* 지도 영역 */}
         <div ref={mapContainer} className="w-full h-full rounded-lg" />
       </div>
-
     </div>
   );
 }
