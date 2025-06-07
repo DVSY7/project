@@ -107,7 +107,7 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
     // 선택한 장소의 위도, 경도 
     const moveLatLon = new window.kakao.maps.LatLng(place.y, place.x);
     // 지도 중심을 해당 장소 좌표로 이동
-    map.Setcenter(moveLatLon);
+    map.setCenter(moveLatLon);
     // 마커 위치 해당 장소로 이동
     marker.setPosition(moveLatLon);
     // 마커를 지도에 표시
@@ -200,7 +200,7 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
               <div
                 key={place.id}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b"
-                onClick={() => moveMakerAndShowInfo}
+                onClick={() => moveMakerAndShowInfo(place)}
               >
                 <div className="font-medium">{place.place_name}</div>
                 <div className="text-sm text-gray-500">{place.address_name}</div>
@@ -214,7 +214,7 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
                   >
                     상세보기
                   </a>
-                  <span>등록하기</span>
+                  <span className="px-16 text-red-600 hover:underline">등록하기</span>
                 </div>
               </div>
             ))}
