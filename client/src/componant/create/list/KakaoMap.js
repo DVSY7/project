@@ -229,7 +229,7 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
                   >
                     상세보기
                   </a>
-                  <span className="px-16 text-red-600 hover:underline">등록하기</span>
+                  <span className="px-16 text-red-600 hover:underline" onClick={() => handlePlaceClick(place)}>등록</span>
                 </div>
               </div>
             ))}
