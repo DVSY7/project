@@ -102,20 +102,14 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
 
   // 장소 클릭 시 지도 이동 + 아이템 등록
   // 비동기(async) 처리
-  const handlePlaceClick = (place) => {
+  const handlePlaceClick = async (place) => {
     // 비동기 작업 싲가을 알리는 로딩 상태 표시
+    try {
       setIsLoading(true);
       console.log('선택된 장소:', place);
 
       const moveLatLon = new window.kakao.maps.LatLng(place.y, place.x);
-
-      const offsetX = -0.025;
-      const newCenter = new window.kakao.maps.LatLng(
-        place.y,
-        place.x + offsetX
-      );
-      
-      map.setCenter(newCenter);
+      map.setCenter(moveLatLon);
       marker.setPosition(moveLatLon);
       marker.setMap(map);
 
@@ -123,10 +117,8 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
         `<div style="padding:5px;font-size:12px;">${place.place_name}</div>`
       );
       infowindow.open(map, marker);
-  };
 
-  const handleRegisterMapItem = async (place) => {
-    try{
+
       // 아이템 등록 (상세 정보 포함)
       const newItem = {
         image: `https://via.placeholder.com/200x200?text=${encodeURIComponent(place.place_name)}`,
@@ -143,12 +135,11 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
 
       // 검색 결과 숨기기
       setPlaces([]);
-         
+
       // 부모 컴포넌트로 전달
       handlePlaceSelect(newItem);
       setShowMap(false);
-
-    }catch (error) {
+    } catch (error) {
       console.error('장소 등록 실패:', error);
       // 에러 발생 시 기본 정보만으로 등록
       const newItem = {
@@ -168,9 +159,10 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
     finally {
       setIsLoading(false);
     }
-  }
+  };
 
   
+
   return (
     <div className="relative border rounded-xl z-10 h-[610px]">
       {/* 검색창 */}
@@ -214,7 +206,6 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
                   >
                     상세보기
                   </a>
-                  <span onClick={handleRegisterMapItem}>등록하기</span>
                 </div>
               </div>
             ))}
