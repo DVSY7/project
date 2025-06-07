@@ -99,6 +99,18 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
       }
     });
   };
+  
+  // 지도 이동
+  function getOffsetLatLng(map, latlng,offsetX, offsetY){
+    // 현재 지도의 투영 정보 가져오기
+    const proj = map.getProjection();
+    // 위도 경도를 화면 픽셀 좌표로 변환
+    const point = proj.pointFromCoords(latlng);
+    // 픽셀 좌표에서 오프셋만큼 이동
+    const movedpoint = new window.kakao.maps.Point(point.x - offsetX, point.y - offsetY);
+    // 이동한 픽셀 좌표를 다시 위도/경도로 변환
+    return proj.coordsFromPoint(movedpoint);
+  }
 
   const moveMakerAndShowInfo = (place) => {
     // 하나라도 없으면 실행 중단 (에러방지용)
@@ -106,8 +118,11 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
 
     // 선택한 장소의 위도, 경도 
     const moveLatLon = new window.kakao.maps.LatLng(place.y, place.x);
-    // 지도 중심을 해당 장소 좌표로 이동
-    map.setCenter(moveLatLon);
+  
+    const offsetCenter = getOffsetLatLng(map, moveLatLon, 150, 0);
+
+    map.setCenter(offsetCenter);
+
     // 마커 위치 해당 장소로 이동
     marker.setPosition(moveLatLon);
     // 마커를 지도에 표시
