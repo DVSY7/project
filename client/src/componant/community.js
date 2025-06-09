@@ -51,6 +51,8 @@ export default function Community() {
   // 유저 정보
   const [userInfo, setUserInfo] = useState();
 
+  console.log("userInfo",userInfo);
+
   // 차단 & 해제 동작 업데이트
   const [actionList, setActionList] = useState(Date.now());
 
@@ -204,6 +206,7 @@ export default function Community() {
                   friendList={friendList}
                   setActionList={setActionList}
                   userID={userInfo ? userInfo.user_id : ""}
+                  userInfo={userInfo}
                 />
 
 

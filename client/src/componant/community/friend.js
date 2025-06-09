@@ -11,9 +11,11 @@ export default function Friend(props) {
         communityTab, 
         flexCenter, 
         friendList, 
-        setActionList, 
+        setActionList,
+        userInfo, // 유저 정보
         userID,// 현재 유저 이름
     } = props;
+
 
     // 차단버튼 상태관리
     const [checkedAction, setCheckedAction] = useState({});
@@ -30,7 +32,11 @@ export default function Friend(props) {
                 {/* 내 프로필 영역 */}
                 <div className={`${isSelectedTab ? "block" : "hidden"} flex w-[90%] h-[90px] rounded-lg border border-solid border-gray-300 mb-2 cursor-pointer hover:bg-gray-100 `}>
                     {/* 내 프로필 사진영역 */}
-                    <div className={`w-[80px] h-full`}></div>
+                    <div className={`${flexCenter} w-[80px] h-full`}>
+                        <img src={`${userInfo.profile_image}`} className={`w-[60px] h-[60px] my-2 rounded-[50%]`}></img>
+                    </div>
+                    {/* 닉네임 영역 */}
+                    <div className={`flex items-center w-[calc(100%_-_140px)] h-full`}>{userInfo.user_name}</div>
                 </div>
             </>
             }
