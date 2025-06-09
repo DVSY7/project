@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-export const fetchMessageAPI = async (chatroomID)=>{
-    const response = await axios.get(`http://localhost:5000/api/chatmessage?chatroom=${chatroomID}`);
+export const fetchMessageAPI = async (chatroomID,type)=>{
+    const response = await axios.get(`http://localhost:5000/api/${type}?chatroom=${chatroomID}`);
     return response.data;
 }

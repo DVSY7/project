@@ -55,11 +55,16 @@ export default function Chatroom(props) {
 
     // 채팅내용 상태관리
     const [messaging, setMessaging] = useState([]);
+    // 참여인원 상태관리
+    const [currentMembers, setCurrentMembers] = useState([]);
+
     useEffect(() => {
         const getMessage = async () => {
             try {
                 // 채팅 불러오기 API
-                setMessaging(await fetchMessageAPI(chatroomID));
+                setMessaging(await fetchMessageAPI(chatroomID, "chatmessage"));
+                // 참여인원 불러오기 API
+                setCurrentMembers(await fetchMessageAPI(chatroomID, "currentMember"));
             } catch (error) {
                 console.error("메세지 불러오기 실패:", error);
             }
@@ -187,8 +192,9 @@ export default function Chatroom(props) {
                                 blockedList = {blockedList}
                                 checkedMember={checkedMember}
                                 setCheckedMember={setCheckedMember}
-                                chattingList={messaging}
+                                chattingList={currentMembers}
                                 setActionList = {setActionList}
+                                userID = {userInfo.user_id}
                             />
                         </div>
 
@@ -229,6 +235,7 @@ export default function Chatroom(props) {
                                         blockedList = {blockedList}
                                         chattingList = {messaging}
                                         setActionList = {setActionList}
+                                        userID = {userInfo.user_id}
                                     />
                                     <div ref={messageEndRef} className={`h-[10px]`}></div>
                                 </div>

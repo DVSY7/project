@@ -7,7 +7,13 @@ export default function Conversation(props) {
     const { message } = props;
 
     // 모달을 관리하기 위한 props
-    const {friendList, blockedList, setActionList, chattingList} = props;
+    const {
+        friendList, 
+        blockedList, 
+        setActionList, 
+        chattingList,
+        userID
+    } = props;
 
     // 채팅방 사용 유저
     const {currentUserName} = props;
@@ -38,6 +44,7 @@ export default function Conversation(props) {
                         blockedList={blockedList}
                         chattingList={chattingList}
                         setActionList={setActionList}
+                        userID={userID}
                     />
                 )}
 

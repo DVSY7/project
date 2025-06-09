@@ -219,6 +219,25 @@ exports.chatMessage = async (req, res) =>{
   }
 }
 
+// 참여인원 가져오기
+exports.currentMember = async (req, res) => {
+  try{
+    const chatroomID = req.query.chatroom;
+    const [rows] = await db.query(`
+      SELECT u.id AS friend_id, u.name AS name, p.profile_image_url AS profile_image_url
+      FROM user_rooms ur
+      JOIN users u ON ur.user_id = u.id
+      JOIN profiles p ON u.id = p.user_id
+      WHERE ur.chat_room_id = ? AND ur.is_active = 1
+      `,[chatroomID]);
+      console.log("현재 참여인원 요청 성공:", rows);
+      return res.status(200).json(rows);
+  }catch(error){
+    console.error("현재 참여인원 요청 실패:", error);
+    return res.status(500).json({message:"현재 참여인원 요청 에러"});
+  }
+}
+
 // 유저정보 가져오기
 exports.userInfo = async (req, res) =>{
   try{

@@ -60,9 +60,11 @@ export function CheckedCurrentMemberButton(props) {
         chattingList,
         friendList,
         blockedList,
-        setActionList
+        setActionList,
+        userID
     } = props;
 
+    console.log("userID",userID);
     // 프로필 클릭 상태관리 스테이트
     const [clickedProfile, setClickedProfile] = useState({});
     // 참여인원 버튼 클릭 시 랜더링
@@ -104,6 +106,7 @@ export function CheckedCurrentMemberButton(props) {
                                         setClickedProfile = {setClickedProfile}
                                         profile_image = {Member.profile_image_url}
                                         setActionList = {setActionList}
+                                        userID = {userID}
                                     />
                                 </React.Fragment>
                             )

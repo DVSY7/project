@@ -19,6 +19,8 @@ router.post('/AddBlocked', fetchController.ActionList);
 router.post('/RemoveBlocked', fetchController.ActionList);
 // chatMessage API
 router.get('/chatmessage', fetchController.chatMessage);
+// currentMember API
+router.get('/currentMember', fetchController.currentMember);
 // userInfo API
 router.get('/userInfo',fetchController.userInfo);
 

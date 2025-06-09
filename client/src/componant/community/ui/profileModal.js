@@ -8,7 +8,18 @@ import { CommunityButtons } from "./button";
 // 프로필 클릭시 나타나는 모달
 export default function ProfileModal(props) {
 
-    const { clickedProfile, setClickedProfile, MemberKey, blockedList =[], friendList =[],chattingList =[], profile_image,setActionList, requestComponent} = props;
+    const { 
+        clickedProfile, 
+        setClickedProfile, 
+        MemberKey, 
+        blockedList =[], 
+        friendList =[],
+        chattingList =[], 
+        profile_image,
+        setActionList, 
+        requestComponent,
+        userID
+    } = props;
     const navigate = useNavigate();
 
     const [checkedAction, setCheckedAction] = useState({});
@@ -21,6 +32,8 @@ export default function ProfileModal(props) {
             return updateClickedMember;
         })
     }
+
+    console.log({userID:userID, MemberKey:MemberKey});
 
     // 이미 친구인지 확인하는 변수
     const isFriend = friendList.some(member => member.friend_id === MemberKey);
@@ -132,6 +145,11 @@ export default function ProfileModal(props) {
                     <div className={`flex justify-around border-t-[2px] border-gray-200 h-[120px] w-full`}>
                         {/* 프로필 옵션 변수를 순회하는 함수 */}
                         {profileOptions.map((options,index)=>{
+
+                            if(userID === MemberKey && index === 1 && options.option === "친구추가"){
+                                // 로그인한 유저가 친구추가를 할 수 없도록 설정
+                                return null;
+                            }
                             return(
                                 <div 
                                 onClick={()=> {optionHandlers[options.option]()}}

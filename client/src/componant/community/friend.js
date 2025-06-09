@@ -6,16 +6,34 @@ import { CommunityButtons } from "./ui/button";
 
 export default function Friend(props) {
     // 친구목록 탭을 관리하기 위해 전달받은 값
-    const { selectedTab, communityTab, flexCenter, friendList, setActionList } = props;
+    const { 
+        selectedTab,
+        communityTab, 
+        flexCenter, 
+        friendList, 
+        setActionList, 
+        userID,// 현재 유저 이름
+    } = props;
 
     // 차단버튼 상태관리
     const [checkedAction, setCheckedAction] = useState({});
 
     // 프로필 모달 상태관리 
     const [clickedProfile, setClickedProfile] = useState({});   
-
+    const isSelectedTab = selectedTab === communityTab[0]
     return (
         <>
+            {isSelectedTab &&
+            <>
+                {/* 내 프로필 헤더*/}
+                <div className={`w-full ml-12`}>내 프로필</div>
+                {/* 내 프로필 영역 */}
+                <div className={`${isSelectedTab ? "block" : "hidden"} flex w-[90%] h-[90px] rounded-lg border border-solid border-gray-300 mb-2 cursor-pointer hover:bg-gray-100 `}>
+                    {/* 내 프로필 사진영역 */}
+                    <div className={`w-[80px] h-full`}></div>
+                </div>
+            </>
+            }
             {/* 가져온 정보가 하나도 없을 시 */}
             {friendList.length === 0 && selectedTab === communityTab[0] ? (
                 <div className={`${flexCenter} text-black text-opacity-50 w-full h-full`}>등록된 친구가 없습니다. 친구를 추가하세요!</div>) :
@@ -28,7 +46,6 @@ export default function Friend(props) {
             }
             {/* 친구목록 반복문 */}
             {friendList.map((friend, i) => {
-                const isSelectedTab = selectedTab === communityTab[0]
                 return (
                     <div key={i} className={`${isSelectedTab ? "block" : "hidden"} flex w-[90%] h-[90px] rounded-lg border border-solid border-gray-300 mb-2 cursor-pointer hover:bg-gray-100 `} >
                         {/* 프로필 사진 영역 */}
@@ -47,6 +64,7 @@ export default function Friend(props) {
                             MemberKey = {friend.friend_id}
                             profile_image = {friend.profile_image_url}
                             setActionList = {setActionList}
+                            userID = {userID}
                             />
                         </div>
                         {/* 닉네임/별점 영역 */}
