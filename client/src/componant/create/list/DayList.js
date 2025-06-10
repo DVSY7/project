@@ -13,7 +13,7 @@ export default function DayList() {
   const [registeredItems, setRegisteredItems] = useState({});
 
   // 사진 첨부 수정
-  const [editingPhoto, seteditingPhoto] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
   const [editText, setEditText] = useState("");
   const [editImage, setEditImage] = useState(null);
 
@@ -76,14 +76,14 @@ export default function DayList() {
       const existingItems = prevItems[activeDay] || [];
 
       // 수정 할 때
-      if (editingPhoto) {
+      if (editingItem) {
         return {
           ...prevItems, //기존에 있던 모든 날짜의 항목들을 그대로 복사
           [activeDay]: existingItems.map(
             (
               item // activaDay에 해당하는 값만 덮어쓰기
             ) =>
-              item.id === editingPhoto.id
+              item.id === editingItem.id
                 ? { ...item, description: text, image: ImageSrc }
                 : item
           ),
@@ -97,16 +97,18 @@ export default function DayList() {
       }
 
       // 새로 등록할 때
+      const placeItems = existingItems.filter(item => item.type === 'place')
       return {
         ...prevItems,
         [activeDay]: [
           { image: ImageSrc, description: text, type: "image", id: Date.now() },
+          ...placeItems,
         ],
       };
     });
 
     // 초기화
-    seteditingPhoto(null);
+    setEditingItem(null);
     setImageSrc(null);
     setText("");
     setshowImageInput(false);
@@ -118,6 +120,7 @@ export default function DayList() {
     const isEdit = Boolean(editingPlace);
     if(isEdit) {
       handleSaveEditPlace(item);
+      alert("수정이 완료되었습니다");
       return;
     }
 
@@ -161,7 +164,7 @@ export default function DayList() {
   };
 
   const handleCancelEdit = () => {
-    seteditingPhoto(null);
+    setEditingItem(null);
     setEditText("");
     setEditImage(null);
     setshowImageInput(false);
@@ -173,14 +176,14 @@ export default function DayList() {
 
   // 사진 첨부 수정
   const handleSaveEdit = () => {
-    if (!editingPhoto) return;
+    if (!editingItem) return;
 
     setRegisteredItems((prevItems) => {
       const existingItems = prevItems[activeDay] || [];
       return {
         ...prevItems,
         [activeDay]: existingItems.map((item) =>
-          item.id === editingPhoto.id
+          item.id === editingItem.id
             ? { ...item, description: text, image: ImageSrc }
             : item
         ),
@@ -223,7 +226,7 @@ export default function DayList() {
   );
 
   const handleEditItem = (item) => {
-    seteditingPhoto(item);
+    setEditingItem(item);
     setEditText(item.description);
     setEditImage(item.image);
     if (item.type === "image") {
@@ -259,7 +262,7 @@ export default function DayList() {
 
       {activeDay && (
         <div className="relative max-h-[610px]">
-          {!editingPhoto && !showImageInput && !showMap && !editingPlace && (
+          {!editingItem && !showImageInput && !showMap && !editingPlace && (
             <div>
               {/* 이미지 항목 출력 */}
               {itemsForActiveDay
@@ -362,7 +365,7 @@ export default function DayList() {
           {showImageInput && (
             <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[610px] relative">
               {/* 닫기 버튼 */}
-              {!editingPhoto && (
+              {!editingItem && (
                 <button
                   className="absolute top-4 right-4"
                   onClick={() => setshowImageInput(false)}
@@ -372,7 +375,7 @@ export default function DayList() {
               )}
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold">
-                  {editingPhoto ? "항목 수정하기" : "새로운 항목 추가하기"}
+                  {editingItem ? "항목 수정하기" : "새로운 항목 추가하기"}
                 </h2>
               </div>
               {ImageSrc ? (
@@ -406,7 +409,7 @@ export default function DayList() {
                       className="bg-blue-500 text-white px-4 rounded mb-4 hover:bg-blue-600"
                       onClick={() => {
                         // 수정일때
-                        if (editingPhoto) {
+                        if (editingItem) {
                           handleSaveEdit();
                           alert("수정이 완료되었습니다");
                         } else {
@@ -414,7 +417,7 @@ export default function DayList() {
                         }
                       }}
                     >
-                      {editingPhoto ? "수정 완료" : "등록"}
+                      {editingItem ? "수정 완료" : "등록"}
                     </button>
                   </div>
                 </div>
@@ -441,7 +444,7 @@ export default function DayList() {
             </div>
           )}
 
-          {!editingPhoto && !showImageInput && !showMap && (
+          {!editingItem && !showImageInput && !showMap && (
             <div className="relative">
               <button
                 className="bg-white border rounded py-1 px-4 text-gray-500 mr-1.5"
