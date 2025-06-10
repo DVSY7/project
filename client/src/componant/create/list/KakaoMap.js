@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 
-export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editingPlace}) {
+export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) {
   const mapContainer = useRef(null);
   const [keyword, setKeyword] = useState(""); // 검색어
   const [map, setMap] = useState(null); 
@@ -24,7 +24,7 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
         marker.setPosition(moveLatLon);
         marker.setMap(map);
         infowindow.setContent(
-          `<div style="padding:5px;font-size:12px;">${editingPlace.description}</div>`
+          `<div style="padding:5px;font-size:12px; background-color:pink">${editingPlace.description}</div>`
         );
         infowindow.open(map,marker);
       }
@@ -43,7 +43,8 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
     script.onload = () => {
       window.kakao.maps.load(() => {
         const options = {
-          center: new window.kakao.maps.LatLng(37.566826, 126.978656),
+          center: editingPlace
+          ? new window.kakao.maps.LatLng(editingPlace.y || 37.566826, editingPlace.x || 126.978656) : new window.kakao.maps.LatLng(37.566826, 126.978656),
           // 지도 확대 수준
           level: 3, 
         };
@@ -167,7 +168,7 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
         
       };
 
-      console.log("둥록할 아이템", newItem);
+      console.log("등록할 아이템", newItem);
 
       // 검색 결과 숨기기
       setPlaces([]);

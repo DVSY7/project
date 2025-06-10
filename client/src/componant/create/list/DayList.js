@@ -261,7 +261,7 @@ export default function DayList() {
       </div>
 
       {activeDay && (
-        <div className="relative max-h-[610px]">
+        <div className="relative max-h-[610px] overflow-y-auto">
           {!editingItem && !showImageInput && !showMap && !editingPlace && (
             <div>
               {/* 이미지 항목 출력 */}
