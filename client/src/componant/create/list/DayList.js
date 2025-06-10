@@ -114,6 +114,13 @@ export default function DayList() {
 
   // 장소 등록 로직
   const handlePlaceSelect = (item) => {
+
+    const isEdit = Boolean(editingPlace);
+    if(isEdit) {
+      handleSaveEditPlace(item);
+      return;
+    }
+
     setRegisteredItems((prevItems) => {
       // 선택한 날짜에 해당하는 기존 항복이 있는지 확인, 없으면 빈 배열
       const existingItems = prevItems[activeDay] || [];
@@ -123,19 +130,6 @@ export default function DayList() {
       );
       // 증복이면 기존 항목을 그대로 반환, 추가 안함
       if (isDuplicate) return prevItems;
-
-      // 수정인 경우
-      if (editingPlace) {
-        alert("장소 수정이 완료되었습니다");
-        return {
-          ...prevItems,
-          [activeDay]: existingItems.map((placeItem) =>
-            placeItem.id === editingPlace.id
-              ? { ...item, type: "place", id: placeItem.id }
-              : placeItem
-          ),
-        };
-      }
 
       // 새로 등록인 경우
       return {
@@ -173,6 +167,7 @@ export default function DayList() {
     setshowImageInput(false);
     setText("");
     setImageSrc(null);
+    setEditingPlace(null);
     setShowMap(false);
   };
 
@@ -189,6 +184,25 @@ export default function DayList() {
             ? { ...item, description: text, image: ImageSrc }
             : item
         ),
+      };
+    });
+
+    handleCancelEdit();
+  };
+
+  // 장소 수정
+  const handleSaveEditPlace = (updatesPlace) => {
+    if (!editingPlace) return;
+
+    setRegisteredItems((prevItems) => {
+      const existingItems = prevItems[activeDay] || [];
+
+      return {
+        ...prevItems,
+        [activeDay]: existingItems.map((item) => item.id === editingPlace.id
+          ? { ...updatesPlace, type: "place", id: editingPlace.id }
+          : item,
+      )
       };
     });
 
@@ -299,9 +313,15 @@ export default function DayList() {
                       />
                     </div>
                     <div className="flex-1 p-4">
-                      <p className="font-bold text-lg mb-2">{item.description}</p>
-                      <p className="text-sm text-gray-600 mb-1">{item.address}</p>
-                      <p className="text-sm text-gray-500 mb-1">{item.category}</p>
+                      <p className="font-bold text-lg mb-2">
+                        {item.description}
+                      </p>
+                      <p className="text-sm text-gray-600 mb-1">
+                        {item.address}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-1">
+                        {item.category}
+                      </p>
                       {item.phone && (
                         <p className="text-sm text-gray-500 mb-1">
                           {item.phone}
@@ -338,6 +358,7 @@ export default function DayList() {
             </div>
           )}
 
+          {/* 이미지 폼 ( 등록 / 수정 ) */}
           {showImageInput && (
             <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[610px] relative">
               {/* 닫기 버튼 */}
@@ -401,6 +422,7 @@ export default function DayList() {
             </div>
           )}
 
+          {/* 지도 폼 ( 등록 / 수정 ) */}
           {showMap && (
             <div className="relative">
               {/* 닫기 버튼 */}
