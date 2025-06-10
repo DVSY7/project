@@ -14,9 +14,24 @@ export default function KakaoMap({showMap, setShowMap, handlePlaceSelect, editin
   useEffect(() => {
     if (editingPlace) {
       setKeyword(editingPlace.description);
-    }
-  }, [editingPlace]);
 
+      if(map && marker && infowindow) {
+        const moveLatLon = new window.kakao.maps.LatLng(
+          editingPlace.y || 37.566826,
+          editingPlace.x || 126.978656
+        );
+        map.setCenter(moveLatLon);
+        marker.setPosition(moveLatLon);
+        marker.setMap(map);
+        infowindow.setContent(
+          `<div style="padding:5px;font-size:12px;">${editingPlace.description}</div>`
+        );
+        infowindow.open(map,marker);
+      }
+    }
+  }, [editingPlace, map, marker, infowindow]);
+
+  
   // 지도 초기화
   useEffect(() => {
     const script = document.createElement("script");
