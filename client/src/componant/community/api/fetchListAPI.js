@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-export const fetchList = async (listType,userName) => {
+export const fetchList = async (listType,userName,searchKeyWord) => {
 
   //가져올 데이터 타입
   const status = {
@@ -15,7 +15,7 @@ export const fetchList = async (listType,userName) => {
   };
 
   try {
-    const response = await axios.get(`http://localhost:5000/api/${listType}?username=${userName}&status=${status[listType]}`);
+    const response = await axios.get(`http://localhost:5000/api/${listType}?username=${userName}&status=${status[listType]}&searchKeyWord=${searchKeyWord}`);
     return response.data;
   } catch (error) {
     console.error('친구목록 불러오기 실패', error);

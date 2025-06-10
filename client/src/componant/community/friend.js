@@ -20,6 +20,9 @@ export default function Friend(props) {
     // 차단버튼 상태관리
     const [checkedAction, setCheckedAction] = useState({});
 
+    console.log("친구목록", friendList);
+    console.log("유저정보", userInfo);
+
     // 프로필 모달 상태관리 
     const [clickedProfile, setClickedProfile] = useState({});   
     const isSelectedTab = selectedTab === communityTab[0]
@@ -30,13 +33,27 @@ export default function Friend(props) {
                 {/* 내 프로필 헤더*/}
                 <div className={`w-full ml-12`}>내 프로필</div>
                 {/* 내 프로필 영역 */}
-                <div className={`${isSelectedTab ? "block" : "hidden"} flex w-[90%] h-[90px] rounded-lg border border-solid border-gray-300 mb-2 cursor-pointer hover:bg-gray-100 `}>
+                <div className={`${isSelectedTab ? "block" : "hidden"} flex w-[90%] h-[90px] rounded-lg border border-solid border-gray-300 mb-2 cursor-pointer hover:bg-gray-100 font-sans font-bold`}>
                     {/* 내 프로필 사진영역 */}
                     <div className={`${flexCenter} w-[80px] h-full`}>
-                        <img src={`${userInfo.profile_image}`} className={`w-[60px] h-[60px] my-2 rounded-[50%]`}></img>
+                        <img 
+                        onClick={()=>{
+                            setClickedProfile(prev => ({...prev,[userID]:true}));
+                        }}
+                        src={`${userInfo[0].profile_image_url}`} className={`w-[60px] h-[60px] my-2 rounded-[50%]`}></img>
+                        <ProfileModal
+                            requestComponent = {"myProfile"}
+                            clickedProfile = {clickedProfile}
+                            setClickedProfile = {setClickedProfile}
+                            chattingList = {userInfo}
+                            MemberKey = {userID}
+                            profile_image = {userInfo[0].profile_image_url}
+                            setActionList = {setActionList}
+                            userID = {userID}
+                            />
                     </div>
                     {/* 닉네임 영역 */}
-                    <div className={`flex items-center w-[calc(100%_-_140px)] h-full`}>{userInfo.user_name}</div>
+                    <div className={`flex items-center w-[calc(100%_-_140px)] h-full`}>{userInfo[0].name}</div>
                 </div>
             </>
             }

@@ -57,18 +57,22 @@ exports.galleryImage = async (req, res) => {
 // 커뮤니티 친구목록 가져오기
 exports.friendList = async (req, res) => {
   try{
-    const userName = req.query.username;
-    const status = req.query.status;
+    const {username,status,searchKeyWord} = req.query;
+    let likeUser = "";
+
+    if(searchKeyWord && searchKeyWord !== ""){
+      likeUser = `AND u.name LIKE "%${searchKeyWord}%"` ;
+    }
 
     const [rows] = await db.query(`
       SELECT f.friend_id, p.profile_image_url, u.name FROM friends f
       JOIN users me 
       ON f.user_id = me.id
       JOIN users u
-      ON f.friend_id = u.id
+      ON f.friend_id = u.id ${likeUser}
       JOIN profiles p
       ON u.id = p.user_id
-      WHERE me.username = ? and f.status = ?`,[userName, status]);
+      WHERE me.username = ? and f.status = ?`,[username, status]);
       return res.status(200).json(rows);
   }catch(error){
     console.error('친구목록 요청 실패:', error);
@@ -198,7 +202,8 @@ exports.chatMessage = async (req, res) =>{
       u.id AS friend_id,
       p.profile_image_url AS profile_image_url,
       m.created_at AS datetime,
-      m.content AS message
+      m.content AS message,
+      m.message_id AS message_id
       FROM user_rooms ur
       JOIN users u ON ur.user_id = u.id
       LEFT JOIN profiles p ON u.id = p.user_id
@@ -238,6 +243,32 @@ exports.currentMember = async (req, res) => {
   }
 }
 
+// 메세지 읽음표시
+exports.messageRead = async (req,res) => {
+  try{
+    const {userID,messageID} = req.query;
+
+    // 읽음표시 데이터베이스 처리
+    console.log("userID",userID);
+    await db.query(`
+      INSERT IGNORE INTO message_reads (message_id, user_id, read_at)
+      VALUES (?,?,NOW());
+      `,[messageID,userID]);
+
+    // 읽음표시 UI반영
+    const [rows] = await db.query(`
+      SELECT COUNT(*) AS messageReadCount
+      FROM message_reads
+      WHERE message_id = ?
+      `,[messageID]);
+      console.log(`${messageID}를 읽은 사람 ${rows[0].messageReadCount}`)
+      return res.status(200).json(rows);
+  }catch(error){
+    console.log("메세지 읽음 표시 요청 실패:",error);
+    return res.status(500).json({message: "요청 실패!"});
+  }
+}
+
 // 유저정보 가져오기
 exports.userInfo = async (req, res) =>{
   try{
@@ -245,9 +276,9 @@ exports.userInfo = async (req, res) =>{
     if(!userName)return res.status(500).json({message:"유저정보 없음"});
     const [rows] = await db.query(`
       SELECT
-      u.id AS user_id,
-      u.name AS user_name,
-      p.profile_image_url AS profile_image
+      u.id AS friend_id,
+      u.name AS name,
+      p.profile_image_url AS profile_image_url
       FROM users u
       JOIN profiles p
       ON u.id = p.user_id

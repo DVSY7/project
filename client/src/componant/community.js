@@ -56,11 +56,17 @@ export default function Community() {
   // 차단 & 해제 동작 업데이트
   const [actionList, setActionList] = useState(Date.now());
 
+  // 검색어 상태관리
+  const [searchKeyWord, setSearchKeyWord] = useState("");
+
+  // 대화목록 최신화 상태관리
+  const [fetchChatList, setFetchChatList] = useState([]);
+
    useEffect(()=>{
         const getList = async ()=>{
             try{
-                const friendsData = await fetchList("friendList",name);
-                const blockedData = await fetchList("blockList",name);
+                const friendsData = await fetchList("friendList",name,searchKeyWord);
+                const blockedData = await fetchList("blockList",name, searchKeyWord);
                 const chattingData = await fetchList("chattingList",name);
                 const UserInfo = await fetchUserInfo(name);
                 
@@ -75,7 +81,7 @@ export default function Community() {
             }
         }
         getList();
-    },[name,actionList]);
+    },[name,actionList,searchKeyWord,fetchChatList]);
 
   // 탭메뉴 상태관리 
   const [selectedTab, setSelectedTab] = useState("채팅");
@@ -95,9 +101,6 @@ export default function Community() {
 
   // 검색 창 노출 상태관리
   const [search, setSearch] = useState(false);
-
-  // 검색어 상태관리
-  const [searchKeyWord, setSearchKeyWord] = useState("");
 
   // 탭메뉴 상태관리 함수
   const handleChangeTab = (item) => {
@@ -205,8 +208,8 @@ export default function Community() {
                   flexCenter={flexCenter}
                   friendList={friendList}
                   setActionList={setActionList}
-                  userID={userInfo ? userInfo.user_id : ""}
-                  userInfo={userInfo}
+                  userID={userInfo ? userInfo.friend_id : ""}
+                  userInfo={[userInfo]}
                 />
 
 
@@ -235,6 +238,7 @@ export default function Community() {
                   friendList = {friendList}
                   blockedList = {blockedList}
                   setActionList = {setActionList}
+                  setFetchChatList = {setFetchChatList}
                   userInfo = {userInfo}
                   />
             </div>

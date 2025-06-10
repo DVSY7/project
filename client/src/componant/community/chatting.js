@@ -50,7 +50,11 @@ export default function Chatting(props) {
 
                             {/* 대화 시간 */}
                             <div className={`flex flex-col justify-between items-end w-[80px] h-full font-sans text-[0.8rem] pb-2 pr-2`}>
+                                {info.unread_count !== 0 &&
                                 <div className={`${flexCenter} w-auto min-w-[15px] h-[15px] rounded-full bg-red-500 border-4 border-solid border-red-500 text-white mt-1`}>{info.unread_count}</div>
+                                }
+                                {/* 가짜영역 */}
+                                <div></div>
                                 <div>{formatDateTime(info.last_message_time)}</div>
                             </div>
                         </div>

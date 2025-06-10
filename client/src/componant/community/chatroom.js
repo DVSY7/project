@@ -19,6 +19,9 @@ export default function Chatroom(props) {
     // 현재 로그인한 유저
     const {userName} = props;
 
+    // 대화목록 최신화 props
+    const {setFetchChatList} = props;
+
     // 선택 된 방 상태관리
     const [chatroom, setChatroom] = useState("");
 
@@ -55,6 +58,7 @@ export default function Chatroom(props) {
 
     // 채팅내용 상태관리
     const [messaging, setMessaging] = useState([]);
+
     // 참여인원 상태관리
     const [currentMembers, setCurrentMembers] = useState([]);
 
@@ -137,13 +141,15 @@ export default function Chatroom(props) {
             return;
         }
 
+        const now = new Date();
+        const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000); // 9시간 더함
         const newMessage = {
             chat_room_id: chatroomID,
-            sender_id: userInfo.user_id,
-            profile_image_url: userInfo.profile_image,
-            name: userInfo.user_name,
+            sender_id: userInfo.friend_id,
+            profile_image_url: userInfo.profile_image_url,
+            name: userInfo.name,
             message: messageText,
-            datetime: new Date().toISOString().slice(0,19).replace("T", " "),
+            datetime: kst.toISOString().slice(0,19).replace("T", " "),
         };
 
         socket.emit("send_message", newMessage);
@@ -158,6 +164,7 @@ export default function Chatroom(props) {
         if(messageEndRef.current){
             messageEndRef.current.scrollIntoView({behavior: "smooth"});
         }
+        setFetchChatList(messaging);
     },[messaging]);
 
 
@@ -194,7 +201,7 @@ export default function Chatroom(props) {
                                 setCheckedMember={setCheckedMember}
                                 chattingList={currentMembers}
                                 setActionList = {setActionList}
-                                userID = {userInfo.user_id}
+                                userID = {userInfo.friend_id}
                             />
                         </div>
 
@@ -235,7 +242,8 @@ export default function Chatroom(props) {
                                         blockedList = {blockedList}
                                         chattingList = {messaging}
                                         setActionList = {setActionList}
-                                        userID = {userInfo.user_id}
+                                        currentMembers = {currentMembers.length}
+                                        userID = {userInfo.friend_id}
                                     />
                                     <div ref={messageEndRef} className={`h-[10px]`}></div>
                                 </div>

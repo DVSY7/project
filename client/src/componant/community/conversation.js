@@ -2,6 +2,7 @@
 import {useState,useEffect} from "react";
 import ProfileModal from "./ui/profileModal";
 import { formatDateTime } from "./utilities/dateUtils";
+import { fetchMessageReadAPI } from "./api/fetchMessageAPI";
 
 export default function Conversation(props) {
     const { message } = props;
@@ -12,7 +13,8 @@ export default function Conversation(props) {
         blockedList, 
         setActionList, 
         chattingList,
-        userID
+        userID,
+        currentMembers
     } = props;
 
     // 채팅방 사용 유저
@@ -20,6 +22,17 @@ export default function Conversation(props) {
     const userName = props.message.name;
     // 프로필 클릭 상태관리
     const [clickedProfile, setClickedProfile] = useState({});
+    // 읽은 사람 상태관리
+    const [messageReads, setMessageRead] = useState(0);
+
+    useEffect(()=>{
+        const messageRead = async (message_id)=>{
+        const response = await fetchMessageReadAPI(userID,message_id);
+        setMessageRead(response[0].messageReadCount);
+    }
+    messageRead(message.message_id);
+    console.log("읽음처리 대상:",userID);
+    },[])
 
     if(!message.message)return null;
     return (
@@ -30,7 +43,7 @@ export default function Conversation(props) {
                 onClick={()=> {
                     setClickedProfile(prev => ({...prev, [message.friend_id]:true}))
                 }} 
-                alt="미니프로필" src={message.profile_image_url} className={`w-[50px] h-[50px] rounded-[50%] ${userName !== currentUserName ? "order-3 mr-4" : "ml-4"}`}>
+                alt="미니프로필" src={message.profile_image_url} className={`w-[50px] h-[50px] rounded-[50%] ${userName !== currentUserName ? "order-4 mr-4" : "ml-4"}`}>
                 </img>
                 {/* 프로필 클릭 모달 */}
                 {clickedProfile[message.friend_id] && (
@@ -50,7 +63,7 @@ export default function Conversation(props) {
 
 
                 {/* 닉네임과 내용 */}
-                <div className={`${userName !== currentUserName ? "order-2" : ""}`}>
+                <div className={`${userName !== currentUserName ? "order-3" : ""}`}>
                     {/* 채팅 닉네임 */}
                     <div className={`${userName !== currentUserName ? "flex justify-end mr-2" : "ml-2"}`}>{message.name}</div>
                     {/* 채팅 내용 */}
@@ -59,8 +72,9 @@ export default function Conversation(props) {
 
                 {/* 채팅 시간 */}
                 <span
-                    className={`flex items-end font-sans ${userName !== currentUserName ? "order-1" : ""}`}
+                    className={`flex items-end font-sans ${userName !== currentUserName ? "order-2" : ""}`}
                 >{formatDateTime(message.datetime)}</span>
+                <div className={`text-yellow-500 ${userName !== currentUserName ? "order-1" : ""} flex items-end mx-2 font-sans font-bold`}>{currentMembers - messageReads}</div>
             </div>
         </>
     )

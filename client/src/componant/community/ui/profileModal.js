@@ -161,7 +161,7 @@ export default function ProfileModal(props) {
                         })}
 
                         {/* 대화창에서 누르면 버튼 비활성화 */}
-                        {requestComponent !== "conversation" && 
+                        {requestComponent !== "conversation" && requestComponent !== "myProfile" &&
                         <>
                             {/* 왼쪽 이동 버튼 */}
                             <button

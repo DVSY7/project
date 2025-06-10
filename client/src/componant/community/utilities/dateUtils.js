@@ -23,15 +23,16 @@ export const insertDateHeaders = (messages) => {
   const newMessages = [];
   let lastDate = null;
 
+
   messages.forEach((msg) => {
-    const timestamp = msg?.timestamp;
+    const timestamp = msg?.datetime;
     if (!timestamp || typeof timestamp !== "string") {
       // 무시하거나 기본값 사용
       newMessages.push(msg);
       return;
     }
 
-    const date = timestamp.split("T")[0];
+    const date = new Date(timestamp).toISOString().slice(0,10);
     if (date !== lastDate) {
       newMessages.push({ type: "date-stamp", date });
       lastDate = date;
@@ -39,5 +40,6 @@ export const insertDateHeaders = (messages) => {
     newMessages.push(msg);
   });
 
+  console.log("newMessages",newMessages);
   return newMessages;
 };
