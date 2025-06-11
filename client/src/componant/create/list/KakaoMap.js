@@ -9,6 +9,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
   const [infowindow, setInfowindow] = useState(null);
   const [places, setPlaces] = useState([]); // 검색 결과
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  const [selectedPlace, setSelectedPlace] = useState(null); 
 
   // 수정 모드일 때 초기화 - 검색어 세팅
   useEffect(() => {
@@ -149,10 +150,17 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
     );
     // 마커 위에 인포윈도우 표시
     infowindow.open(map,marker);
+
+    setSelectedPlace(place);
   }
 
   // 장소 등록하는 로직
   const registerPlace = async (place) => {
+    if (!place) {
+      alert("장소를 선택해주세요");
+      return;
+    }
+
     try{
       setIsLoading(true);
       console.log("선택된 장소: ", place);
@@ -164,8 +172,9 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
         category: place.category_name,
         placeId: place.id,
         phone: place.phone,
-        placeUrl: `https://place.map.kakao.com/${place.id}`
-        
+        placeUrl: `https://place.map.kakao.com/${place.id}`,
+        x: place.x,
+        y: place.y
       };
 
       console.log("등록할 아이템", newItem);
@@ -178,7 +187,6 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
       setShowMap(false);
 
     }catch(error){
-
       console.log("장소등록 실패", error);
 
       const fallbackItem = {
@@ -188,7 +196,9 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
         category: place.category_name,
         placeId: place.id,
         phone: place.phone,
-        placeUrl: `https://place.map.kakao.com/${place.id}`
+        placeUrl: `https://place.map.kakao.com/${place.id}`,
+        x: place.x,
+        y: place.y
       }
 
       handlePlaceSelect(fallbackItem);
@@ -245,7 +255,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
                   >
                     상세보기
                   </a>
-                  <span className="px-16 text-red-600 hover:underline" onClick={() => handlePlaceClick(place)}>등록</span>
+                  <span className="px-16 text-red-600 hover:underline" onClick={() => handlePlaceClick(selectedPlace)}>등록</span>
                 </div>
               </div>
             ))}
