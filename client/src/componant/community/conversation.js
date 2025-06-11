@@ -28,11 +28,11 @@ export default function Conversation(props) {
     useEffect(()=>{
         const messageRead = async (message_id)=>{
         const response = await fetchMessageReadAPI(userID,message_id);
-        setMessageRead(response[0].messageReadCount);
+        setMessageRead(currentMembers - response[0].messageReadCount);
     }
     messageRead(message.message_id);
     console.log("읽음처리 대상:",userID);
-    },[])
+    },[chattingList])
 
     if(!message.message)return null;
     return (
@@ -74,7 +74,7 @@ export default function Conversation(props) {
                 <span
                     className={`flex items-end font-sans ${userName !== currentUserName ? "order-2" : ""}`}
                 >{formatDateTime(message.datetime)}</span>
-                <div className={`text-yellow-500 ${userName !== currentUserName ? "order-1" : ""} flex items-end mx-2 font-sans font-bold`}>{currentMembers - messageReads}</div>
+                <div className={`text-yellow-500 ${userName !== currentUserName ? "order-1" : ""} flex items-end mx-2 font-sans font-bold`}>{messageReads}</div>
             </div>
         </>
     )

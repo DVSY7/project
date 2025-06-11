@@ -162,7 +162,7 @@ export default function Chatroom(props) {
 
     useEffect(()=> {
         if(messageEndRef.current){
-            messageEndRef.current.scrollIntoView({behavior: "smooth"});
+            messageEndRef.current.scrollIntoView({behavior: "smooth", block: "end"});
         }
         setFetchChatList(messaging);
     },[messaging]);
