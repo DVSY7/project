@@ -1,3 +1,5 @@
+//client/src/componant/ai/AIPlaceModal.js
+
 export default function AIPlaceModal({onClose, place, onNext}){
 
     return(
@@ -28,7 +30,7 @@ export default function AIPlaceModal({onClose, place, onNext}){
                 <div className="text-black-400 text-4xl font-bold mb-4">{place.korName}</div>
                 <div className="text-sm mb-4 h-[175px] whitespace-pre-line leading-relaxed text-justify">{place.desc}</div>
                 {/* 일정생성 버튼*/}
-                <button 
+                <button
                     className="bg-black text-white px-10 py-4 rounded-lg absolute bottom-0 font-bold"
                     onClick={onNext}
                     // onClick={() => console.log(2)}

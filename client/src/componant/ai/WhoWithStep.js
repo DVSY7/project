@@ -5,14 +5,15 @@ export default function WhoWithStep({onNext, onBack}){
     const options = ["혼자", "친구와", "연인과", "배우자와", "아이와", "부모님과", "기타"];
     const [selected, setSelected] = useState(null);
 
-    const handleSelect = (opt) => {
-        if(selected.includes(opt)){
-            setSelected(selected.filter(item => item !== opt))
-        }
-    }
+    // const handleSelect = (opt) => {
+    //     if(selected.includes(opt)){
+    //         setSelected(selected.filter(item => item !== opt))
+    //     }
+    // }
 
 
     const handleNext = () => {
+        console.log("WhoWithStep handleNext 호출, selected:", selected);
         onNext(selected); // 선택됟 동반자 값을 부모 컴포넌트로 전달
     }
 

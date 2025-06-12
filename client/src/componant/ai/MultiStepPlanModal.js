@@ -1,3 +1,5 @@
+//client/src/componant/ai/MultiStepPlanModal.js
+
 import { useState } from "react";
 import DateRangeStep from "./DateRangeStep";
 import AIPlaceModal from "./AIPlaceModal";
@@ -20,6 +22,7 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
 
     const handleNext = (value) => {
         
+        console.log("hadleNext received value:", value);
         if (step === 1) {
             const updatedValues = {
                 ...selectedValues,
@@ -28,6 +31,7 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
             setSelectedValues(updatedValues);
             console.log("step - 1 : 장소 ", updatedValues);
             setStep(2);
+
             
         } else if (step === 2) {
             const updatedValues = {
@@ -37,6 +41,7 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
                     endDate: dateRange.endDate
                 }
             };
+            setSelectedValues(updatedValues);
             console.log("step - 2 : 기간 ", updatedValues);
             setStep(3);
             

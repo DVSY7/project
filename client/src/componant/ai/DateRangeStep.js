@@ -1,3 +1,5 @@
+//client/src/componant/ai/DateRangeStep.js
+
 import { useState } from 'react';
 import React from 'react';
 import { DateRange } from 'react-date-range';
@@ -18,7 +20,7 @@ const DateRangeStep = ({ dateRange, setDateRange, onNext, onBack }) => {
   }  
 
   const handleNext = () => {
-    onNext();
+    onNext(dateRange);
   }
 
   return (
