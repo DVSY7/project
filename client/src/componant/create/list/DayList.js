@@ -430,8 +430,8 @@ export default function DayList() {
             <div className="relative">
               {/* 닫기 버튼 */}
               <button
-                className="absolute top-0 right-2 z-10 text-2xl"
-                onClick={() => setShowMap(false)}
+                className="absolute top-4 right-4 z-20 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+                onClick={handleCancelEdit}
               >
                 ✕
               </button>
