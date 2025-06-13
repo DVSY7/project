@@ -1,6 +1,123 @@
 import KakaoMap from "./KakaoMap";
 import ListAddPhoto from "./ListAddPhoto";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
+// 드래그 가능한 일차 버튼 컴포넌트
+const DraggableDayButton = ({ day, index, moveDay, isActive, onClick }) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: 'DAY',
+    item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [, drop] = useDrop({
+    accept: 'DAY',
+    hover: (draggedItem) => {
+      if (draggedItem.index !== index) {
+        moveDay(draggedItem.index, index);
+        draggedItem.index = index;
+      }
+    },
+  });
+
+  return (
+    <div
+      ref={(node) => drag(drop(node))}
+      onClick={onClick}
+      className={`font-sans text-white bg-blue-500 mr-1 rounded-2xl flex items-center justify-center px-4 py-2 cursor-move ${
+        isActive ? "bg-blue-500 text-white" : "bg-gray-200"
+      } ${isDragging ? 'opacity-50' : ''}`}
+    >
+      {day}
+    </div>
+  );
+};
+
+// 드래그 가능한 아이템 컴포넌트
+const DraggableItem = ({ item, index, moveItem, handleEditItem, handleDeleteItem }) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: 'ITEM',
+    item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [, drop] = useDrop({
+    accept: 'ITEM',
+    hover: (draggedItem) => {
+      if (draggedItem.index !== index) {
+        moveItem(draggedItem.index, index);
+        draggedItem.index = index;
+      }
+    },
+  });
+
+  return (
+    <div
+      ref={(node) => drag(drop(node))}
+      className={`flex items-center rounded-lg bg-gray-200 mb-4 h-36 ${isDragging ? 'opacity-50' : ''}`}
+      style={{ cursor: 'move' }}
+    >
+      <div>
+        <img
+          src={item.image}
+          alt="등록된 이미지"
+          className="ml-2 w-48 h-32 object-cover rounded"
+        />
+      </div>
+      <div className="flex-1 p-4">
+        <p className="font-bold text-lg mb-2">
+          {item.description}
+        </p>
+        {item.type === 'place' && (
+          <>
+            <p className="text-sm text-gray-600 mb-1">
+              {item.address}
+            </p>
+            <p className="text-sm text-gray-500 mb-1">
+              {item.category}
+            </p>
+            {item.phone && (
+              <p className="text-sm text-gray-500 mb-1">
+                {item.phone}
+              </p>
+            )}
+            {item.placeUrl && (
+              <a
+                href={item.placeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-1 py-1 text-sm text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span>상세보기</span>
+              </a>
+            )}
+          </>
+        )}
+      </div>
+      <div className="flex items-center gap-2 pr-4">
+        <button
+          onClick={() => handleEditItem(item)}
+          className="px-3 py-1 rounded hover:text-blue-600"
+        >
+          수정
+        </button>
+        <button
+          onClick={() => handleDeleteItem(item.id)}
+          className="px-3 py-1 rounded hover:text-blue-600"
+        >
+          삭제
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default function DayList() {
   // 사진 첨부 표시 여부
@@ -28,6 +145,8 @@ export default function DayList() {
   const [showMap, setShowMap] = useState(false);
   // 장소 수정
   const [editingPlace, setEditingPlace] = useState(null);
+
+  const [showUpdateAnimation, setShowUpdateAnimation] = useState(false);
 
   // 이미지 업로드 핸들러
   // CreateList.js 내부의 handleImageUpload 함수 수정
@@ -239,19 +358,64 @@ export default function DayList() {
     }
   };
 
+  // 아이템 이동 함수
+  const moveItem = (dragIndex, hoverIndex) => {
+    setRegisteredItems((prevItems) => {
+      const items = [...(prevItems[activeDay] || [])];
+      const draggedItem = items[dragIndex];
+      items.splice(dragIndex, 1);
+      items.splice(hoverIndex, 0, draggedItem);
+      return {
+        ...prevItems,
+        [activeDay]: items,
+      };
+    });
+  };
+
+  // 일차 이동 함수
+  const moveDay = (dragIndex, hoverIndex) => {
+    setDays((prevDays) => {
+      const newDays = [...prevDays];
+      const draggedDay = newDays[dragIndex];
+      newDays.splice(dragIndex, 1);
+      newDays.splice(hoverIndex, 0, draggedDay);
+      
+      // 일차 번호 업데이트
+      return newDays.map((_, index) => `${index + 1}일차`);
+    });
+
+    // 현재 선택된 일차가 이동된 경우, 해당 일차의 내용도 함께 이동
+    setRegisteredItems((prevItems) => {
+      const newItems = {};
+      const oldDays = [...days];
+      const draggedDay = oldDays[dragIndex];
+      oldDays.splice(dragIndex, 1);
+      oldDays.splice(hoverIndex, 0, draggedDay);
+
+      // 새로운 순서에 맞게 항목들 재배치
+      oldDays.forEach((oldDay, index) => {
+        const newDay = `${index + 1}일차`;
+        if (prevItems[oldDay]) {
+          newItems[newDay] = prevItems[oldDay];
+        }
+      });
+
+      return newItems;
+    });
+  };
+
   return (
-    <>
+    <DndProvider backend={HTML5Backend}>
       <div className="flex items-center">
         {days.map((day, index) => (
-          <div
+          <DraggableDayButton
             key={index}
+            day={day}
+            index={index}
+            moveDay={moveDay}
+            isActive={activeDay === day}
             onClick={() => handleDayClick(day)}
-            className={`font-sans text-white bg-blue-500 mr-1 rounded-2xl flex items-center justify-center px-4 py-2 cursor-pointer ${
-              activeDay === day ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-          >
-            {day}
-          </div>
+          />
         ))}
         {days.length < 10 && (
           <button onClick={handleAddDay} className="w-8">
@@ -260,104 +424,26 @@ export default function DayList() {
         )}
       </div>
 
+      {showUpdateAnimation && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
+          일차 순서가 업데이트되었습니다!
+        </div>
+      )}
+
       {activeDay && (
         <div className="relative max-h-[610px] overflow-y-auto">
           {!editingItem && !showImageInput && !showMap && !editingPlace && (
             <div>
-              {/* 이미지 항목 출력 */}
-              {itemsForActiveDay
-                .filter((item) => item.type === "image")
-                .map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center rounded-lg bg-gray-200 mb-4 h-36"
-                  >
-                    <div>
-                      <img
-                        src={item.image}
-                        alt="등록된 이미지"
-                        className="ml-2 w-48 h-32 object-cover rounded"
-                      />
-                    </div>
-                    <div className="flex-1 p-4">
-                      <p className="font-bold text-lg mb-2">
-                        {item.description}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 pr-4">
-                      <button
-                        onClick={() => handleEditItem(item)}
-                        className="px-3 py-1 rounded hover:text-blue-600"
-                      >
-                        수정
-                      </button>
-                      <button
-                        onClick={() => handleDeleteItem(item.id)}
-                        className="px-3 py-1 rounded hover:text-blue-600"
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  </div>
-                ))}
-
-              {itemsForActiveDay
-                .filter((item) => item.type === "place")
-                .map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center rounded-lg bg-gray-200 mb-4 h-36"
-                  >
-                    <div>
-                      <img
-                        src={item.image}
-                        alt="등록된 이미지"
-                        className="ml-2 w-48 h-32 object-cover rounded"
-                      />
-                    </div>
-                    <div className="flex-1 p-4">
-                      <p className="font-bold text-lg mb-2">
-                        {item.description}
-                      </p>
-                      <p className="text-sm text-gray-600 mb-1">
-                        {item.address}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-1">
-                        {item.category}
-                      </p>
-                      {item.phone && (
-                        <p className="text-sm text-gray-500 mb-1">
-                          {item.phone}
-                        </p>
-                      )}
-                      {item.placeUrl && (
-                        <a
-                          href={item.placeUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center px-1 py-1 text-sm text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <span>상세보기</span>
-                        </a>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 pr-4">
-                      <button
-                        onClick={() => handleEditItem(item)}
-                        className="px-3 py-1 rounded hover:text-blue-600"
-                      >
-                        수정
-                      </button>
-                      <button
-                        onClick={() => handleDeleteItem(item.id)}
-                        className="px-3 py-1 rounded hover:text-blue-600"
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              {itemsForActiveDay.map((item, index) => (
+                <DraggableItem
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  moveItem={moveItem}
+                  handleEditItem={handleEditItem}
+                  handleDeleteItem={handleDeleteItem}
+                />
+              ))}
             </div>
           )}
 
@@ -459,6 +545,6 @@ export default function DayList() {
           )}
         </div>
       )}
-    </>
+    </DndProvider>
   );
 }
