@@ -246,7 +246,7 @@ export default function DayList() {
           <div
             key={index}
             onClick={() => handleDayClick(day)}
-            className={`font-sans text-white bg-blue-500 mr-1 rounded-2xl flex items-center justify-center px-4 py-2 ${
+            className={`font-sans text-white bg-blue-500 mr-1 rounded-2xl flex items-center justify-center px-4 py-2 cursor-pointer ${
               activeDay === day ? "bg-blue-500 text-white" : "bg-gray-200"
             }`}
           >
