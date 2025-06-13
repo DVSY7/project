@@ -13,7 +13,7 @@ export default function GalleryHover(props) {
     const {id, setGalleryImage, fetchGalleryImage} = props;
 
     // 프로필 모달을 띄우기 위한 props
-    const {username,clickedProfile, setClickedProfile} = props;
+    const {username, setClickedProfile} = props;
 
     const dateOnly =new Date(date).toISOString().split('T')[0]; // 날짜를 YYYY-MM-DD 형식으로 변환
 
@@ -91,16 +91,12 @@ export default function GalleryHover(props) {
             <div className={` h-[25%] w-full flex justify-between items-end pb-2`}>
                 {/* 갤러리 프로필 이미지 영역 */}
                 <div className={`w-[42px] h-[42px] ml-3 mb-1`}>
-                    <img 
-                    onClick={()=>{setClickedProfile((prev) => ({...prev,[username]: true}))}}
+                    <img
+                    className={`w-[42px] h-[42px] rounded-[50%]`} 
+                    onClick={()=>{setClickedProfile((prev) => ({...prev,[id]: true}))}}
                     alt="미니프로필" src={`${profile_image}`}></img>
                 </div>
-                {/* 프로필 모달 */}
-                <ProfileModal
-                clickedProfile = {clickedProfile}
-                setClickedProfile = {setClickedProfile}
-                MemberKey = {username}
-                />
+               
                 {/* 조회수 좋아요 표시 영역 */}
                 <div className={`flex mx-4 font-sans`}>
                     {/* 눈 이미지 영역 */}

@@ -13,18 +13,22 @@ exports.gallery = async (req, res) => {
         const likeUser = `%${searchUser}%`;
 
         const [rows] = await db.query(`
-       SELECT 
-         g.id, g.username, g.title, g.date, g.profile_image,
-         g.likes, g.views, g.location,
-         gi.image_url AS thumbnail_url
-       FROM gallery g
-       JOIN gallery_image_relation gir
-         ON g.id = gir.gallery_id AND gir.display_order = 1
-       JOIN gallery_image gi
-         ON gir.gallery_image_id = gi.id
-       WHERE g.is_public = 1 AND g.username LIKE ?
-       ORDER BY g.${sort} 
-      LIMIT ? OFFSET ?
+       SELECT
+  g.id, g.user_id AS friend_id, g.username, g.title, g.date, g.profile_image,
+  g.likes, g.views, g.location,
+  (
+    SELECT gi.image_url
+    FROM gallery_image_relation gir
+    JOIN gallery_image gi ON gir.gallery_image_id = gi.id
+    WHERE gir.gallery_id = g.id AND gir.display_order = 1
+    LIMIT 1
+  ) AS thumbnail_url,
+   u.name AS name
+FROM gallery g
+LEFT JOIN users u ON u.id = g.user_id
+WHERE g.is_public = 1 AND g.username LIKE ?
+ORDER BY g.${sort}
+LIMIT ? OFFSET ?
      `, [likeUser, limit, offset]);
      console.log(sort);
 
@@ -45,7 +49,9 @@ exports.galleryImage = async (req, res) => {
             ON gi.id = gir.gallery_image_id
             JOIN gallery g
             ON gir.gallery_id = g.id
-            WHERE g.id = ?`, [galleryID]);
+            WHERE g.id = ?
+            ORDER BY gir.display_order = 1 DESC;
+            `, [galleryID]);
         console.log('갤러리 이미지 요청:', rows);
         return res.status(200).json(rows);
     }catch (error){
@@ -73,6 +79,9 @@ exports.friendList = async (req, res) => {
       JOIN profiles p
       ON u.id = p.user_id
       WHERE me.username = ? and f.status = ?`,[username, status]);
+
+      console.log("요청한 데이터",username);
+      console.log("결과 데이터:",rows);
       return res.status(200).json(rows);
   }catch(error){
     console.error('친구목록 요청 실패:', error);

@@ -6,9 +6,11 @@ import GalleryHover from './ui/galleryHover';
 import { galleryfetch } from './api/gallery';
 import ShowGalleryModal from './ui/showGalleryModal';
 import { galleryImageFetch } from './api/galleryImage';
+import ProfileModal from '../community/ui/profileModal';
+import { fetchList } from '../community/api/fetchListAPI';
 
 export default function Gallery(props) {
-  const { src, sort,searchUser } = props;
+  const { src, sort,searchUser,name } = props;
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -18,6 +20,14 @@ export default function Gallery(props) {
   const [clickedGallery, setClickedGallery] = useState(null);
   // 갤러리 클릭 시 갤러리 이미지 상태관리
   const [galleryImage, setGalleryImage] = useState([]);
+
+  // 프로필 옵션 선택 상태관리
+  const [actionList, setActionList] = useState([]);
+
+  // 친구 리스트
+  const [friendList, setFriendList] = useState([]);
+  // 차단 리스트
+  const [blockedList, setBlockedList] = useState([]);
 
   const PAGE_SIZE = 15;
 
@@ -50,7 +60,6 @@ export default function Gallery(props) {
       }
     };
     loadPage();
-    console.log(items);
   }, [page,sort,searchUser]);
 
   // 무한스크롤: observer가 보이고, 더 가져올 게 있으면 page++
@@ -70,6 +79,26 @@ export default function Gallery(props) {
       return await galleryImageFetch(galleryID);
   }
 
+  useEffect(()=>{
+    const getList = async ()=>{
+      try{
+        const friendData = await fetchList("friendList",name);
+        const blockedData = await fetchList("blockList",name);
+        setFriendList(friendData);
+        setBlockedList(blockedData);
+        console.log("데이터 요청 성공");
+      }catch(error){
+        console.log("데이터요청 에러:",error);
+      }
+    }
+    getList();
+  },[name])
+
+  useEffect(()=>{
+    console.log("userName:",blockedList);
+    console.log("현재정보",items);
+  },[friendList,blockedList]);
+
   return (
     <div className={`
       h-full w-full sm:overflow-y-auto sm:p-4 sm:pr-8
@@ -83,7 +112,7 @@ export default function Gallery(props) {
       >
         {items.map((item, idx) => (
           <div
-            key={idx}
+            key={`${item}${idx}`}
             onMouseEnter={() => {
               if(clickedProfile !== false){
                 setHoverIndex(idx)
@@ -100,7 +129,7 @@ export default function Gallery(props) {
               transition-opacity duration-300
             `}>
               <GalleryHover
-                id={item.id}
+                id={item.friend_id}
                 title={item.title}
                 username={item.username}
                 profile_image={item.profile_image}
@@ -113,10 +142,22 @@ export default function Gallery(props) {
                 index={idx}
                 setGalleryImage={setGalleryImage}
                 fetchGalleryImage={fetchGalleryImage}
-                clickedProfile = {clickedProfile}
                 setClickedProfile = {setClickedProfile}
-              />  
+              />
             </div>
+            {/* 프로필 모달 */}
+                    <ProfileModal
+                    clickedProfile = {clickedProfile}
+                    setClickedProfile = {setClickedProfile}
+                    friendList = {friendList}
+                    blockedList = {blockedList}
+                    chattingList = {[item]}
+                    setActionList = {setActionList}
+                    profile_image = {item.profile_image}
+                    MemberKey = {item.friend_id}
+                    requestComponent = {"home"}
+                    />  
+                    {/* {console.log("현재정보:",item)} */}
             {/* 갤러리 클릭 시 모달 띄우기 */}
             {clickedGallery === idx && (
               <ShowGalleryModal

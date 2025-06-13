@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-export const fetchList = async (listType,userName,searchKeyWord) => {
+export const fetchList = async (listType,userName,searchKeyWord = "") => {
 
   //가져올 데이터 타입
   const status = {
@@ -13,6 +13,8 @@ export const fetchList = async (listType,userName,searchKeyWord) => {
     // 채팅리스트
     "chattingList" : "chatting"
   };
+
+  console.log("친구리스트 요청중 : home",userName);
 
   try {
     const response = await axios.get(`http://localhost:5000/api/${listType}?username=${userName}&status=${status[listType]}&searchKeyWord=${searchKeyWord}`);

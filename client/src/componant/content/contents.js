@@ -7,7 +7,7 @@ import {useState,useEffect} from "react";
 
 export default function Contents(props) {
     // 콘텐츠를 마운트한 페이지의 src,username
-    const { src,username,searchName } = props;
+    const { src,name,username,searchName } = props;
     // 선택된 정렬기준
     const [sort, setSort] = useState("최신순");
     // 검색된 유저
@@ -37,6 +37,7 @@ export default function Contents(props) {
                 src={src}
                 sort={sort}
                 searchUser={searchUser}
+                name = {name}
                 />
             </div>
             {/* 풋터 */}

@@ -8,11 +8,13 @@ export default function Home() {
 
   // 유저이름
   const [username, setUsername] = useState("");
+  // 유저 닉네임
+  const [name, setName] = useState("");
 
   // 로그인 성공 시 토큰 검증
   useEffect(()=>{
     const getUsername = async ()=>{
-      await checkedToken(setUsername);
+      await checkedToken(setUsername,setName);
     }
     getUsername();
   },[])
@@ -27,7 +29,9 @@ export default function Home() {
         <div className=" flex flex-col flex-wrap row-span-9 sm:col-span-8 2xl:pl-4 xl:pl-6 lg:pl-8 md:pl-12 sm:pl-16">
           <Contents
             src="home"
-            username={`${username}`} />
+            username={`${username}`}
+            name = {name}
+            />
         </div>
       </div>
     </>

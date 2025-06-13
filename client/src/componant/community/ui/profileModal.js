@@ -33,8 +33,6 @@ export default function ProfileModal(props) {
         })
     }
 
-    console.log({userID:userID, MemberKey:MemberKey});
-
     // 이미 친구인지 확인하는 변수
     const isFriend = friendList.some(member => member.friend_id === MemberKey);
 
@@ -161,7 +159,7 @@ export default function ProfileModal(props) {
                         })}
 
                         {/* 대화창에서 누르면 버튼 비활성화 */}
-                        {requestComponent !== "conversation" && requestComponent !== "myProfile" &&
+                        {requestComponent !== "conversation" && requestComponent !== "myProfile" && requestComponent !== "home" &&
                         <>
                             {/* 왼쪽 이동 버튼 */}
                             <button
