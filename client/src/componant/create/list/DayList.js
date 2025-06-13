@@ -1,6 +1,6 @@
 import KakaoMap from "./KakaoMap";
 import ListAddPhoto from "./ListAddPhoto";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
@@ -14,7 +14,7 @@ const DraggableDayButton = ({ day, index, moveDay, isActive, onClick }) => {
     }),
   });
 
-  const [, drop] = useDrop({
+  const [{ isOver }, drop] = useDrop({
     accept: 'DAY',
     hover: (draggedItem) => {
       if (draggedItem.index !== index) {
@@ -22,15 +22,20 @@ const DraggableDayButton = ({ day, index, moveDay, isActive, onClick }) => {
         draggedItem.index = index;
       }
     },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
   });
 
   return (
     <div
       ref={(node) => drag(drop(node))}
       onClick={onClick}
-      className={`font-sans text-white bg-blue-500 mr-1 rounded-2xl flex items-center justify-center px-4 py-2 cursor-move ${
+      className={`font-sans text-white bg-blue-500 mr-1 rounded-2xl flex items-center justify-center px-4 py-2 cursor-move transition-all duration-200 ${
         isActive ? "bg-blue-500 text-white" : "bg-gray-200"
-      } ${isDragging ? 'opacity-50' : ''}`}
+      } ${isDragging ? 'opacity-50 scale-110 shadow-lg' : ''} ${
+        isOver ? 'border-2 border-blue-400 scale-105' : ''
+      }`}
     >
       {day}
     </div>
@@ -145,8 +150,6 @@ export default function DayList() {
   const [showMap, setShowMap] = useState(false);
   // 장소 수정
   const [editingPlace, setEditingPlace] = useState(null);
-
-  const [showUpdateAnimation, setShowUpdateAnimation] = useState(false);
 
   // 이미지 업로드 핸들러
   // CreateList.js 내부의 handleImageUpload 함수 수정
@@ -392,14 +395,20 @@ export default function DayList() {
       oldDays.splice(dragIndex, 1);
       oldDays.splice(hoverIndex, 0, draggedDay);
 
+      console.log('이동 전 항목들:', prevItems);
+      console.log('이동하는 일차:', draggedDay);
+      console.log('이동 전 일차 순서:', oldDays);
+
       // 새로운 순서에 맞게 항목들 재배치
       oldDays.forEach((oldDay, index) => {
         const newDay = `${index + 1}일차`;
         if (prevItems[oldDay]) {
           newItems[newDay] = prevItems[oldDay];
+          console.log(`${oldDay}의 항목들이 ${newDay}로 이동됨:`, prevItems[oldDay]);
         }
       });
 
+      console.log('이동 후 항목들:', newItems);
       return newItems;
     });
   };
@@ -423,12 +432,6 @@ export default function DayList() {
           </button>
         )}
       </div>
-
-      {showUpdateAnimation && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
-          일차 순서가 업데이트되었습니다!
-        </div>
-      )}
 
       {activeDay && (
         <div className="relative max-h-[610px] overflow-y-auto">
