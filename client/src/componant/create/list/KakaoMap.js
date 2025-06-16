@@ -235,7 +235,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
         </div>
         <div className="relative w-full h-full">
          {/* 검색 결과 리스트 */}
-        {places.length > 0 && (
+        {places.length > 0 ? (
           <div className="absolute bg-white h-full overflow-y-auto border-t border-gray-200 shadow-md">
             {places.map((place) => (
               <div
@@ -260,7 +260,21 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
               </div>
             ))}
           </div>
-        )}
+        ) : (
+          <div className="absolute w-full h-full overflow-y-auto border-t border-gray-200 shadow-md flex flex-col p-2">
+            <div className="border-b border-gray-100 pt-1 pb-3 text-xl">북구 운암3동</div>
+              <div className="bg-red-400 flex flex-col h-60">
+                <div className="bg-red-300 basis-3/5">이미지</div>
+                <div className="basis-2/5">
+                  <div className="bg-blue-200 text-xl pt-3 text-blue-600 font-semibold">미담카페<span className="text-gray-500 text-base ml-2">디저트</span></div>
+                  <div className="bg-blue-200 text-lg pt-1">다양한 맛의 곤약 젤리와 맛있는 음료</div>
+                  <div className="bg-blue-200 text-lg">리뷰 100/ 평균 5,000원</div>
+                </div>
+              </div>
+          </div>
+        )
+
+        }
        </div>
       </div>
       <div className=" absolute left-0 right-0 h-full ">
