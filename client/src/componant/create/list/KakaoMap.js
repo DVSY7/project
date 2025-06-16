@@ -219,22 +219,22 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
     <div className="relative border rounded-xl z-10 h-[650px]">
       {/* 검색창 */}
       <div className="absolute left-0 right-0 w-[35%] h-full flex flex-col mb-4 bg-white z-10" >
-        <div className="flex p-2 bg-blue-500 justify-between">
+        <div className="flex p-2 justify-between">
           <input
             type="text"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && searchPlaces()}
             placeholder="장소를 검색하세요"
-            className="p-2 border rounded focus:outline-none"
+            className="p-2 border-2 border-blue-500 rounded focus:outline-none w-full"
           />
-          <button
+          {/* <button
             onClick={searchPlaces}
             className="bg-blue-500 text-white px-4 rounded hover:bg-blue-600"
             disabled={isLoading}
           >
             {isLoading ? '처리 중...' : '검색'}
-          </button>
+          </button> */}
         </div>
         <div className="relative w-full h-full">
          {/* 검색 결과 리스트 */}
@@ -248,7 +248,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
               >
                 <div className="font-medium">{place.place_name}</div>
                 <div className="text-sm text-gray-500">{place.address_name}</div>
-                <div className="text-sm mt-1">
+                <div className="text-sm mt-1 relative">
                   <a
                     href={`https://place.map.kakao.com/${place.id}`}
                     target="_blank"
@@ -258,7 +258,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
                   >
                     상세보기
                   </a>
-                  <span className="px-16 text-red-600 hover:underline" onClick={() => handlePlaceClick(selectedPlace)}>등록</span>
+                  <span className="absolute right-0 text-red-600 hover:underline" onClick={() => handlePlaceClick(selectedPlace)}>등록</span>
                 </div>
               </div>
             ))}
