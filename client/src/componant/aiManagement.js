@@ -2,8 +2,8 @@ import '../App.css';
 import Footer from './content/footer';
 import Header from './content/header';
 import Menu from './menu';
-import AIPlaceModal from './ai/AIPlaceModal';
 import {useState} from 'react';
+import MultiStepPlanModal from './ai/MultiStepPlanModal';
 
 export default function AIManagement() {
 
@@ -123,8 +123,8 @@ export default function AIManagement() {
               {/* 여행지 나열 */}
               <div className='w-full h-[95%] grid grid-cols-5 gap-8 py-4'>
                 {filteredPlaces.map((place, index) => (
-                  <div key={index} className='relative bg-white rounded-xl shadow-lg h-60 transition-transform duration-200 hover:scale-105' onClick={()=>setSelectedPlace(place)}>
-                    <img src={place.image} className='object-cover w-full h-[70%] rounded-t-lg' />
+                  <div key={index} className='relative bg-white rounded-xl shadow-lg h-80 transition-transform duration-200 hover:scale-105' onClick={()=>setSelectedPlace(place)}>
+                    <img src={place.image} className='object-cover w-full h-[75%] rounded-t-lg' />
                     {place.isNew && (
                       <span className='absolute top-2 -right-1 bg-red-500 text-white px-2 py-1 rounded'>NEW</span>
                     )}
@@ -135,10 +135,16 @@ export default function AIManagement() {
                   </div>
                   
                 ))}
-               <AIPlaceModal 
+               <MultiStepPlanModal 
                open={!!selectedPlace}
                onClose={()=>setSelectedPlace(null)}
-               place={selectedPlace}/>
+               place={selectedPlace}
+               onComplete={(answers) => {
+                console.log('여행계획 완료',answers);
+                setSelectedPlace(null);
+
+               }}
+               />
               </div>
             </div>
             <Footer/>

@@ -1,44 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Menu from "./menu.js";
 import TopButtons from "./create/list/TopButtons.js";
-import ListAddPhoto from "./create/list/ListAddPhoto.js";
 import IsPlanned from "./create/list/IsPlanned.js";
 import TagManager from "./create/list/TagManager.js";
 import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
-import AddPlaceIndex from "./create/list/addPlace/AddPlaceIndex.js";
-import KakaoMap from "./create/list/KakaoMap.js";
 
 export default function CreateList() {
-  // 예시 이미지 표시 여부
-  const [showExample, setShowExample] = useState(false);
-  // 이미지 URL 상태
-  const [ImageSrc, setImageSrc] = useState(null);
-  // 텍스트 상태
+  // 계획형, 비계획형 상태관리 스테이트
+  const [isPlanned, setIsPlanned] = useState(true);
+  // 제목과 소개글 상태 추가
+  const [title,setTitle] = useState("");
   const [text, setText] = useState("");
-  // 등록된 항목 상태
-  const [registeredItems, setRegisteredItems] = useState([]);
 
-  //이미지 업로드 핸들러
-  // CreateList.js 내부의 handleImageUpload 함수 수정
-  const handleImageUpload = (e) => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    e.preventDefault();
-
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImageSrc(reader.result);
-      // 파일 선택기 초기화 (중복 첨부 방지용)
-      e.target.value = null;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // 인원 수 선택 항목변수
-  const selectNumber = [2, 4, 8, 12, 16, 20, 30, 50, 100, "기타"];
+  //선택된 관심사 상태
+  const [selectedInterest, setSelectedInterest] = useState("");
   // 관심사 선택 항목변수
   const selectInterest = [
     "여행 & 탐험",
@@ -52,29 +28,6 @@ export default function CreateList() {
     "기타",
   ];
 
-  //선택된 관심사 상태
-  const [selectedInterest, setSelectedInterest] = useState("");
-
-  // 계획형, 비계획형 상태관리 스테이트
-  const [isPlanned, setIsPlanned] = useState(true);
-  // 혼자하기, 같이하기 상태관리 스테이트
-  const [Group, setGroup] = useState(true);
-  // 대면, 비대면 여부 상태관리 스테이트
-  const [Offline, setOffline] = useState(true);
-
-  // 일차 목록 스태이트
-  const [days, setDays] = useState(["1일차"]);
-  // 현재 활성화된 날짜
-  const [activeDay, setActiveDay] = useState("1일차");
-
-  // 버튼 표시 여부 스테이트
-  const [showAddDayButton, setShowAddDayButton] = useState(true);
-
-  // 일차 추가 함수
-  const handleAddDay = () => {
-    const newDay = `${days.length + 1}일차`;
-    setDays([...days, newDay]);
-  };
 
   // 태그 목록
   const [tags, setTags] = useState([]);
@@ -90,6 +43,24 @@ export default function CreateList() {
   // 태그 추가 함수
   const handleAddTag = () => {
     if (currentTag.trim() !== "") {
+      // 제목과 글에서 단어 추출
+      const titleWords = title.split(/\s+/).filter(word => word.length > 1);
+      const textWords = text.split(/\s+/).filter(word => word.length > 1);
+      // 태그로 사용할수 있는 단어 목록 생성
+      const availableWords = [...new Set([...titleWords, ...textWords])];
+
+      // 앞에 #이 붙였으면 자르고, 없으면 그래로 비교
+      const tagWithoutHash = currentTag.startsWith("#") ? currentTag.slice(1) : currentTag;
+      // 입력된 태그다 제목이나 글에 포함된 단어인지 확인
+      if(!availableWords.some(word=>word.includes(tagWithoutHash))){
+        alert("태그는 제목이나 글에 포함된 단어만 사용할 수 있습니다.");
+        // 잘못된 태그 입력시 입력값 초기화
+        setCurrentTag("");
+        // 잘못된 태그 입력시 입력 필드 숨김
+        setShowInput(false);
+        return;
+      }
+
       // 태그 앞에 #이 없으면 추가
       const formattedTag = currentTag.startsWith("#")
         ? currentTag.trim()
@@ -106,6 +77,19 @@ export default function CreateList() {
   // 태그 수정 완료 함수
   const handleEditTag = () => {
     if (editingTag.trim() !== "") {
+      // 제목과 글에서 단어 추출
+      const titleWords = title.split(/\s+/).filter(word => word.length > 1);
+      const textWords = text.split(/\s+/).filter(word => word.length > 1);
+      const availableWords = [...new Set([...titleWords,...textWords])];
+
+      // 수정된 태그가 앞에 #붙어있으면 자르고, 없으면 그대로 비교
+      const tagWithoutHash = editingTag.startsWith("#") ? editingTag.slice(1) : editingTag;
+      // 포함된 단어가 없다면 alert창 실행
+      if(!availableWords.some(word=>word.includes(tagWithoutHash))) {
+        alert("태그는 제목이나 글에 포함된 단어만 사용할 수 있습니다.");
+        return;
+      }
+
       const formattedTag = editingTag.startsWith("#")
         ? editingTag.trim()
         : `#${editingTag.trim()}`;
@@ -121,10 +105,27 @@ export default function CreateList() {
     setEditingTag("");
   };
 
+  // 제목이나 글 수정 할때마다 태그 검사
+  useEffect(() => {
+    const titleWords = title.split(/\s+/).filter(word => word.length > 1);
+    const textWords = text.split(/\s+/).filter(word => word.length > 1);
+    const availableWords = [...new Set([...titleWords,textWords])];
+
+    // 태그들 중에서 유효하지 않은 태그 제거
+    const validTags = tags.filter(tag => {
+      const tagWithoutHash = tag.startsWith("#") ? tag.slice(1) : tag;
+      return !availableWords.some(word=>word.includes(tagWithoutHash));
+    });
+    // 유효하지 않은 태그가 있다면 태그 목록 업데이트
+    if (validTags.length !== tags.length){
+      setTags(validTags);
+    }
+  }, [title, text]);
+
   // 태그 삭제 함수
   const handleDeleteTag = (index) => {
     // 해당 인덱스의 태그 제거
-    const updatedTags = tags.filter((_, i) => i !== index);
+    const updatedTags = tags.filter((_, i) => i !== index); // 삭제할 태그만 삭제, 나머지 남김
     setTags(updatedTags);
   };
 
@@ -135,11 +136,6 @@ export default function CreateList() {
     }
   };
 
-  const [showMap, setShowMap] = useState(false);
-
-  const handlePlaceSelect = (newItem) => {
-    setRegisteredItems((prev) => [...prev, newItem]);
-  };
 
   return (
     <>
@@ -148,53 +144,29 @@ export default function CreateList() {
         {/* 왼쪽: 가로 1 비율 (1/9) */}
         <Menu current_src={5} />
         {/* 오른쪽: 가로 8 비율 (8/9) */}
-        <div className=" flex flex-col flex-wrap  row-span-9 sm:col-span-8 ">
-          <div className="flex items-center justify-center  w-full h-full">
+        <div className="flex flex-col flex-wrap  row-span-9 sm:col-span-8 ">
+          {/* <div className="flex items-center justify-center  w-full h-full"> */}
             <div
-              className={`w-[95%] h-[93%] rounded-3xl grid grid-cols-[3fr_2fr] shadow-lg border  bg-white`}
+              className={`w-full h-full grid grid-cols-[3fr_2fr] bg-white`}
             >
               {/* 왼쪽 영역 */}
-              <div className="grid grid-rows-[1fr_6.5fr_0.5fr] p-4 pl-10">
+              <div className="grid grid-rows-[1fr_6.5fr_0.5fr] px-4 py-8">
                 {/* 상단 영역 */}
                 <div className="flex grid grid-rows-[0.5fr_1fr]">
-                  <TopButtons
-                    isPlanned={isPlanned}
-                    setIsPlanned={setIsPlanned}
-                    Group={Group}
-                    setGroup={setGroup}
-                    Offline={Offline}
-                    setOffline={setOffline}
-                    selectNumber={selectNumber}
-                  />
+                  <TopButtons isPlanned={isPlanned} setIsPlanned={setIsPlanned} />
                   {/* 제목, 프로필, 관심사 선택 영역 */}
                   <TitleAndSelectInterest
                     selectInterest={selectInterest}
                     selectedInterest={selectedInterest}
                     setSelectedInterest={setSelectedInterest}
+                    title={title}
+                    setTitle={setTitle}
                   />
                 </div>
                 {/* 중간 영역 */}
-
                 {/* 일차 추가 버튼 */}
                 <div className="grid grid-rows-[1fr_10fr]">
-                  <DayList
-                    days={days}
-                    showAddDayButton={showAddDayButton}
-                    handleAddDay={handleAddDay}
-                    activeDay={activeDay}
-                    setActiveDay={setActiveDay}
-                    showExample={showExample}
-                    setShowExample={setShowExample}
-                    ImageSrc={ImageSrc} // 이미지 URL 상태 전달
-                    setImageSrc={setImageSrc}
-                    text={text} // 텍스트 상태 전달
-                    setText={setText} // 텍스트 상태 업데이트 함수 전달
-                    handleImageUpload={handleImageUpload} // 이미지 업로드 함수 전달
-                    registeredItems={registeredItems}
-                    setRegisteredItems={setRegisteredItems}
-                    showMap={showMap}
-                    setShowMap={setShowMap}
-                  />
+                  <DayList />
                 </div>
                 {/* 하단 영역 */}
                 <div className="mt-5">
@@ -213,21 +185,21 @@ export default function CreateList() {
                     handleEditTag={handleEditTag}
                     handleDeleteTag={handleDeleteTag}
                     handleKeyPress={handleKeyPress}
+                    title={title}
+                    setTitle={setTitle}
                   />
                 </div>
               </div>
               {/* 오른쪽 영역 */}
-              <div className="border-l grid grid-rows-[2.5fr_3fr_0.5fr]  overflow-hidden">
-                {/* 상단 영역: 지도영역 */}
-                <div className="w-full h-full">{/* <KakaoMap /> */}</div>
-                {/* 중간 영역: 텍스트 입력란 */}
+              <div className="border-l grid grid-rows-[9fr_1fr]  overflow-hidden">
                 <div className="flex items-center justify-center">
+                  {/* 계획형 작성 란 */}
                   {isPlanned ? (
-                    <IsPlanned />
+                    <IsPlanned text={text} setText={setText}/>
                   ) : (
                     <textarea
                       className="w-[90%] h-[90%] border rounded p-2 resize-none px-3"
-                      placeholder="소개 글을 자유롭게 입력하세요"
+                      placeholder="소개 글을 자유롭게 입력하세요"  value={text} onChange={(e) => setText(e.target.value)}
                     ></textarea>
                   )}
                 </div>
@@ -239,7 +211,7 @@ export default function CreateList() {
                 </div>
               </div>
             </div>
-          </div>
+          {/* </div> */}
         </div>
       </div>
     </>
