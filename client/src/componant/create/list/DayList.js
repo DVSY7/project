@@ -430,6 +430,38 @@ export default function DayList() {
     });
   };
 
+
+  const handleDayDelete = (activeday) =>{
+      if(window.confirm(`${activeDay}의 모든 항목을 삭제하시겠습니까?`)){
+          // days 배열에서 해당 날짜 삭제
+        setDays((prevDays) => {
+          const newDays = prevDays.filter(day => day!== activeDay);
+          //남은 날짜들의 번호 재조정
+          return newDays.map((_, index) => (`${index + 1}일차`));
+        });
+
+        // registeredItems 업데이트
+        setRegisteredItems((prevItems) => {
+          const newItems = {};
+          const oldDays = [...days];
+          const deletedIndex = oldDays.indexOf(activeDay);
+
+          // 삭제된 날짜 이후의 항목들을 한 칸씩 앞으로 이동
+          oldDays.forEach((oldDay, index) => {
+            if(index < deletedIndex) {
+              // 삭제된 날짜 이전의 항목들은 그대로 유지
+              newItems[`${index + 1}일차`] = prevItems[oldDay];
+             }else if(index > deletedIndex) {
+              // 삭제된 날짜 이후의 항목들은 한 칸씩 앞으로 이동
+              newItems[`${index}일차`] = prevItems[oldDay];
+             }
+          });        
+        console.log('삭제후 항목들', newItems);
+        return newItems;
+      })
+    }
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="flex items-center">
@@ -448,6 +480,14 @@ export default function DayList() {
             +
           </button>
         )}
+
+
+        {days.length > 1 && (
+           <button className="ml-auto text-gray-400 hover:text-red-500"
+           onClick={() => handleDayDelete(activeDay)}
+         >삭제</button>
+        )}
+       
       </div>
 
       {activeDay && (
