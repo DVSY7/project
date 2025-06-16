@@ -94,9 +94,9 @@ export default function CreateList() {
         <Menu current_src={5} />
         {/* 오른쪽: 가로 8 비율 (8/9) */}
         <div className=" flex flex-col flex-wrap  row-span-9 sm:col-span-8 ">
-          <div className="flex items-center justify-center  w-full h-full">
+          {/* <div className="flex items-center justify-center  w-full h-full"> */}
             <div
-              className={`w-[95%] h-[93%] rounded-3xl grid grid-cols-[3fr_2fr] shadow-lg border  bg-white`}
+              className={`w-full h-full grid grid-cols-[3fr_2fr] bg-white my-8`}
             >
               {/* 왼쪽 영역 */}
               <div className="grid grid-rows-[1fr_6.5fr_0.5fr] p-4 pl-10">
@@ -111,7 +111,6 @@ export default function CreateList() {
                   />
                 </div>
                 {/* 중간 영역 */}
-
                 {/* 일차 추가 버튼 */}
                 <div className="grid grid-rows-[1fr_10fr]">
                   <DayList />
@@ -157,7 +156,7 @@ export default function CreateList() {
                 </div>
               </div>
             </div>
-          </div>
+          {/* </div> */}
         </div>
       </div>
     </>

@@ -451,7 +451,7 @@ export default function DayList() {
       </div>
 
       {activeDay && (
-        <div className="relative max-h-[610px] overflow-y-auto">
+        <div className="relative max-h-[700px] overflow-y-auto">
           {!editingItem && !showImageInput && !showMap && !editingPlace && (
             <div>
               {itemsForActiveDay.map((item, index) => (
@@ -469,7 +469,7 @@ export default function DayList() {
 
           {/* 이미지 폼 ( 등록 / 수정 ) */}
           {showImageInput && (
-            <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[610px] relative">
+            <div className="p-4 bg-gray-100 border rounded-xl z-10 h-[700px] relative">
               {/* 닫기 버튼 */}
               {!editingItem && (
                 <button
