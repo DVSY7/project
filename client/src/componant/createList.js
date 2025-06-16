@@ -150,7 +150,7 @@ export default function CreateList() {
               className={`w-full h-full grid grid-cols-[3fr_2fr] bg-white`}
             >
               {/* 왼쪽 영역 */}
-              <div className="grid grid-rows-[1fr_6.5fr_0.5fr] px-4 py-8">
+              <div className="grid grid-rows-[1fr_6.5fr_0.5fr] px-8 my-8">
                 {/* 상단 영역 */}
                 <div className="flex grid grid-rows-[0.5fr_1fr]">
                   <TopButtons isPlanned={isPlanned} setIsPlanned={setIsPlanned} />
@@ -191,7 +191,7 @@ export default function CreateList() {
                 </div>
               </div>
               {/* 오른쪽 영역 */}
-              <div className="border-l grid grid-rows-[9fr_1fr]  overflow-hidden">
+              <div className="border-l grid grid-rows-[9fr_1fr]  overflow-hidden my-8">
                 <div className="flex items-center justify-center">
                   {/* 계획형 작성 란 */}
                   {isPlanned ? (
