@@ -199,17 +199,17 @@ export default function DayList() {
 
       // 수정 할 때
       if (editingItem) {
-        return {
-          ...prevItems, //기존에 있던 모든 날짜의 항목들을 그대로 복사
+        const updatedItems = {
+          ...prevItems,
           [activeDay]: existingItems.map(
-            (
-              item // activaDay에 해당하는 값만 덮어쓰기
-            ) =>
+            (item) =>
               item.id === editingItem.id
                 ? { ...item, description: text, image: ImageSrc }
                 : item
           ),
         };
+        console.log('수정 후 등록된 모든 항목:', updatedItems);
+        return updatedItems;
       }
 
       // 이미지 등록 하루 한개 제한
@@ -220,13 +220,15 @@ export default function DayList() {
 
       // 새로 등록할 때
       const placeItems = existingItems.filter(item => item.type === 'place')
-      return {
+      const newItems = {
         ...prevItems,
         [activeDay]: [
           { image: ImageSrc, description: text, type: "image", id: Date.now() },
           ...placeItems,
         ],
       };
+      console.log('이미지 등록 후 모든 항목:', newItems);
+      return newItems;
     });
 
     // 초기화
@@ -238,7 +240,6 @@ export default function DayList() {
 
   // 장소 등록 로직
   const handlePlaceSelect = (item) => {
-
     const isEdit = Boolean(editingPlace);
     if(isEdit) {
       handleSaveEditPlace(item);
@@ -257,13 +258,15 @@ export default function DayList() {
       if (isDuplicate) return prevItems;
 
       // 새로 등록인 경우
-      return {
+      const newItems = {
         ...prevItems,
         [activeDay]: [
           ...existingItems,
           { ...item, type: "place", id: Date.now() },
         ],
       };
+      console.log('장소 등록 후 모든 항목:', newItems);
+      return newItems;
     });
     setShowMap(false);
   };
@@ -368,10 +371,24 @@ export default function DayList() {
       const draggedItem = items[dragIndex];
       items.splice(dragIndex, 1);
       items.splice(hoverIndex, 0, draggedItem);
-      return {
+      
+      const newItems = {
         ...prevItems,
         [activeDay]: items,
       };
+      
+      // 순서가 변경된 항목들을 콘솔에 출력
+      console.log('순서 변경 후 항목들:', {
+        날짜: activeDay,
+        항목들: items.map((item, index) => ({
+          순서: index + 1,
+          타입: item.type,
+          설명: item.description,
+          ID: item.id
+        }))
+      });
+      
+      return newItems;
     });
   };
 

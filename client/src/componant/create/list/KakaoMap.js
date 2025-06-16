@@ -215,7 +215,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
   return (
     <div className="relative border rounded-xl z-10 h-[610px]">
       {/* 검색창 */}
-      <div className="absolute left-0 right-0 w-[35%] h-full flex flex-col mb-4 bg-red-400 z-10" >
+      <div className="absolute left-0 right-0 w-[35%] h-full flex flex-col mb-4 bg-white z-10" >
         <div className="flex p-2 bg-blue-500 justify-between">
           <input
             type="text"
