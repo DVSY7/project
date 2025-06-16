@@ -236,7 +236,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
         <div className="relative w-full h-full">
          {/* 검색 결과 리스트 */}
         {places.length > 0 ? (
-          <div className="absolute bg-white h-full overflow-y-auto border-t border-gray-200 shadow-md">
+          <div className="absolute bg-white w-full h-full overflow-y-auto border-t border-gray-200 shadow-md">
             {places.map((place) => (
               <div
                 key={place.id}
