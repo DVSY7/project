@@ -2,6 +2,8 @@ export default function TitleAndSelectInterest({
     selectInterest,
     selectedInterest,
     setSelectedInterest,
+    title,
+    setTitle,
 }) {
   return (
     <div className="flex-1 flex items-center justify-between border-b">
@@ -15,16 +17,18 @@ export default function TitleAndSelectInterest({
           <input
             type="text"
             placeholder="ex) 암벽등반하기"
-            className="focus:outline-none focus:ring-2"
+            className="focus:outline-none"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           ></input>
         </div>
       </div>
       <div>
         <select
-        value={selectedInterest}
+        value={selectedInterest} //react 상태와 ui를 정확하게 동기화
         onChange={(e) => setSelectedInterest(e.target.value)}
         className="flex items-center justify-center w-40 h-8 text-center rounded text-sm">
-          <option value="" disabled>
+          <option value="" disabled hidden>
             테마
           </option>
 

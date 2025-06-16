@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <>
       {/*가장 바깥영역 화면의 최대로 설정*/}
-      <div className="grid grid-cols-1 grid-rows-9 sm:grid-rows-1 sm:grid-cols-[minmax(200px, 1fr)] sm:grid-cols-9 h-screen overflow-x-hidden">
+      <div className="grid grid-cols-1 grid-rows-9 sm:grid-rows-1 sm:grid-cols-9 h-screen overflow-x-hidden">
         {/* 왼쪽: 가로 1 비율 (1/9) */}
         <Menu current_src={1} />
         {/* 오른쪽: 가로 8 비율 (8/9) */}

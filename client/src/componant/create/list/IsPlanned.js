@@ -1,4 +1,4 @@
-export default function IsPlanned(){
+export default function IsPlanned({text, setText}){
     return( 
     <div className="w-[90%] h-full flex flex-col justify-around text-lg font-sans">
         {/* <h1 className="mt-4 text-xl font-semibold">
@@ -40,8 +40,10 @@ export default function IsPlanned(){
           />
         </div>
         <textarea
-          className="w-full h-[40%] resize-none border rounded-lg p-2 "
+          className="w-full h-[60%] resize-none border rounded-lg p-2 "
           placeholder="소개 글을 자유롭게 입력하세요"
+          value={text}
+          onChange={(e)=>setText(e.target.value)}
         ></textarea>
       </div>
    

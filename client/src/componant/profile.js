@@ -1,15 +1,19 @@
+//client/src/componant/profile.js
+
 import Contents from "./content/contents";
 import Menu from "./menu";
 import {useEffect, useState} from 'react';
 import { checkedToken } from "./function/checkedToken";
 
 export default function Profile() {
+    // 로그인한 유저정보 관리 스테이트
     const [username, setUsername] = useState("");
+
     useEffect(()=>{
         const getUsername = async ()=>{
             await checkedToken(setUsername);
         };
-       getUsername();
+        getUsername();
     },[])
 
     return (
@@ -20,7 +24,9 @@ export default function Profile() {
                 <Menu current_src = {4} />
                 {/* 오른쪽: 가로 8 비율 (8/9) */}
                 <div className=" flex flex-col flex-wrap row-span-9 sm:col-span-8 ">
-                    <Contents src="profile" username ={username}/>
+                    <Contents src="profile" 
+                        username ={username}
+                    />
                 </div>
             </div>
         </>
