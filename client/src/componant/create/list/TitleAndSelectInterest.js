@@ -2,6 +2,8 @@ export default function TitleAndSelectInterest({
     selectInterest,
     selectedInterest,
     setSelectedInterest,
+    title,
+    setTitle,
 }) {
   return (
     <div className="flex-1 flex items-center justify-between border-b">
@@ -16,6 +18,8 @@ export default function TitleAndSelectInterest({
             type="text"
             placeholder="ex) 암벽등반하기"
             className="focus:outline-none"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           ></input>
         </div>
       </div>

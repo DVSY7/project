@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Menu from "./menu.js";
 import TopButtons from "./create/list/TopButtons.js";
 import IsPlanned from "./create/list/IsPlanned.js";
@@ -9,6 +9,9 @@ import DayList from "./create/list/DayList.js";
 export default function CreateList() {
   // 계획형, 비계획형 상태관리 스테이트
   const [isPlanned, setIsPlanned] = useState(true);
+  // 제목과 소개글 상태 추가
+  const [title,setTitle] = useState("");
+  const [text, setText] = useState("");
 
   //선택된 관심사 상태
   const [selectedInterest, setSelectedInterest] = useState("");
@@ -40,6 +43,24 @@ export default function CreateList() {
   // 태그 추가 함수
   const handleAddTag = () => {
     if (currentTag.trim() !== "") {
+      // 제목과 글에서 단어 추출
+      const titleWords = title.split(/\s+/).filter(word => word.length > 1);
+      const textWords = text.split(/\s+/).filter(word => word.length > 1);
+      // 태그로 사용할수 있는 단어 목록 생성
+      const availableWords = [...new Set([...titleWords, ...textWords])];
+
+      // 앞에 #이 붙였으면 자르고, 없으면 그래로 비교
+      const tagWithoutHash = currentTag.startsWith("#") ? currentTag.slice(1) : currentTag;
+      // 입력된 태그다 제목이나 글에 포함된 단어인지 확인
+      if(!availableWords.some(word=>word.includes(tagWithoutHash))){
+        alert("태그는 제목이나 글에 포함된 단어만 사용할 수 있습니다.");
+        // 잘못된 태그 입력시 입력값 초기화
+        setCurrentTag("");
+        // 잘못된 태그 입력시 입력 필드 숨김
+        setShowInput(false);
+        return;
+      }
+
       // 태그 앞에 #이 없으면 추가
       const formattedTag = currentTag.startsWith("#")
         ? currentTag.trim()
@@ -56,6 +77,19 @@ export default function CreateList() {
   // 태그 수정 완료 함수
   const handleEditTag = () => {
     if (editingTag.trim() !== "") {
+      // 제목과 글에서 단어 추출
+      const titleWords = title.split(/\s+/).filter(word => word.length > 1);
+      const textWords = text.split(/\s+/).filter(word => word.length > 1);
+      const availableWords = [...new Set([...titleWords,...textWords])];
+
+      // 수정된 태그가 앞에 #붙어있으면 자르고, 없으면 그대로 비교
+      const tagWithoutHash = editingTag.startsWith("#") ? editingTag.slice(1) : editingTag;
+      // 포함된 단어가 없다면 alert창 실행
+      if(!availableWords.some(word=>word.includes(tagWithoutHash))) {
+        alert("태그는 제목이나 글에 포함된 단어만 사용할 수 있습니다.");
+        return;
+      }
+
       const formattedTag = editingTag.startsWith("#")
         ? editingTag.trim()
         : `#${editingTag.trim()}`;
@@ -70,6 +104,23 @@ export default function CreateList() {
     // 수정 필드 초기화
     setEditingTag("");
   };
+
+  // 제목이나 글 수정 할때마다 태그 검사
+  useEffect(() => {
+    const titleWords = title.split(/\s+/).filter(word => word.length > 1);
+    const textWords = text.split(/\s+/).filter(word => word.length > 1);
+    const availableWords = [...new Set([...titleWords,textWords])];
+
+    // 태그들 중에서 유효하지 않은 태그 제거
+    const validTags = tags.filter(tag => {
+      const tagWithoutHash = tag.startsWith("#") ? tag.slice(1) : tag;
+      return !availableWords.some(word=>word.includes(tagWithoutHash));
+    });
+    // 유효하지 않은 태그가 있다면 태그 목록 업데이트
+    if (validTags.length !== tags.length){
+      setTags(validTags);
+    }
+  }, [title, text]);
 
   // 태그 삭제 함수
   const handleDeleteTag = (index) => {
@@ -108,6 +159,8 @@ export default function CreateList() {
                     selectInterest={selectInterest}
                     selectedInterest={selectedInterest}
                     setSelectedInterest={setSelectedInterest}
+                    title={title}
+                    setTitle={setTitle}
                   />
                 </div>
                 {/* 중간 영역 */}
@@ -132,6 +185,8 @@ export default function CreateList() {
                     handleEditTag={handleEditTag}
                     handleDeleteTag={handleDeleteTag}
                     handleKeyPress={handleKeyPress}
+                    title={title}
+                    setTitle={setTitle}
                   />
                 </div>
               </div>
@@ -140,11 +195,11 @@ export default function CreateList() {
                 <div className="flex items-center justify-center">
                   {/* 계획형 작성 란 */}
                   {isPlanned ? (
-                    <IsPlanned />
+                    <IsPlanned text={text} setText={setText}/>
                   ) : (
                     <textarea
                       className="w-[90%] h-[90%] border rounded p-2 resize-none px-3"
-                      placeholder="소개 글을 자유롭게 입력하세요"
+                      placeholder="소개 글을 자유롭게 입력하세요"  value={text} onChange={(e) => setText(e.target.value)}
                     ></textarea>
                   )}
                 </div>
