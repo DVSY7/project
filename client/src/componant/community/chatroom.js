@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import Conversation from "./conversation";
 import { insertDateHeaders, formatDateKorean } from "./utilities/dateUtils";
 import { CheckedCurrentMemberButton, CommunityButtons } from "./ui/button";
-import { fetchMessageAPI } from "./api/fetchMessageAPI";
+import { fetchMessageAPI, fetchMessageReadAPI } from "./api/fetchMessageAPI";
 import io from "socket.io-client";
 
 export default function Chatroom(props) {
@@ -43,6 +43,9 @@ export default function Chatroom(props) {
     // 채팅에 입력한 내용 상태관리
     const [messageText, setMessageText] = useState("");
 
+    // 현재 채팅에 방에 입장한 유저
+    const [chatroomUser,setChatRoomUser] = useState([]);
+
 
     // selectedList 값이 변동이 있을때만 실행
     useEffect(() => {
@@ -63,18 +66,31 @@ export default function Chatroom(props) {
     const [currentMembers, setCurrentMembers] = useState([]);
 
     useEffect(() => {
-        const getMessage = async () => {
-            try {
-                // 채팅 불러오기 API
-                setMessaging(await fetchMessageAPI(chatroomID, "chatmessage"));
-                // 참여인원 불러오기 API
-                setCurrentMembers(await fetchMessageAPI(chatroomID, "currentMember"));
-            } catch (error) {
-                console.error("메세지 불러오기 실패:", error);
-            }
-        };
-        getMessage();
-    }, [chatroomID]);
+    const getMessage = async () => {
+        try {
+            // 메시지 불러오기
+            const rawMessages = await fetchMessageAPI(chatroomID, "chatmessage");
+            const currentMembersList = await fetchMessageAPI(chatroomID, "currentMember");
+
+            // 읽음 수 계산
+            const enrichedMessages = await Promise.all(rawMessages.map(async (msg) => {
+                const readResult = await fetchMessageReadAPI(userInfo.friend_id, msg.message_id);
+                const readCount = readResult[0]?.messageReadCount || 0;
+                return {
+                    ...msg,
+                    messageReads: currentMembersList.length - readCount
+                };
+            }));
+
+            setCurrentMembers(currentMembersList);
+            setMessaging(enrichedMessages);
+        } catch (error) {
+            console.error("메세지 불러오기 실패:", error);
+        }
+    };
+
+    if (chatroomID) getMessage();
+}, [chatroomID]);
 
     // 날짜 구분 로직 추가
     const formattedMessages = useMemo(()=>{
@@ -86,11 +102,15 @@ export default function Chatroom(props) {
     // socket에 연결하는 로직
     useEffect(() => {
         // 소켓 생성
-        if (!socketRef.current) {
+        if (!socketRef.current && userInfo !== undefined) {
             socketRef.current = io("http://localhost:5000", {
                 transports: ["websocket"], // 안정적인 연결 방식 사용
                 autoConnect: false,        // 직접 connect() 호출
+                query:{
+                    userID: userInfo.friend_id, 
+                }
             });
+            console.log("userInfo:",userInfo.friend_id);
         }
 
         const socket = socketRef.current;
@@ -107,10 +127,21 @@ export default function Chatroom(props) {
             console.log("[소켓] join_room emit:", chatroomID);
         });
 
+        // 현재 채팅중인 유저를 상태에 저장
+        socket.on("room_user_count", (data) =>{setChatRoomUser(data.connectedUserIds)} );
+
         // 메세지 수신하는 부분
         socket.on("receive_message", (msg) => {
             console.log("[소켓] receive_message 수신:", msg);
             setMessaging((prev) => [...prev, msg]);
+            
+            // 본인이 보낸 메세지가 아니면, 읽음 처리 서버로 알림
+            if(msg.sender_id !== userInfo.friend_id){
+                socket.emit("message_read",{
+                    message_id: msg.message_id,
+                    user_id: userInfo.friend_id
+                });
+            }
         });
 
         socket.on("disconnect", () => {
@@ -128,7 +159,7 @@ export default function Chatroom(props) {
             socket.disconnect();
             console.log("[소켓] 연결 해제 (disconnect)");
         };
-    }, [chatroomID]);
+    }, [chatroomID,userInfo]);
 
     // 메세지 송신함수
     const handleSendMessage = () => {
@@ -150,6 +181,7 @@ export default function Chatroom(props) {
             name: userInfo.name,
             message: messageText,
             datetime: kst.toISOString().slice(0,19).replace("T", " "),
+            messageReads: currentMembers.length - chatroomUser.length,
         };
 
         socket.emit("send_message", newMessage);
@@ -162,7 +194,7 @@ export default function Chatroom(props) {
 
     useEffect(()=> {
         if(messageEndRef.current){
-            messageEndRef.current.scrollIntoView({behavior: "smooth", block: "end"});
+            messageEndRef.current.scrollIntoView({block: "end"});
         }
         setFetchChatList(messaging);
     },[messaging]);
@@ -234,7 +266,7 @@ export default function Chatroom(props) {
                                 );
                             }
                             return (
-                                <div key={index-1}>
+                                <>
                                     <Conversation 
                                         message={item}
                                         currentUserName={userName}
@@ -244,9 +276,12 @@ export default function Chatroom(props) {
                                         setActionList = {setActionList}
                                         currentMembers = {currentMembers.length}
                                         userID = {userInfo.friend_id}
+                                        messageReads = {item.messageReads}
                                     />
+                                    {formattedMessages.length-1 === index && 
                                     <div ref={messageEndRef} className={`h-[10px]`}></div>
-                                </div>
+                                    }
+                                </>                                   
                             );
                         })}
                     </div>

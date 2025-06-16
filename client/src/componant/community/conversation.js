@@ -1,8 +1,7 @@
 //client/src/componant/community/conversation.js
-import {useState,useEffect} from "react";
+import {useState} from "react";
 import ProfileModal from "./ui/profileModal";
 import { formatDateTime } from "./utilities/dateUtils";
-import { fetchMessageReadAPI } from "./api/fetchMessageAPI";
 
 export default function Conversation(props) {
     const { message } = props;
@@ -14,7 +13,7 @@ export default function Conversation(props) {
         setActionList, 
         chattingList,
         userID,
-        currentMembers
+        messageReads
     } = props;
 
     // 채팅방 사용 유저
@@ -22,17 +21,6 @@ export default function Conversation(props) {
     const userName = props.message.name;
     // 프로필 클릭 상태관리
     const [clickedProfile, setClickedProfile] = useState({});
-    // 읽은 사람 상태관리
-    const [messageReads, setMessageRead] = useState(0);
-
-    useEffect(()=>{
-        const messageRead = async (message_id)=>{
-        const response = await fetchMessageReadAPI(userID,message_id);
-        setMessageRead(currentMembers - response[0].messageReadCount);
-    }
-    messageRead(message.message_id);
-    console.log("읽음처리 대상:",userID);
-    },[chattingList])
 
     if(!message.message)return null;
     return (
@@ -74,7 +62,10 @@ export default function Conversation(props) {
                 <span
                     className={`flex items-end font-sans ${userName !== currentUserName ? "order-2" : ""}`}
                 >{formatDateTime(message.datetime)}</span>
+                {/* 읽음 수가 0이면 표시하지 않음 */}
+                {messageReads !== 0 &&
                 <div className={`text-yellow-500 ${userName !== currentUserName ? "order-1" : ""} flex items-end mx-2 font-sans font-bold`}>{messageReads}</div>
+                }
             </div>
         </>
     )
