@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import exImage from "./images/cafe_ex.jpg";
+import exImage2 from "./images/cafe_ex2.jpg";
+import exImage3 from "./images/noodle_ex.jpg";
 
 
 export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) {
@@ -213,7 +216,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
   }
 
   return (
-    <div className="relative border rounded-xl z-10 h-[700px]">
+    <div className="relative border rounded-xl z-10 h-[650px]">
       {/* 검색창 */}
       <div className="absolute left-0 right-0 w-[35%] h-full flex flex-col mb-4 bg-white z-10" >
         <div className="flex p-2 bg-blue-500 justify-between">
@@ -262,15 +265,23 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
           </div>
         ) : (
           <div className="absolute w-full h-full overflow-y-auto border-t border-gray-200 shadow-md flex flex-col p-2">
-            <div className="border-b border-gray-100 pt-1 pb-3 text-xl">북구 운암3동</div>
-              <div className="bg-red-400 flex flex-col h-60">
-                <div className="bg-red-300 basis-3/5">이미지</div>
-                <div className="basis-2/5">
-                  <div className="bg-blue-200 text-xl pt-3 text-blue-600 font-semibold">미담카페<span className="text-gray-500 text-base ml-2">디저트</span></div>
-                  <div className="bg-blue-200 text-lg pt-1">다양한 맛의 곤약 젤리와 맛있는 음료</div>
-                  <div className="bg-blue-200 text-lg">리뷰 100/ 평균 5,000원</div>
-                </div>
+            <div className="border-b border-gray-100 pt-1 pb-3 text-xl font-semibold">북구 운암3동</div>
+            
+            {examples.map((ex, index) => (
+              <div className="flex flex-col h-[300px] my-3" key={index}>
+              <div className="h-[200px]">
+                <img src={ex.placeImg} alt="카페 예시 이미지" className="w-full h-full" />
               </div>
+              <div className="h-[100px]">
+                <div className="text-xl pt-3 text-blue-600 font-semibold">{ex.placeName}<span className="text-gray-500 text-base ml-2">{ex.placeCategory}</span></div>
+                <div className="text-lg pt-1">{ex.placeExplain}</div>
+                <div className="text-lg">리뷰 100/ 평균 5,000원</div>
+              </div>
+            </div>
+            )
+
+            )}
+                
           </div>
         )
 
@@ -284,3 +295,24 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
     </div>
   );
 }
+
+const examples = [
+  {
+    placeName : "미담카페",
+    placeCategory : "디저트",
+    placeExplain: "다양한 맛의 곤약 젤리와 맛있는 음료",
+    placeImg: exImage,
+  },
+  {
+    placeName : "스위티베이커리",
+    placeCategory : "베이커리",
+    placeExplain: "맛있는 빵과 친절한 서비스의 조화",
+    placeImg: exImage2,
+  },
+  {
+    placeName : "평창메밀",
+    placeCategory : "한식",
+    placeExplain: "맛있는 반찬과 쫄깃한 고소한 면의 조화",
+    placeImg: exImage3,
+  }
+]
