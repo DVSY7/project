@@ -1,9 +1,9 @@
 // src/componant/content/ui/showGalleryModal.js
 
-import {useState,useEffect} from "react";
+import {useState} from "react";
 
 export default function ShowGalleryModal(props) {
-    const { username,setClickedGallery, galleryImage, index } = props;
+    const { username,setClickedGallery, galleryImage, index, title } = props;
 
     const galleryTextLength = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -22,7 +22,6 @@ export default function ShowGalleryModal(props) {
         return null; // 갤러리 이미지가 없으면 모달을 렌더링하지 않음
     }
 
-    console.log("index",index);
     return (
         <>
             <div key={username}
@@ -99,8 +98,10 @@ export default function ShowGalleryModal(props) {
                             </div>
                             {/* 갤러리 본문 내용 및 태그 영역 */}
                             <div className={`w-[85%]`}>
+                                {/* 갤러리 본문 제목 */}
+                                <div className={`h-[25%] flex justify-center items-center text-[2rem]`}>{title}</div>
                                 {/* 갤러리 본문 내용 */}
-                                <div className={`h-[87%] flex justify-center items-center text-[2rem]`}>Sample Text Data</div>
+                                <div className={`h-[62%]`}>123</div>
                                 {/* 갤러리 본문 태그 */}
                                 <div className={`h-[13%]`}>Sample Tags</div>
                             </div>

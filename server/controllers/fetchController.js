@@ -49,7 +49,7 @@ exports.galleryImage = async (req, res) => {
             ON gi.id = gir.gallery_image_id
             JOIN gallery g
             ON gir.gallery_id = g.id
-            WHERE g.id = ?
+            WHERE g.id = ? AND g.is_public = 1
             ORDER BY gir.display_order = 1 DESC;
             `, [galleryID]);
         console.log('갤러리 이미지 요청:', rows);
@@ -298,5 +298,46 @@ exports.userInfo = async (req, res) =>{
   }catch(error){
     return res.status(500).json({message:"유저정보 요청 실패:",error});
 
+  }
+}
+
+// 유저ID 가져오기
+exports.userID = async (req, res) =>{
+  try{
+    const name = req.query.name;
+
+    if(name){
+      console.log("요청중인 ID:",name);
+      const [rows] = await db.query(`
+        SELECT id FROM users
+        WHERE username = ?
+        `,[name]);  
+      
+      console.log("ID요청 API 결과데이터:",rows);
+      res.status(200).json(rows);
+    }
+  }catch(error){
+    res.status(500).json(error);
+  }
+}
+
+// 좋아요 표시 가져오기
+exports.isLiked = async (req, res) =>{
+  try{
+    const userID = req.query.userID;
+    const galleryID = req.query.galleryID;
+    if(userID){
+      const [rows] = await db.query(`
+        SELECT * FROM likes
+        WHERE gallery_id = ? AND user_id = ?
+        `,[galleryID,userID])
+
+      console.log(galleryID, userID);
+      res.status(200).json({ liked : rows.length > 0 });
+    }else{
+      res.status(400).json({error: "Messing userID or galleryID"});
+    }
+  }catch(error){
+    res.status(500).json(error);
   }
 }

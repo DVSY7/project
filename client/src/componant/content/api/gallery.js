@@ -4,7 +4,6 @@ import axios from 'axios';
 
 export async function galleryfetch(page = 1, limit = 15, sort, searchUser) {
     let isSort = 'date DESC';
-    let isUser = "";
 
     if(sort === "최신순"){
         isSort = 'date DESC';

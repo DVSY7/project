@@ -3,6 +3,7 @@ import Contents from './content/contents';
 import Menu from './menu';
 import { useEffect, useState } from "react";
 import { checkedToken } from './function/checkedToken';
+import { fetchUserID } from './function/fetchUserID';
 
 export default function Home() {
 
@@ -10,6 +11,8 @@ export default function Home() {
   const [username, setUsername] = useState("");
   // 유저 닉네임
   const [name, setName] = useState("");
+  // 유저 ID 
+  const [userID, setUserID] = useState("");
 
   // 로그인 성공 시 토큰 검증
   useEffect(()=>{
@@ -18,6 +21,15 @@ export default function Home() {
     }
     getUsername();
   },[])
+  useEffect(()=>{
+    const getUserID = async()=>{
+      if(name){
+        const id = await fetchUserID(name);
+        setUserID(id);
+      }
+    };
+    getUserID();
+  },[name])
  
   return (
     <>
@@ -31,6 +43,7 @@ export default function Home() {
             src="home"
             username={`${username}`}
             name = {name}
+            userID = {userID}
             />
         </div>
       </div>

@@ -8,9 +8,10 @@ import ShowGalleryModal from './ui/showGalleryModal';
 import { galleryImageFetch } from './api/galleryImage';
 import ProfileModal from '../community/ui/profileModal';
 import { fetchList } from '../community/api/fetchListAPI';
+import { fetchIsLiked } from './api/isLiked';
 
 export default function Gallery(props) {
-  const { src, sort,searchUser,name } = props;
+  const { src, sort,searchUser,name,userID } = props;
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -28,6 +29,8 @@ export default function Gallery(props) {
   const [friendList, setFriendList] = useState([]);
   // 차단 리스트
   const [blockedList, setBlockedList] = useState([]);
+  // 좋아요 토글관리 스테이트
+  const [isliked, setIsLiked] = useState();
 
   const PAGE_SIZE = 15;
 
@@ -99,6 +102,19 @@ export default function Gallery(props) {
     console.log("현재정보",items);
   },[friendList,blockedList]);
 
+  // 좋아요 상태 요청
+  useEffect(()=>{
+    const fetchAllIsLiked = async ()=>{
+      const likedState = await Promise.all(
+        items.map((item) =>fetchIsLiked(item.id, userID[0].id))
+      );
+      setIsLiked(()=>likedState);
+    };
+    if(items.length > 0 && userID){
+      fetchAllIsLiked();
+    }
+  },[items, userID]);
+
   return (
     <div className={`
       h-full w-full sm:overflow-y-auto sm:p-4 sm:pr-8
@@ -110,7 +126,8 @@ export default function Gallery(props) {
         className="hidden sm:flex gap-5"
         columnClassName="flex flex-col gap-5"
       >
-        {items.map((item, idx) => (
+        {items.map((item, idx) =>{
+          return(
           <div
             key={`${item}${idx}`}
             onMouseEnter={() => {
@@ -128,6 +145,7 @@ export default function Gallery(props) {
               ${hoverIndex === idx ? 'opacity-100' : 'opacity-0'}
               transition-opacity duration-300
             `}>
+              {isliked&&
               <GalleryHover
                 id={item.friend_id}
                 title={item.title}
@@ -135,6 +153,7 @@ export default function Gallery(props) {
                 profile_image={item.profile_image}
                 date={item.date}
                 likes={item.likes}
+                isliked={isliked}
                 views={item.views}
                 location={item.location}
                 clickedGallery={clickedGallery}
@@ -144,6 +163,7 @@ export default function Gallery(props) {
                 fetchGalleryImage={fetchGalleryImage}
                 setClickedProfile = {setClickedProfile}
               />
+              }
             </div>
             {/* 프로필 모달 */}
                     <ProfileModal
@@ -154,14 +174,15 @@ export default function Gallery(props) {
                     chattingList = {[item]}
                     setActionList = {setActionList}
                     profile_image = {item.profile_image}
-                    MemberKey = {item.friend_id}
+                    MemberKey = {item.id}
                     requestComponent = {"home"}
                     />  
                     {/* {console.log("현재정보:",item)} */}
             {/* 갤러리 클릭 시 모달 띄우기 */}
             {clickedGallery === idx && (
               <ShowGalleryModal
-                username={item.username}
+                username={item.name}
+                title = {item.title}
                 id={item.id}
                 index = {idx}
                 clickedGallery={clickedGallery}
@@ -169,14 +190,13 @@ export default function Gallery(props) {
                 galleryImage={galleryImage}
               />
             )}
-            
             <img
               className="w-full h-full object-cover"
               src={encodeURI(item.thumbnail_url)}
               alt={item.title}
             />
           </div>
-        ))}
+        )})}
         {/* 무한스크롤 관찰 div */}
       </Masonry>
       {hasMore && <div ref={observerRef} className="h-1" />}

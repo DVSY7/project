@@ -23,8 +23,11 @@ router.get('/chatmessage', fetchController.chatMessage);
 router.get('/currentMember', fetchController.currentMember);
 // messageRead API
 router.get('/messageRead', fetchController.messageRead);
-
 // userInfo API
 router.get('/userInfo',fetchController.userInfo);
+// userID API
+router.get('/userID',fetchController.userID);
+// isliked API
+router.get(`/isliked`,fetchController.isLiked);
 
 module.exports = router;
