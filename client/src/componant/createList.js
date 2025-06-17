@@ -5,6 +5,7 @@ import IsPlanned from "./create/list/IsPlanned.js";
 import TagManager from "./create/list/TagManager.js";
 import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
+import axios from 'axios';
 
 export default function CreateList() {
   // 계획형, 비계획형 상태관리 스테이트
@@ -39,6 +40,16 @@ export default function CreateList() {
   const [editingIndex, setEditingIndex] = useState(null);
   // 수정 중인 태그 값
   const [editingTag, setEditingTag] = useState("");
+
+  // 혼자하기, 같이하기 상태관리 스테이트
+  const [Group, setGroup] = useState(true);
+   // 대면, 비대면 여부 상태관리 스테이트
+  const [Offline, setOffline] = useState(true);
+
+  // 일차 목록 스태이트
+  const [days, setDays] = useState(["1일차"]);
+  // 등록된 항목 상태
+  const [registeredItems, setRegisteredItems] = useState({});
 
   // 태그 추가 함수
   const handleAddTag = () => {
@@ -136,6 +147,42 @@ export default function CreateList() {
     }
   };
 
+  // 등록버튼 로직
+  const handleSubmit = async () => {
+    try {
+      const listData = {
+        title: title,
+        description: text,
+        isPlanned,
+        isGroup : Group,
+        maxParticipants: Group ? parseInt(document.querySelector('select').value) : 1,
+        isOffline: Offline,
+        interest: selectedInterest,
+        days: days.map((day, index) => ({
+          dayNumber: index + 1,
+          // 각 날짜에 등록된 항목들(사진, 장소)
+          items: registeredItems[day] || []
+        })),
+        tags: tags
+    };
+    // post 요청으로 로컬호스트 5000번에 보냄, 2번째 인자: 전송할 json데이터, 3번째 인자: 옴션 
+    const response = await axios.post('http://localhost:5000/api/lists/create', listData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+
+    if (response.data.success) {
+        alert('리스트가 성공적으로 등록되었습니다.');
+        // 등록 성공 후 홈으로 이동
+        window.location.href = '/home';
+      }
+    } catch (error) {
+      console.error('리스트 등록 중 오류 발생: ',error);
+      alert("'리스트 등록 중 오류가 발생했습니다.");
+    } 
+  }
 
   return (
     <>
@@ -153,7 +200,14 @@ export default function CreateList() {
               <div className="grid grid-rows-[1fr_6.5fr_0.5fr] px-4 py-8">
                 {/* 상단 영역 */}
                 <div className="flex grid grid-rows-[0.5fr_1fr]">
-                  <TopButtons isPlanned={isPlanned} setIsPlanned={setIsPlanned} />
+                  <TopButtons 
+                  isPlanned={isPlanned} 
+                  setIsPlanned={setIsPlanned} 
+                  Group={Group}
+                  setGroup={setGroup}
+                  Offline={Offline}
+                  setOffline={setOffline}
+                  />
                   {/* 제목, 프로필, 관심사 선택 영역 */}
                   <TitleAndSelectInterest
                     selectInterest={selectInterest}
@@ -166,7 +220,12 @@ export default function CreateList() {
                 {/* 중간 영역 */}
                 {/* 일차 추가 버튼 */}
                 <div className="grid grid-rows-[1fr_10fr]">
-                  <DayList />
+                  <DayList 
+                  days={days}
+                  setDays={setDays}
+                  registeredItems={registeredItems}
+                  setRegisteredItems={setRegisteredItems}
+                  />
                 </div>
                 {/* 하단 영역 */}
                 <div className="mt-5">
@@ -205,7 +264,7 @@ export default function CreateList() {
                 </div>
                 {/* 끝 영역: 텍스트 입력란 */}
                 <div className="flex justify-end items-center">
-                  <button className="bg-blue-500 text-white h-10 mr-8 px-3 rounded-xl">
+                  <button className="bg-blue-500 text-white h-10 mr-8 px-3 rounded-xl" onClick={handleSubmit}>
                     등록하기
                   </button>
                 </div>

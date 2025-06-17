@@ -1,13 +1,12 @@
+// client/create/list/TopButtons.js
+
 import { useState } from "react";
 
-export default function TopButtons({ isPlanned, setIsPlanned }) {
+export default function TopButtons({ isPlanned, setIsPlanned, Group, setGroup, Offline, setOffline }) {
 
-  // 혼자하기, 같이하기 상태관리 스테이트
-  const [Group, setGroup] = useState(true);
    // 인원 수 선택 항목변수
    const selectNumber = [2, 4, 8, 12, 16, 20, 30, 50, 100, "기타"];
-  // 대면, 비대면 여부 상태관리 스테이트
-  const [Offline, setOffline] = useState(true);
+  
   return (
     <div className="flex-1 flex items-center justify-between">
       <div className="sm:text-xl text-lg">20xx.MM.DD</div>

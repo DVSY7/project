@@ -124,23 +124,21 @@ const DraggableItem = ({ item, index, moveItem, handleEditItem, handleDeleteItem
   );
 };
 
-export default function DayList() {
+export default function DayList({days, setDays, registeredItems,setRegisteredItems}) {
   // 사진 첨부 표시 여부
   const [showImageInput, setshowImageInput] = useState(false);
   // 이미지 URL 상태
   const [ImageSrc, setImageSrc] = useState(null);
   // 텍스트 상태
   const [text, setText] = useState("");
-  // 등록된 항목 상태
-  const [registeredItems, setRegisteredItems] = useState({});
+  
 
   // 사진 첨부 수정
   const [editingItem, setEditingItem] = useState(null);
   const [editText, setEditText] = useState("");
   const [editImage, setEditImage] = useState(null);
 
-  // 일차 목록 스태이트
-  const [days, setDays] = useState(["1일차"]);
+  
   // 현재 활성화된 날짜
   const [activeDay, setActiveDay] = useState("1일차");
 
