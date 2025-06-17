@@ -150,9 +150,36 @@ export default function CreateList() {
   // 등록버튼 로직
   const handleSubmit = async () => {
     try {
+
+      if(!title.trim()) {
+        alert("제목을 입력해주세요");
+        return;
+      }
+      if(!text.trim()) {
+        alert("소개글을 입력해주세요");
+        return;
+      }
+      if(!selectedInterest) {
+        alert("테마를 선택해주세요");
+        return;
+      }
+
+      // 일차별 항목 검증
+      const hasValidItems = days.every((day, index) => {
+        const dayItems = registeredItems[day] || [];
+        if(dayItems.length === 0) {
+          alert(`${index + 1}일차에 최소 하나이상의 항목(이미지 또는 장소)를 등록해주세요`);
+          return false;
+        }
+        return true;
+      })
+
+      // 유효하지 않으면 아래 코드 실행하지 않음
+      if(!hasValidItems) return;
+
       const listData = {
-        title: title,
-        description: text,
+        title: title.trim(),
+        description: text.trim(),
         isPlanned,
         isGroup : Group,
         maxParticipants: Group ? parseInt(document.querySelector('select').value) : 1,
@@ -163,7 +190,8 @@ export default function CreateList() {
           // 각 날짜에 등록된 항목들(사진, 장소)
           items: registeredItems[day] || []
         })),
-        tags: tags
+        // # 제거
+        tags: tags.map(tag => tag.replace(/^#/, ''))
     };
     // post 요청으로 로컬호스트 5000번에 보냄, 2번째 인자: 전송할 json데이터, 3번째 인자: 옴션 
     const response = await axios.post('http://localhost:5000/api/lists/create', listData, {
@@ -180,7 +208,7 @@ export default function CreateList() {
       }
     } catch (error) {
       console.error('리스트 등록 중 오류 발생: ',error);
-      alert("'리스트 등록 중 오류가 발생했습니다.");
+      alert(error.response?.data?.message || "리스트 등록 중 오류가 발생했습니다.");
     } 
   }
 
