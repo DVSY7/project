@@ -44,20 +44,27 @@ const DraggableDayButton = ({ day, index, moveDay, isActive, onClick }) => {
 
 // 드래그 가능한 아이템 컴포넌트
 const DraggableItem = ({ item, index, moveItem, handleEditItem, handleDeleteItem }) => {
+  // item: 항목 데이터 (장소 또는 이미지)
+  // index: 현재 아이템의 리스트 내 위치
+  // moveItem: 드래그된 아이템을 새로운 위치로 이동시키는 함수
+  
+  // useDrag 훅으로 드래그 가능한 요소로 설정
   const [{ isDragging }, drag] = useDrag({
-    type: 'ITEM',
-    item: { index },
+    type: 'ITEM', // 드래그 타입
+    item: { index }, // 드래그되는 항목의 데이터
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      isDragging: monitor.isDragging(), // 드래그 중인지 여부를 수집
     }),
   });
 
+  // useDrop 훅으로 드롭 가능한 영역 결정
   const [, drop] = useDrop({
-    accept: 'ITEM',
+    accept: 'ITEM', // 드롭 가능한 항목 타입
     hover: (draggedItem) => {
+      // 다른 위치로 드래그했을 때만 동작
       if (draggedItem.index !== index) {
-        moveItem(draggedItem.index, index);
-        draggedItem.index = index;
+        moveItem(draggedItem.index, index); // 항목 위치 바꾸기
+        draggedItem.index = index; // 드래그 된 항목의 인덱스도 엡데이트
       }
     },
   });
@@ -238,13 +245,18 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
 
   // 장소 등록 로직
   const handlePlaceSelect = (item) => {
+    // 수정 모드인지 확인
     const isEdit = Boolean(editingPlace);
     if(isEdit) {
+      // 기존 항목을 새로운 item으로 수정
       handleSaveEditPlace(item);
+      // 수정 완료 메시지
       alert("수정이 완료되었습니다");
+      // 함수 종료 (등록 안함)
       return;
     }
 
+    // 새 항목을 등록하는 경우
     setRegisteredItems((prevItems) => {
       // 선택한 날짜에 해당하는 기존 항복이 있는지 확인, 없으면 빈 배열
       const existingItems = prevItems[activeDay] || [];
@@ -255,15 +267,17 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
       // 증복이면 기존 항목을 그대로 반환, 추가 안함
       if (isDuplicate) return prevItems;
 
-      // 새로 등록인 경우
+      // 새로 항목 추가 : 기존 항목 유지 + 현재 선택된 일차에 추가
       const newItems = {
         ...prevItems,
         [activeDay]: [
           ...existingItems,
-          { ...item, type: "place", id: Date.now() },
+          { ...item, type: "place", id: Date.now() }, // 고유 Id 부여
         ],
       };
       console.log('장소 등록 후 모든 항목:', newItems);
+
+      // 업데이트된 항목 변환 (setRegisteredItems에 적용)
       return newItems;
     });
     setShowMap(false);

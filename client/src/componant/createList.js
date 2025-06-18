@@ -164,9 +164,9 @@ export default function CreateList() {
         return;
       }
 
-      // 일차별 항목 검증
+      // ---일차별 항목 유효성 검사---
       const hasValidItems = days.every((day, index) => {
-        const dayItems = registeredItems[day] || [];
+        const dayItems = registeredItems[day] || []; // 각 일차에 등로된 항목들
         if(dayItems.length === 0) {
           alert(`${index + 1}일차에 최소 하나이상의 항목(이미지 또는 장소)를 등록해주세요`);
           return false;
@@ -177,6 +177,7 @@ export default function CreateList() {
       // 유효하지 않으면 아래 코드 실행하지 않음
       if(!hasValidItems) return;
 
+      // ---서버에 보낼 데이터 구성---
       const listData = {
         title: title.trim(),
         description: text.trim(),
@@ -193,6 +194,7 @@ export default function CreateList() {
         // # 제거
         tags: tags.map(tag => tag.replace(/^#/, ''))
     };
+    
     // post 요청으로 로컬호스트 5000번에 보냄, 2번째 인자: 전송할 json데이터, 3번째 인자: 옴션 
     const response = await axios.post('http://localhost:5000/api/lists/create', listData, {
       headers: {

@@ -38,41 +38,54 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
   
   // 지도 초기화
   useEffect(() => {
+    // 1. <script> 태그를 새로 만들어서 카카오맵 API를 비동기로 불러옴
     const script = document.createElement("script");
     script.src =
       "https://dapi.kakao.com/v2/maps/sdk.js?appkey=7560f2c1be7d20d787a9ec19a4433e75&libraries=services&autoload=false";
-    script.async = true; // 비동기 로딩
+    // 비동기 로딩
+    script.async = true; 
+    // head 태그 내부에 script를 추가하여 실행
     document.head.appendChild(script);
-
+    
+    // 2. 스크립트가 로드 완료되면 호출되는 함수
     script.onload = () => {
+      // 카카오맵 API의 'load'함수 실행
+      // 이 안에 지도를 생성하는 코드를 넣어야 카카오맵 API가 완전히 준비된 후 실행됨
       window.kakao.maps.load(() => {
+        // 3. 지도 옵션 객체 생성
         const options = {
+          // 지도 중심 좌표 설정
           center: editingPlace
           ? new window.kakao.maps.LatLng(editingPlace.y || 37.566826, editingPlace.x || 126.978656) : new window.kakao.maps.LatLng(37.566826, 126.978656),
-          // 지도 확대 수준
+          // 확대 레벨 설정( 숫자가 작을수록 확대)
           level: 3, 
         };
 
-         // 실제 지도 생성
+         // 4. 실제 지도 생성
+         // mapContainer.current: 지도 html요소를 가리키는 ref
         const mapInstance = new window.kakao.maps.Map(
           mapContainer.current,
           options
         );
-        // 이 지도를 state에 저장
+        // 5. 생성한 지도 인스턴스를 state에 저장( 다른 컴포넌트에세 사용하거나 업데이트를 위해 )
         setMap(mapInstance); 
 
-        // 마커 생성 및 저장
+        // 6. 지도 위에 표시할 마커 생성
         const newMarker = new window.kakao.maps.Marker({
+          // 마커 위치는 지도 중신과 동일하게
           position: options.center,
         });
+        // 마커 객체를 state에 저장
         setMarker(newMarker);
-        // 인포윈도우 생성 및 저장
+
+        // 7. 인포윈도우 생성 (말풍선 같은 정보 함)
         const newInfowindow = new window.kakao.maps.InfoWindow({ zIndex: 1 });
+        // 마커 객체를 state에 저장
         setInfowindow(newInfowindow);
 
-        // 수정 모드일 때 기존 장소 표시
+        // 8. 수저 모드라면 (기조 장소가 있으면) 기존 장소를 검색 및 표시
         if (editingPlace) {
-          searchPlaces();
+          searchPlaces(); // 기존 장소를 지도에 표시하는 함수 호출
         }
       });
     };
@@ -80,41 +93,47 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
 
   // 장소 검색
   const searchPlaces = () => {
+    // 1. map이 아직 생성이 안되었거나 keyword가 비어있으면 함수 종료
     if (!map || !keyword.trim()) return;
 
-    //장소 검색 객체 생성 - 키워드 검색
+    // 2. 카카오 장소 검색 서비스 객체 생성
+    // 이 객체로 keywordSearch 같은 메서드를 사용할 수 있음
     const ps = new window.kakao.maps.services.Places();
 
-    
-    // 사용자가 입력한 keyword로 장소를 검색, 결과는 data에 , 검색 상태는 status에 반환
+    // 3. 사용자가 입력한 keyword로 장소를 검색, 결과는 data에 , 검색 상태는 status에 반환
     ps.keywordSearch(keyword, (data, status) => {
-      // 검색 경과가 성공일 때 
+      // 4. 검색 경과가 성공일 때 
       if (status === window.kakao.maps.services.Status.OK) {
-        // 검색 결과 저장
+        // 5. 검색된 장소 목록을 state에 저장
+
         setPlaces(data); 
 
-        // 첫번째 검색 결과의 위도, 경도 계산
+        // 6. 검색 결과 중 첫 번째 장소를 가져옴
         const firstPlace = data[0];
+
+        // 7. 위도(y), 경도(x)를 기반으로 지도 좌표 객체 생성
         const moveLatLon = new window.kakao.maps.LatLng(
-          firstPlace.y,
-          firstPlace.x
+          firstPlace.y, // 위도
+          firstPlace.x // 경도
         );
 
-        // 지도 중심을 첫번째 검색 결과의 위도, 경도로 이동
+        // 8. 지도 중심을 첫번째 검색 결과의 위치로 이동
         map.setCenter(moveLatLon);
-        // 마커 위치 업데이트
+
+        // 9. 마커 위치를 해당 장소로 이동
         marker.setPosition(moveLatLon);
-        // 머커 지도위에 표기
+
+        // 10. 머커 지도에 표시 (안보일 경우를 대비)
         marker.setMap(map);
 
-        // 인포윈도우 (말풍선)
+        // 11. 인포윈도우 (말풍선)에 표시할 html 설정
         infowindow.setContent(
           `<div style="padding:5px;font-size:12px;">${firstPlace.place_name}</div>`
         );
-        // 지정한 마커 위치에 인포윈도우 표시
+        // 12. 해당 마커 위치에 인포윈도우 표시
         infowindow.open(map, marker);
       } else {
-        // 검색 실패일 경우 places 초기화
+        // 13. 검색 실패일 경우 places 초기화 (화면에서 지움)
         setPlaces([]);
       }
     });
@@ -132,15 +151,19 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
     return proj.coordsFromPoint(movedpoint);
   }
 
+  // 사용자가 클릭한 장소 정보를 받아서 마커 이동 및 인포윈도우를 보여주는 함수
   const moveMakerAndShowInfo = (place) => {
     // 하나라도 없으면 실행 중단 (에러방지용)
     if(!map || !marker || !infowindow) return;
 
-    // 선택한 장소의 위도, 경도 
+    // 선택한 장소의 위도, 경도 값을 LatLng 객체로 변환
     const moveLatLon = new window.kakao.maps.LatLng(place.y, place.x);
   
+    // 지도 중심 좌표를 moveLatLon 기준으로 x/y 방향으로 이동한 좌표를 구함
+    // getOffsetLatLng(map, 기준좌표, y오프셋, x오프셋)
     const offsetCenter = getOffsetLatLng(map, moveLatLon, 150, 0);
 
+    // 지도 중심을 offsetCener로 이동시킴
     map.setCenter(offsetCenter);
 
     // 마커 위치 해당 장소로 이동
@@ -157,7 +180,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
     setSelectedPlace(place);
   }
 
-  // 장소 등록하는 로직
+  // 장소 등록하는 로직, 비동기 함수 선언
   const registerPlace = async (place) => {
     if (!place) {
       alert("장소를 선택해주세요");
@@ -168,21 +191,22 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
       setIsLoading(true);
       console.log("선택된 장소: ", place);
 
+      // 최종적으로 등록할 데이터 형식을 가공한 객체 - newItem
       const newItem = {
-        description: place.place_name,
-        type: "place",
-        address: place.address_name,
-        category: place.category_name,
-        placeId: place.id,
-        phone: place.phone,
-        placeUrl: `https://place.map.kakao.com/${place.id}`,
+        description: place.place_name, // 장소 이름
+        type: "place", // 항목 구분 place 고정
+        address: place.address_name, // 주소
+        category: place.category_name, // 장소 분류
+        placeId: place.id, // 카카오 장소 ID
+        phone: place.phone, // 전화번호
+        placeUrl: `https://place.map.kakao.com/${place.id}`, // 경도 위도
         x: place.x,
         y: place.y
       };
 
       console.log("등록할 아이템", newItem);
 
-      // 검색 결과 숨기기
+      // 장소 검색 결과 리스트 초기화 -> 등록 후 화면 정리용
       setPlaces([]);
       // 부모로 전달
       handlePlaceSelect(newItem);
@@ -206,11 +230,14 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
 
       handlePlaceSelect(fallbackItem);
       setShowMap(false);
-    }finally{
+    }
+    // 성공이든 실패든 로딩 상태 종료
+    finally{
       setIsLoading(false);
     }
   };
   
+  // 등록 버튼
   const handlePlaceClick = (place) => {
     registerPlace(place);
   }
@@ -222,9 +249,9 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
         <div className="flex p-2 justify-between">
           <input
             type="text"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && searchPlaces()}
+            value={keyword} // 입력창 안의 글자는 항상 keyword state와 동기화됨
+            onChange={(e) => setKeyword(e.target.value)} // 실시간으로 keyword 값이 업데이트 됨
+            onKeyDown={(e) => e.key === "Enter" && searchPlaces()} // 눌린 키가 enter 이면 searchPlaces() 함수를 실행
             placeholder="장소를 검색하세요"
             className="p-2 border-2 border-blue-500 rounded focus:outline-none w-full"
           />
@@ -244,6 +271,7 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
               <div
                 key={place.id}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b"
+                // 해당 장소를 클릭하면 해당 장소로 마커 이동, 인포윈도우 표시
                 onClick={() => moveMakerAndShowInfo(place)}
               >
                 <div className="font-medium">{place.place_name}</div>
@@ -251,8 +279,8 @@ export default function KakaoMap({setShowMap, handlePlaceSelect, editingPlace}) 
                 <div className="text-sm mt-1 relative">
                   <a
                     href={`https://place.map.kakao.com/${place.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target="_blank" // 새 창으로 열기기
+                    rel="noopener noreferrer" // 보안 속성
                     onClick={(e) => e.stopPropagation()}
                     className="text-blue-600 hover:underline"
                   >
