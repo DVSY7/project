@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // 정적 파일 서빙 (images 폴더)
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, '../client/public/images')));
 
 // 라우터 연결   /api/users/signup
 app.use('/api/users',userRoutes);

@@ -4,8 +4,8 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// images/List 폴더 생성
-const uploadDir = path.join(__dirname, '../images/List');
+// client/images/List 폴더 생성
+const uploadDir = path.join(__dirname, '../../client/public/images/List');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
