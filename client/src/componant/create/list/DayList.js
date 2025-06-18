@@ -1,3 +1,5 @@
+// client/DayList.js
+
 import KakaoMap from "./KakaoMap";
 import ListAddPhoto from "./ListAddPhoto";
 import { useState } from "react";
@@ -157,62 +159,48 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
   const [editingPlace, setEditingPlace] = useState(null);
 
   // 이미지 업로드 핸들러
-  // CreateList.js 내부의 handleImageUpload 함수 수정
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     e.stopPropagation(); // 이벤트 버블링 중지
     e.preventDefault(); // 기본 동작 방지 (페이지 이동, 제출 등)
 
     const file = e.target.files?.[0]; // 첫번째 파일 선택
     if (!file) return;
 
-    // 파일 크기 제한 (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert("파일 크기는 5MB 이하여야 합니다.");
+    // 파일 크기 제한 (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert("파일 크기는 10MB 이하여야 합니다.");
       e.target.value = null;
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      // 이미지 압축
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // 최대 크기 설정 (800x600)
-        const maxWidth = 800;
-        const maxHeight = 600;
-        let { width, height } = img;
-        
-        if (width > height) {
-          if (width > maxWidth) {
-            height = (height * maxWidth) / width;
-            width = maxWidth;
-          }
-        } else {
-          if (height > maxHeight) {
-            width = (width * maxHeight) / height;
-            height = maxHeight;
-          }
-        }
-        
-        canvas.width = width;
-        canvas.height = height;
-        
-        // 이미지 그리기
-        ctx.drawImage(img, 0, 0, width, height);
-        
-        // 압축된 이미지를 base64로 변환 (품질 0.8)
-        const compressedImage = canvas.toDataURL('image/jpeg', 0.8);
-        setImageSrc(compressedImage);
-      };
-      img.src = reader.result;
+    try {
+      // FormData 생성
+      const formData = new FormData();
+      formData.append('image', file);
+
+      // 서버에 업로드
+      const response = await fetch('http://localhost:5000/api/images/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
       
-      // 파일 선택기 초기화 (중복 첨부 방지용)
-      e.target.value = null;
-    };
-    reader.readAsDataURL(file); // 파일을 base64 문자열로 읽음 (미리보기용)
+      if (result.success) {
+        // 이미지 경로 설정 (서버의 정적 파일 경로)
+        const imageUrl = `http://localhost:5000/${result.imagePath}`;
+        setImageSrc(imageUrl);
+        console.log('이미지가 성공적으로 업로드되었습니다:', result.filename);
+      } else {
+        alert('이미지 업로드에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('이미지 업로드 오류:', error);
+      alert('이미지 업로드 중 오류가 발생했습니다.');
+    }
+
+    // 파일 선택기 초기화 (중복 첨부 방지용)
+    e.target.value = null;
   };
 
   // 일차 추가 함수

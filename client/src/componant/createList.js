@@ -1,3 +1,5 @@
+// client/createList.js
+
 import { useEffect, useState } from "react";
 import Menu from "./menu.js";
 import TopButtons from "./create/list/TopButtons.js";
@@ -194,7 +196,7 @@ export default function CreateList() {
         // # 제거
         tags: tags.map(tag => tag.replace(/^#/, ''))
     };
-    
+
     // post 요청으로 로컬호스트 5000번에 보냄, 2번째 인자: 전송할 json데이터, 3번째 인자: 옴션 
     const response = await axios.post('http://localhost:5000/api/lists/create', listData, {
       headers: {
