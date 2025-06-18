@@ -74,7 +74,7 @@ const DraggableItem = ({ item, index, moveItem, handleEditItem, handleDeleteItem
   return (
     <div
       ref={(node) => drag(drop(node))}
-      className={`flex items-center rounded-lg bg-gray-200 mb-4 h-36 ${isDragging ? 'opacity-50' : ''}`}
+      className={`flex items-center rounded-lg bg-white shadow mb-4 h-36 ${isDragging ? 'opacity-50' : ''}`}
       style={{ cursor: 'move' }}
     >
       <div>

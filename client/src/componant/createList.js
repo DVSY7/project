@@ -223,10 +223,10 @@ export default function CreateList() {
         {/* 왼쪽: 가로 1 비율 (1/9) */}
         <Menu current_src={5} />
         {/* 오른쪽: 가로 8 비율 (8/9) */}
-        <div className="flex flex-col flex-wrap  row-span-9 sm:col-span-8 ">
+        <div className="flex flex-col flex-wrap row-span-9 sm:col-span-8 ">
           {/* <div className="flex items-center justify-center  w-full h-full"> */}
             <div
-              className={`w-full h-full grid grid-cols-[3fr_2fr] bg-white`}
+              className={`w-full h-full grid grid-cols-[3fr_2fr] bg-gray-100`}
             >
               {/* 왼쪽 영역 */}
               <div className="grid grid-rows-[1fr_6.5fr_0.5fr] px-4 py-8">
