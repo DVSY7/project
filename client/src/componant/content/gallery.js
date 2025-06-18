@@ -8,10 +8,10 @@ import ShowGalleryModal from './ui/showGalleryModal';
 import { galleryImageFetch } from './api/galleryImage';
 import ProfileModal from '../community/ui/profileModal';
 import { fetchList } from '../community/api/fetchListAPI';
-import { fetchIsLiked } from './api/isLiked';
+import { fetchIsLiked } from './api/likes';
 
 export default function Gallery(props) {
-  const { src, sort,searchUser,name,userID } = props;
+  const { src, sort,searchUser,name,userID} = props;
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -21,6 +21,9 @@ export default function Gallery(props) {
   const [clickedGallery, setClickedGallery] = useState(null);
   // 갤러리 클릭 시 갤러리 이미지 상태관리
   const [galleryImage, setGalleryImage] = useState([]);
+
+  // 갤러리 뷰 화면 데이터 상태관리
+  const [galleryInfo, setGalleryInfo] = useState({views:0, likes:0});
 
   // 프로필 옵션 선택 상태관리
   const [actionList, setActionList] = useState([]);
@@ -45,6 +48,11 @@ export default function Gallery(props) {
     768: src === "profile" ? 1 : 2,
     640: src === "profile" ? 1 : 1,
   };
+
+  // 데이터 확인을 위한 코드
+  useEffect(()=>{
+    console.log({galleryInfo:galleryInfo});
+  },[galleryInfo]);
 
   // 정렬 기준이 바뀔 때 상태 초기화
   useEffect(() => {
@@ -106,7 +114,7 @@ export default function Gallery(props) {
   useEffect(()=>{
     const fetchAllIsLiked = async ()=>{
       const likedState = await Promise.all(
-        items.map((item) =>fetchIsLiked(item.id, userID[0].id))
+        items.map((item) =>fetchIsLiked(item.id, userID[0]?.id??0))
       );
       setIsLiked(()=>likedState);
     };
@@ -145,15 +153,18 @@ export default function Gallery(props) {
               ${hoverIndex === idx ? 'opacity-100' : 'opacity-0'}
               transition-opacity duration-300
             `}>
-              {isliked&&
+              {isliked&& userID &&
               <GalleryHover
                 id={item.friend_id}
+                galleryID = {item.id}
+                userID = {userID[0]?.id??0}
                 title={item.title}
                 username={item.username}
                 profile_image={item.profile_image}
                 date={item.date}
                 likes={item.likes}
                 isliked={isliked}
+                setGalleryInfo={setGalleryInfo}
                 views={item.views}
                 location={item.location}
                 clickedGallery={clickedGallery}

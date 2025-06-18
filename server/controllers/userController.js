@@ -114,3 +114,81 @@ exports.login = async (req, res) => {
     return res.status(500).json({ message: '서버 오류', error: err });
   }
 };
+
+// 좋아요 처리
+exports.likesHandler = async (req, res) =>{
+  try{
+    const {requests,galleryID,userID} = req.query;
+    
+    const options = {
+      increase: { number : 1, liked: true},
+      decrease: { number : -1, liked: false}
+    };
+
+    const { number :setNumber, liked: setLiked } = options[requests];
+
+    await db.query(`
+    UPDATE gallery
+    SET likes = likes + ?  
+    WHERE id = ?
+      `,[setNumber, galleryID]);
+    console.log("좋아요 처리 완료:",galleryID);
+
+    await db.query(`
+    INSERT IGNORE INTO likes(gallery_id, user_id, isliked)
+    VALUES (?,?,?)
+    ON DUPLICATE KEY UPDATE isliked = VALUES(isliked)
+    `,[galleryID, userID, setLiked]);
+
+    await db.query(`
+      DELETE FROM likes
+      WHERE isliked = 0
+    `);
+
+    res.status(200).json({message: "좋아요 처리 완료"})
+  }catch(error){
+    res.status(500).json({message: error})
+  }
+}
+
+// 조회수 처리
+exports.updateViews = async (req, res) => {
+  try{
+    // 요청을 보낸 ip
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    // 요청받은 정보
+    const {postID, userID, toDayDate} = req.query;
+
+    // 조회수 중복 방지 처리
+    const [duplicateViews] = await db.query(`
+      SELECT * FROM post_views
+      WHERE post_id = ? AND user_id = ? AND ip_address = ? AND viewed_date = ?
+      `,[postID,userID,ipAddress,toDayDate]);
+    
+    // 이미 조회수를 올렸으면 무시
+    if(duplicateViews.length === 0){
+      await db.query(`
+        INSERT IGNORE INTO post_views(post_id, user_id, ip_address, viewed_date)
+        VALUES(?,?,?,?)
+        `,[postID,userID,ipAddress,toDayDate]);
+
+    // 조회수 증가 처리
+      await db.query(`
+      UPDATE gallery
+      SET views = views + 1
+      WHERE id = ?
+      `,[postID]); 
+    }
+
+    // 조회수 최신화
+    const [rows] = await db.query(`
+      SELECT views FROM gallery
+      WHERE id = ?
+      `,[postID]);
+
+    console.log(`요청받은 정보: ${postID} : ${userID} : ${toDayDate} 요청받은 ip: ${ipAddress}`,{data:rows[0].views});
+    res.status(200).json({views:rows[0]?.views??0});
+  }catch(error){
+    res.status(500).json({message:"조회수 처리 실패"});
+  }
+}

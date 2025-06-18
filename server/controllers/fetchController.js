@@ -52,7 +52,7 @@ exports.galleryImage = async (req, res) => {
             WHERE g.id = ? AND g.is_public = 1
             ORDER BY gir.display_order = 1 DESC;
             `, [galleryID]);
-        console.log('갤러리 이미지 요청:', rows);
+        console.log('갤러리 이미지 요청:', rows, galleryID);
         return res.status(200).json(rows);
     }catch (error){
       console.error('갤러리 이미지 요청 실패:', error);
@@ -332,12 +332,26 @@ exports.isLiked = async (req, res) =>{
         WHERE gallery_id = ? AND user_id = ?
         `,[galleryID,userID])
 
-      console.log(galleryID, userID);
+      console.log(rows.length);
       res.status(200).json({ liked : rows.length > 0 });
     }else{
       res.status(400).json({error: "Messing userID or galleryID"});
     }
   }catch(error){
     res.status(500).json(error);
+  }
+}
+
+// 좋아요 수 최신화 가져오기
+exports.likes = async (req, res) =>{
+  try{
+    const galleryID = req.query.galleryID;
+    const [rows] = await db.query(`
+      SELECT likes FROM gallery
+      WHERE id = ?
+      `,[galleryID]);
+    res.status(200).json(rows);
+  }catch(error){
+    res.status(500).json({message: "좋아요 최신화 실패"})
   }
 }

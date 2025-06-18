@@ -102,9 +102,8 @@ export default function Menu(props) {
         <div className={`${addModal && Token !== null ? "flex" : "hidden"} flex-col w-full h-[120px] cursor-pointer ${text_size}`}>
         <div className={`${text} ${hover} h-full`}><img className={img_size} src='/images/정보수정.png' alt="정보수정"></img><p className={`${activeMenu} sm:ml-1  font-sans font-bold`}>정보수정</p>
         </div>
-        <div onClick={handleChangeLogout} className={`${text} ${hover} h-full`}><img className={img_size} src='/images/로그아웃.png' alt="로그아웃"></img><Link to="/login">
-        <p className={`${activeMenu} sm:ml-1  font-sans font-bold`}>로그아웃</p></Link>
-          </div>
+        <Link to="/login"><div onClick={handleChangeLogout} className={`${text} ${hover} h-full`}><img className={img_size} src='/images/로그아웃.png' alt="로그아웃"></img>
+        <p className={`${activeMenu} sm:ml-1  font-sans font-bold`}>로그아웃</p></div></Link>
         </div>
 
         {/* 하단 영역 */}

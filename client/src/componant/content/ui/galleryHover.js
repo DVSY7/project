@@ -1,15 +1,20 @@
 //src/componant/content/utilities/galleryHover.js
 
 import { useState,useEffect } from "react";
+import { fetchLikes, likesHandler } from "../api/likes";
+import { updateViews } from "../api/views";
 
 export default function GalleryHover(props) {    
-    const {title,date,likes,isliked,views,profile_image, location, setClickedGallery, index} = props;
+    const {title,date,likes,isliked,views,profile_image, location,clickedGallery, setClickedGallery, index} = props;
 
     // 갤러리 데이터를 가져오기 위한 props
-    const {id, setGalleryImage, fetchGalleryImage} = props;
+    const {id,galleryID,userID, setGalleryImage, fetchGalleryImage} = props;
 
     // 프로필 모달을 띄우기 위한 props
     const {username, setClickedProfile} = props;
+
+    // 갤러리 데이터를 갤러리 뷰에 전달하기위한 props
+    const {setGalleryInfo} = props;
 
     // 공개 / 비공개 설정  상태관리 스테이트
     const [clicked, setClicked] = useState(false);
@@ -19,6 +24,8 @@ export default function GalleryHover(props) {
     const [likeCounts, setLikeCounts] = useState(likes);
     // 위치표시 상태관리
     const [clickedLocation, setClickedLocation] = useState(false);
+    // 조회수 증가 스테이트
+    const [currentViews, setCurrentViews] = useState(views);
 
     const dateOnly =new Date(date).toISOString().split('T')[0]; // 날짜를 YYYY-MM-DD 형식으로 변환
 
@@ -36,15 +43,28 @@ export default function GalleryHover(props) {
     const engagementManager = { 
         func: {
             // 좋아요 로직
-            "좋아요":()=>{
+            "좋아요":async ()=>{
                 setClickedLike(prev => !prev);
                 // 좋아요 취소처리
                 if(clickedLike){
-                    setLikeCounts(likes);
+                    // 데이터베이스에 좋아요 반영
+                    await likesHandler("decrease",galleryID,userID);
                 }
+                // 현재 UI에 좋아요 수 반영
+                const updatedLikes = await fetchLikes(galleryID);
+                setLikeCounts(updatedLikes);
             },
             // 조회수 로직
-            "조회":()=>{console.log("조회수 동작")}
+            "조회":async()=>{console.log("조회수 동작")
+                const koreaTimeStr = new Date().toLocaleString("sv-SE",{
+                    timeZone: "Asia/Seoul",
+                });
+                const toDayDate = koreaTimeStr.split(" ")[0];
+
+                console.log(`한국 시간: ${toDayDate}`);
+                const resViews = await updateViews(galleryID, userID, toDayDate);
+                setCurrentViews(resViews);
+            }
         }
     }
 
@@ -52,6 +72,16 @@ export default function GalleryHover(props) {
     useEffect(()=>{
         setClickedLike(isliked[index]);
     }, [isliked, index]);
+
+    useEffect(()=>{
+        setGalleryInfo({views,likes});
+    },[])
+
+    // 조회수, 좋아요, 갤러리 클릭 변화 시 데이터 반영
+    useEffect(()=>{
+        setGalleryInfo({views:currentViews, likes:likeCounts});
+        console.log({likes,views});
+    },[currentViews, likeCounts, clickedGallery]);
 
     return (
         <> 
@@ -104,7 +134,7 @@ export default function GalleryHover(props) {
             // 갤러리 클릭 이벤트
             onClick={async (e) => {
                     setClickedGallery(index); 
-                    const imageData = await fetchGalleryImage(id);
+                    const imageData = await fetchGalleryImage(galleryID);
                     setGalleryImage(imageData);
                     return engagementManager.func[e.target.dataset.value]();
             }} 
@@ -135,13 +165,23 @@ export default function GalleryHover(props) {
                         ></img>
                     </span>
                     {/* 조회수 표시 */}
-                    <span className={`mr-2 text-[0.75rem]`}>{views}</span>
+                    <span className={`mr-2 text-[0.75rem]`}>{currentViews}</span>
                     {/* 하트 이미지 영역 */}
                     <span className={`flex justify-center items-center mr-2`}>
                         {/* 하트 이미지 요소 */}
                         <img
                         // 좋아요 수 증가처리
-                        onClick={(e)=>{setLikeCounts(likes + 1); return(engagementManager.func[e.target.dataset.value]())}} 
+                        onClick={async (e)=>{
+                            if(!clickedLike){
+                                // 데이터베이스에 좋아요 반영
+                                await likesHandler("increase",galleryID,userID);
+                            }
+                            // 현재 UI에 좋아요 수를 반영
+                            const updatedLikes = await fetchLikes(galleryID);
+                            setLikeCounts(updatedLikes); 
+
+                            return(engagementManager.func[e.target.dataset.value]())
+                        }} 
                         data-value="좋아요"
                         alt="하트"
                         src={`/images/${clickedLike?"하트1":"하트2"}.png`}

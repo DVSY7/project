@@ -9,4 +9,10 @@ router.post('/signup',userController.signup);
 // 로그인 API
 router.post('/login',userController.login);
 
+// 좋아요 API
+router.get(`/likesHandler`,userController.likesHandler);
+
+// 조회수 API
+router.get(`/views`,userController.updateViews);
+
 module.exports = router;

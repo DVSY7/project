@@ -12,7 +12,7 @@ export default function Home() {
   // 유저 닉네임
   const [name, setName] = useState("");
   // 유저 ID 
-  const [userID, setUserID] = useState("");
+  const [userID, setUserID] = useState([{id:0}]);
 
   // 로그인 성공 시 토큰 검증
   useEffect(()=>{

@@ -29,5 +29,7 @@ router.get('/userInfo',fetchController.userInfo);
 router.get('/userID',fetchController.userID);
 // isliked API
 router.get(`/isliked`,fetchController.isLiked);
+// likes API
+router.get(`/likes`,fetchController.likes);
 
 module.exports = router;
