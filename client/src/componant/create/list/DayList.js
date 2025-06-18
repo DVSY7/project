@@ -165,9 +165,50 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
     const file = e.target.files?.[0]; // 첫번째 파일 선택
     if (!file) return;
 
+    // 파일 크기 제한 (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("파일 크기는 5MB 이하여야 합니다.");
+      e.target.value = null;
+      return;
+    }
+
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImageSrc(reader.result);
+      // 이미지 압축
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 최대 크기 설정 (800x600)
+        const maxWidth = 800;
+        const maxHeight = 600;
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // 이미지 그리기
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // 압축된 이미지를 base64로 변환 (품질 0.8)
+        const compressedImage = canvas.toDataURL('image/jpeg', 0.8);
+        setImageSrc(compressedImage);
+      };
+      img.src = reader.result;
+      
       // 파일 선택기 초기화 (중복 첨부 방지용)
       e.target.value = null;
     };
