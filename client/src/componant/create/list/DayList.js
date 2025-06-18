@@ -163,10 +163,11 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
     e.stopPropagation(); // 이벤트 버블링 중지
     e.preventDefault(); // 기본 동작 방지 (페이지 이동, 제출 등)
 
+    // 1. 파일 선택
     const file = e.target.files?.[0]; // 첫번째 파일 선택
     if (!file) return;
 
-    // 파일 크기 제한 (10MB)
+    // 2. 파일 크기 제한 (10MB)
     if (file.size > 10 * 1024 * 1024) {
       alert("파일 크기는 10MB 이하여야 합니다.");
       e.target.value = null;
@@ -174,16 +175,17 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
     }
 
     try {
-      // FormData 생성
+      // 3. FormData 생성
       const formData = new FormData();
       formData.append('image', file);
 
-      // 서버에 업로드
+      // 4. 서버로 POST 요청
       const response = await fetch('http://localhost:5000/api/images/upload', {
         method: 'POST',
         body: formData
       });
 
+      // 5. 서버 응답 처리
       const result = await response.json();
       
       if (result.success) {
