@@ -93,6 +93,7 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
             endDate: new Date(),
             key: 'selection'
         });
+        if (!window.confirm("나가시겠습니까?")) return;
         onClose(); // 원래 onclose 함수 호출
     }
 
