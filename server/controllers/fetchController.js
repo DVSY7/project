@@ -14,7 +14,7 @@ exports.gallery = async (req, res) => {
 
         const [rows] = await db.query(`
        SELECT
-  g.id, g.user_id AS friend_id, g.username, g.title, g.date, g.profile_image,
+  g.id, g.user_id AS friend_id, g.username, g.title, g.text, g.date, g.profile_image,
   g.likes, g.views, g.location,
   (
     SELECT gi.image_url

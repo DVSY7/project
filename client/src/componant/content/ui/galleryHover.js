@@ -73,13 +73,13 @@ export default function GalleryHover(props) {
         setClickedLike(isliked[index]);
     }, [isliked, index]);
 
-    useEffect(()=>{
-        setGalleryInfo({views,likes});
-    },[])
-
     // 조회수, 좋아요, 갤러리 클릭 변화 시 데이터 반영
     useEffect(()=>{
-        setGalleryInfo({views:currentViews, likes:likeCounts});
+        setGalleryInfo(prev => {
+        const copy = [...prev];
+        copy[index] = { profile_image, views: currentViews, likes: likeCounts };
+        return copy;
+});
         console.log({likes,views});
     },[currentViews, likeCounts, clickedGallery]);
 

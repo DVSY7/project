@@ -1,9 +1,9 @@
 // src/componant/content/ui/showGalleryModal.js
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export default function ShowGalleryModal(props) {
-    const { username,setClickedGallery, galleryImage, index, title } = props;
+    const { username,setClickedGallery, galleryImage, galleryInfo, index, title, text } = props;
 
     const galleryTextLength = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -17,6 +17,10 @@ export default function ShowGalleryModal(props) {
         }
     }
 
+    // 디버깅을 위한 코드
+    useEffect(()=>{
+        console.log("현재 게시글 정보:",galleryInfo);
+    },[galleryInfo]);
 
     if(!galleryImage || galleryImage.length === 0) {
         return null; // 갤러리 이미지가 없으면 모달을 렌더링하지 않음
@@ -86,24 +90,24 @@ export default function ShowGalleryModal(props) {
                         {/* 갤러리 제목 요소 */}
                         <div className={`h-[10%] flex items-center pl-4 border-b-[2px] border-gray-200`}>
                             {/* 갤러리 제목 프로필 */}
-                            <img className={`w-[40px] h-[40px] mr-4`} src="images/미니프로필.png" alt="미니프로필"></img>
-                            <span>{username}의 게시글</span>
+                            <img className={`w-[40px] h-[40px] mr-4 rounded-[50%]`} src={`${galleryInfo.profile_image}`} alt="미니프로필"></img>
+                            <span className={`font-bold`}>{username}</span>님의 게시글
                         </div>
                         {/* 갤러리 본문 요소 */}
                         <div className={`h-[32.5%] flex border-b-[2px] border-gray-200`}>
                             {/* 갤러리 본문 프로필 */}
                             <div className={`w-[15%] flex justify-center mt-4`}>
                                 {/* 갤러리 본문 프로필 요소 */}
-                                <img className={`w-[40px] h-[40px]`} src={`images/미니프로필.png`} alt="미니프로필"></img>
+                                <img className={`w-[40px] h-[40px] rounded-[50%]`} src={`${galleryInfo.profile_image}`} alt="미니프로필"></img>
                             </div>
                             {/* 갤러리 본문 내용 및 태그 영역 */}
                             <div className={`w-[85%]`}>
                                 {/* 갤러리 본문 제목 */}
-                                <div className={`h-[25%] flex justify-center items-center text-[2rem]`}>{title}</div>
+                                <div className={`h-[25%] flex justify-start items-center text-[1.2rem] font-bold`}>{title}</div>
                                 {/* 갤러리 본문 내용 */}
-                                <div className={`h-[62%]`}>123</div>
+                                <div className={`h-[62%] w-[90%] overflow-auto hide-scrollbar whitespace-pre-line`}>{text}</div>
                                 {/* 갤러리 본문 태그 */}
-                                <div className={`h-[13%]`}>Sample Tags</div>
+                                <div className={`h-[13%] text-gray-400`}># Sample Tags</div>
                             </div>
 
                         </div>
@@ -144,9 +148,8 @@ export default function ShowGalleryModal(props) {
                                 <img className={`w-[15px] h-[15px]`} src={`images/북마크3.png`} alt="북마크"></img>
                             </div>
                             {/* 갤러리 좋아요 수 */}
-                            <div className={``}>좋아요 102개</div>
+                            <div className={``}>조회 {galleryInfo.views}회 좋아요 {galleryInfo.likes}개</div>
                             {/* 갤러리 좋아요 날짜 */}
-                            <div className={`text-gray-400`}>3일 전</div>
                         </div>
                         {/* 갤러리 댓글 입력창 */}
                         <div className={`h-[7.5%] flex`}>

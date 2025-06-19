@@ -23,7 +23,7 @@ export default function Gallery(props) {
   const [galleryImage, setGalleryImage] = useState([]);
 
   // 갤러리 뷰 화면 데이터 상태관리
-  const [galleryInfo, setGalleryInfo] = useState({views:0, likes:0});
+  const [galleryInfo, setGalleryInfo] = useState([]);
 
   // 프로필 옵션 선택 상태관리
   const [actionList, setActionList] = useState([]);
@@ -194,11 +194,13 @@ export default function Gallery(props) {
               <ShowGalleryModal
                 username={item.name}
                 title = {item.title}
+                text = {item.text}
                 id={item.id}
                 index = {idx}
                 clickedGallery={clickedGallery}
                 setClickedGallery={setClickedGallery}
                 galleryImage={galleryImage}
+                galleryInfo={galleryInfo[idx]}
               />
             )}
             <img
