@@ -81,6 +81,21 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
         setStep(prev => prev - 1);
     }
 
+    const handleClose = () => {
+        setStep(1); //스텝을 1로 초기화
+        setSelectedValues({ // 선택된 값들을 초기화
+            place:null,
+            date:null,
+            companion:null
+        });
+        setDateRange({ // 날짜 범위 초기화
+            startDate: new Date(),
+            endDate: new Date(),
+            key: 'selection'
+        });
+        onClose(); // 원래 onclose 함수 호출
+    }
+
     if (!open) return null;
 
     return (
@@ -89,7 +104,7 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
                 {step === 1 && (
                     <AIPlaceModal 
                         place={place}
-                        onClose={onClose}
+                        onClose={handleClose}
                         onNext={handleNext}
                     />
                 )}
@@ -99,28 +114,28 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
                         setDateRange={setDateRange}
                         onNext={handleNext}
                         onBack={handleBack}
-                        onClose={onClose}
+                        onClose={handleClose}
                     />
                 )}
                 {step === 3 && (
                     <WhoWithStep 
                     onNext={handleNext}
                     onBack={handleBack}
-                    onClose={onClose}
+                    onClose={handleClose}
                     />
                 )}
                 {step === 4 && (
                     <TravelstyleStep
                     onNext={handleNext}
                     onBack={handleBack}
-                    onClose={onClose}
+                    onClose={handleClose}
                     />
                 )}
                   {step === 5 && (
                     <PreferTravelPlan
                     onNext={handleNext}
                     onBack={handleBack}
-                    onClose={onClose}
+                    onClose={handleClose}
                     />
                 )}
                 
