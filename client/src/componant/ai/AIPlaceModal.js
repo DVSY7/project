@@ -42,11 +42,12 @@ export default function AIPlaceModal({onClose, place, onNext}){
             <div className="flex-1 flex flex-col h-full justify-between w-full">
                 <img src={place.image}  alt={place.korName} className="w-full h-[80%] bg-black object-cover"/>
                 <div className="flex justify-center gap-2">
-                    <button className="w-[50%] bg-gray-100 text-blue-600  px-10 py-4 rounded-lg">항공권</button>
-                    <button className="w-[50%] bg-gray-100 text-blue-600  px-10 py-4 rounded-lg">숙소</button>
+                    <button className="w-[50%] bg-gray-100 text-blue-600  px-10 py-4 rounded-lg hover:bg-blue-500 hover:text-white transition-colors duration-300">항공권</button>
+                    <button className="w-[50%] bg-gray-100 text-blue-600  px-10 py-4 rounded-lg hover:bg-blue-500 hover:text-white transition-colors duration-300">숙소</button>
                 </div>
             </div>
             </div>
         </div>
     );
 }
+// ✈️<br/> 🛏️<br/>
