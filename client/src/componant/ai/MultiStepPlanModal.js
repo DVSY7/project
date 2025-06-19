@@ -99,24 +99,28 @@ export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
                         setDateRange={setDateRange}
                         onNext={handleNext}
                         onBack={handleBack}
+                        onClose={onClose}
                     />
                 )}
                 {step === 3 && (
                     <WhoWithStep 
                     onNext={handleNext}
                     onBack={handleBack}
+                    onClose={onClose}
                     />
                 )}
                 {step === 4 && (
                     <TravelstyleStep
                     onNext={handleNext}
                     onBack={handleBack}
+                    onClose={onClose}
                     />
                 )}
                   {step === 5 && (
                     <PreferTravelPlan
                     onNext={handleNext}
                     onBack={handleBack}
+                    onClose={onClose}
                     />
                 )}
                 
