@@ -1,6 +1,18 @@
+import { useState } from "react"
 import Menu from "./menu"
 
-export default function createPost(){
+export default function CreatePost(){
+    const [isOpen, setIsOpen] = useState(true);
+
+    const handleClose = () => {
+        if(window.confirm("게시물을 삭제하시겠습니까?"))
+        setIsOpen(false);
+    }
+
+    if(!isOpen){
+        return null;
+    }
+
     return(
         // <>
         // <div className="grid grid-cols-1 grid-rows-9 sm:grid-rows-1 sm:grid-cols-sm-minmax sm:grid-cols-9 h-screen overflow-x-hidden">
@@ -17,8 +29,7 @@ export default function createPost(){
                 <div className={`flex relative w-[60vw] h-[75vh] rounded-md bg-white bg-opacity-100`}>
                    
                     <span
-                        // 갤러리 모달 닫기 버튼
-                        // onClick={() => setClickedGallery(null)}
+                        onClick={handleClose}
                         className={`flex justify-end absolute right-0 mr-2 text-[1.5rem] h-[60px] w-[50px] cursor-pointer text-gray-500 hover:text-black transition-colors duration-500`}>
                         {/* 닫기버튼 요소 */}
                         X
