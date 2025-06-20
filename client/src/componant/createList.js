@@ -226,10 +226,10 @@ export default function CreateList() {
         <div className="flex flex-col flex-wrap row-span-9 sm:col-span-8 ">
           {/* <div className="flex items-center justify-center  w-full h-full"> */}
             <div
-              className={`w-full h-full grid grid-cols-[3fr_2fr] bg-gray-100`}
+              className={`w-full h-full grid grid-cols-[3fr_2fr]`}
             >
               {/* 왼쪽 영역 */}
-              <div className="grid grid-rows-[1fr_6.5fr_0.5fr] px-4 py-8">
+              <div className="grid grid-rows-[1fr_7fr_1fr] px-4 py-8">
                 {/* 상단 영역 */}
                 <div className="flex grid grid-rows-[0.5fr_1fr]">
                   <TopButtons 
@@ -260,7 +260,7 @@ export default function CreateList() {
                   />
                 </div>
                 {/* 하단 영역 */}
-                <div className="mt-5">
+                <div className="flex items-center">
                   <TagManager
                     tags={tags}
                     setTags={setTags}
@@ -282,24 +282,45 @@ export default function CreateList() {
                 </div>
               </div>
               {/* 오른쪽 영역 */}
-              <div className="border-l grid grid-rows-[9fr_1fr]  overflow-hidden">
-                <div className="flex items-center justify-center">
-                  {/* 계획형 작성 란 */}
-                  {isPlanned ? (
-                    <IsPlanned text={text} setText={setText}/>
-                  ) : (
-                    <textarea
-                      className="w-[90%] h-[90%] border rounded p-2 resize-none px-3"
-                      placeholder="소개 글을 자유롭게 입력하세요"  value={text} onChange={(e) => setText(e.target.value)}
-                    ></textarea>
-                  )}
-                </div>
-                {/* 끝 영역: 텍스트 입력란 */}
-                <div className="flex justify-end items-center">
-                  <button className="bg-blue-500 text-white h-10 mr-8 px-3 rounded-xl" onClick={handleSubmit}>
-                    등록하기
-                  </button>
-                </div>
+              <div className="border-l flex flex-col h-full">
+                {isPlanned ? (
+                  // 계획형: 40% (마감날짜/만날장소/예산/실행기간) + 50% (글작성) + 10% (등록하기)
+                  <>
+                    <div className="h-[40%] flex items-center justify-center">
+                      <IsPlanned />
+                    </div>
+                    <div className="h-[50%] flex items-center justify-center">
+                      <textarea
+                        className="w-full h-full border rounded m-4 p-4 resize-none"
+                        placeholder="소개 글을 자유롭게 입력하세요"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                      ></textarea>
+                    </div>
+                    <div className="h-[10%] flex justify-end items-center">
+                      <button className="bg-blue-500 text-white h-10 mr-8 px-3 rounded-xl" onClick={handleSubmit}>
+                        등록하기
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  // 자유형: 90% (글작성) + 10% (등록하기)
+                  <>
+                    <div className="h-[90%] flex items-center justify-center">
+                      <textarea
+                        className="w-full h-full border rounded p-2 resize-none"
+                        placeholder="소개 글을 자유롭게 입력하세요"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                      ></textarea>
+                    </div>
+                    <div className="h-[10%] flex justify-end items-center">
+                      <button className="bg-blue-500 text-white h-10 mr-8 px-3 rounded-xl" onClick={handleSubmit}>
+                        등록하기
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           {/* </div> */}

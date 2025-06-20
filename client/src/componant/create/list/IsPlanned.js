@@ -1,50 +1,49 @@
 export default function IsPlanned({text, setText}){
     return( 
-    <div className="w-[90%] h-full flex flex-col justify-around text-lg font-sans">
+    <div className="h-full flex flex-col text-lg font-sans p-4 justify-between gap-2">
         {/* <h1 className="mt-4 text-xl font-semibold">
           세부 계획 설정
         </h1> */}
-        <div>
-          마감 날짜:{" "}
-          <input
-            type="date"
-            className="border rounded p-1 ml-1"
-          />
+        <div className="flex rounded mb-2 h-[50%] gap-4">
+          <div className="bg-blue-100 w-[50%]">
+            마감 날짜:{" "}
+            <input
+              type="date"
+              className="border rounded p-1 ml-1"
+            />
+          </div>
+          <div className="bg-blue-100 w-[50%]">
+            만날 장소:{" "}
+            <input
+              type="text"
+              className="border rounded p-1 ml-1"
+              placeholder="ex) 서울역"
+            />
+          </div>
         </div>
-        <div>
-          만날 장소:{" "}
-          <input
-            type="text"
-            className="border rounded p-1 ml-1"
-            placeholder="ex) 서울역"
-          />
+        
+        <div className="flex rounded h-[50%] gap-4">
+          <div className="bg-blue-100 w-[50%]">
+            예산:{" "}
+            <input
+              type="text"
+              className="border rounded p-1 ml-1"
+              placeholder="ex) 5만원"
+            />
+          </div>
+          <div className="w-[50%] bg-red-100">
+            실행 기간:{" "}
+            <input
+              type="date"
+              className="border rounded p-1 mx-1"
+            />
+            -
+            <input
+              type="date"
+              className="border rounded p-1 ml-1"
+            />
+          </div>
         </div>
-        <div>
-          예산:{" "}
-          <input
-            type="text"
-            className="border rounded p-1 ml-1"
-            placeholder="ex) 5만원"
-          />
-        </div>
-        <div>
-          실행 기간:{" "}
-          <input
-            type="date"
-            className="border rounded p-1 mx-1"
-          />
-          -
-          <input
-            type="date"
-            className="border rounded p-1 ml-1"
-          />
-        </div>
-        <textarea
-          className="w-full h-[60%] resize-none border rounded-lg p-2 "
-          placeholder="소개 글을 자유롭게 입력하세요"
-          value={text}
-          onChange={(e)=>setText(e.target.value)}
-        ></textarea>
       </div>
    
  )

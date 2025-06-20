@@ -36,7 +36,7 @@ export default function AIPlaceModal({onClose, place, onNext}){
                     // onClick={() => console.log(2)}
                 >
                     일정 만들기
-                </button>
+                </button> 
             </div>
             {/* 이미지 */}
             <div className="flex-1 flex flex-col h-full justify-between w-full">
