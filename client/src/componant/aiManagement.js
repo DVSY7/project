@@ -123,12 +123,12 @@ export default function AIManagement() {
               {/* 여행지 나열 */}
               <div className='w-full h-[95%] grid grid-cols-5 gap-8 py-4'>
                 {filteredPlaces.map((place, index) => (
-                  <div key={index} className='relative bg-white rounded-xl shadow-lg h-80 transition-transform duration-200 hover:scale-105' onClick={()=>setSelectedPlace(place)}>
+                  <div key={index} className='relative bg-white rounded-xl shadow-lg h-64 transition-transform duration-200 hover:scale-105' onClick={()=>setSelectedPlace(place)}>
                     <img src={place.image} className='object-cover w-full h-[75%] rounded-t-lg' />
                     {place.isNew && (
                       <span className='absolute top-2 -right-1 bg-red-500 text-white px-2 py-1 rounded'>NEW</span>
                     )}
-                    <div className='p-4'>
+                    <div className='px-4 py-2'>
                       <div>{place.engName}</div>
                       <div>{place.korName}</div>
                     </div>
