@@ -19,21 +19,21 @@ export default function IsPlanned({setEndDate, setMeetPlace, setBudget, setPerio
     };
 
     return( 
-    <div className="h-full flex flex-col text-lg font-sans p-4 justify-between gap-2">
+    <div className="w-full h-full flex flex-col text-lg font-sans p-4 justify-between gap-2">
         {/* <h1 className="mt-4 text-xl font-semibold">
           세부 계획 설정
         </h1> */}
         <div className="flex rounded mb-2 h-[50%] gap-4">
-          <div className="bg-blue-100 w-[50%]">
-            마감 날짜:
+          <div className="bg-blue-100 w-[50%] flex flex-col">
+            <h1 className='text-2xl py-4 px-2'>마감 날짜</h1>
             <input
               type="date"
               className="border rounded p-1 ml-1"
               onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
-          <div className="bg-blue-100 w-[50%]">
-            만날 장소:
+          <div className="bg-blue-100 w-[50%] flex flex-col">
+          <h1 className='text-2xl py-4 px-2'>만날 장소</h1>
             <input
               type="text"
               className="border rounded p-1 ml-1"
@@ -44,8 +44,8 @@ export default function IsPlanned({setEndDate, setMeetPlace, setBudget, setPerio
         </div>
         
         <div className="flex rounded h-[50%] gap-4">
-          <div className="bg-blue-100 w-[50%]">
-            예산:
+          <div className="bg-blue-100 w-[50%] flex flex-col">
+          <h1 className='text-2xl py-4 px-2'>예산</h1>
             <input
               type="text"
               className="border rounded p-1 ml-1"
@@ -53,8 +53,8 @@ export default function IsPlanned({setEndDate, setMeetPlace, setBudget, setPerio
               onChange={(e) => setBudget(e.target.value)}
             />
           </div>
-          <div className="w-[50%] bg-red-100">
-            실행 기간:
+          <div className="w-[50%] bg-red-100" flex flex-col>
+          <h1 className='text-2xl py-4 px-2'>실행 기간</h1>
             <input
               ref={startDateRef}
               type="date"
