@@ -39,6 +39,24 @@ LIMIT ? OFFSET ?
     }
 };
 
+// 갤러리 댓글 가져오기
+exports.comments = async (req, res) =>{
+  try{
+    const {galleryID} = req.query;
+    const [rows] = await db.query(`
+      SELECT u.name AS name, p.profile_image_url AS profile_image, c.comment, c.likes
+      FROM comments c
+      JOIN profiles p ON p.user_id = c.user_id
+      JOIN users u ON u.id = p.user_id
+      JOIN gallery g ON g.id = c.gallery_id
+      WHERE g.id = ?
+      `,[galleryID]);
+    res.status(200).json(rows);
+  }catch(error){
+    res.status(500).json({message:"댓글 불러오기 실패:",error});
+  }
+}
+
 // 갤러리 이미지 데이터 가져오기
 exports.galleryImage = async (req, res) => {
     try{

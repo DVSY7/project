@@ -200,3 +200,17 @@ exports.updateViews = async (req, res) => {
     await connection.release();
   }
 }
+
+// 댓글 처리
+exports.updateComment = async (req, res) => {
+  try{
+    const {galleryID, userID, commentText} = req.query;
+    await db.query(`
+      INSERT INTO comments ( gallery_id, user_id, comment )
+      VALUES (?,?,?)  
+    `,[galleryID, userID, commentText]);
+    res.status(200).json({message:"댓글저장 성공"});
+  }catch(error){
+    res.status(500).json({message:"댓글저장 실패:",error});
+  }
+}

@@ -49,6 +49,9 @@ export default function GalleryHover(props) {
                 if(clickedLike){
                     // 데이터베이스에 좋아요 반영
                     await likesHandler("decrease",galleryID,userID);
+                }else if(!clickedLike){
+                    // 데이터베이스에 좋아요 반영
+                    await likesHandler("increase",galleryID,userID);
                 }
                 // 현재 UI에 좋아요 수 반영
                 const updatedLikes = await fetchLikes(galleryID);
@@ -77,7 +80,13 @@ export default function GalleryHover(props) {
     useEffect(()=>{
         setGalleryInfo(prev => {
         const copy = [...prev];
-        copy[index] = { profile_image, views: currentViews, likes: likeCounts };
+        copy[index] = { 
+            profile_image, 
+            views: currentViews, 
+            likes: likeCounts , 
+            clickedLike, 
+            func: engagementManager.func["좋아요"]
+        };
         return copy;
 });
         console.log({likes,views});
@@ -172,10 +181,7 @@ export default function GalleryHover(props) {
                         <img
                         // 좋아요 수 증가처리
                         onClick={async (e)=>{
-                            if(!clickedLike){
-                                // 데이터베이스에 좋아요 반영
-                                await likesHandler("increase",galleryID,userID);
-                            }
+
                             // 현재 UI에 좋아요 수를 반영
                             const updatedLikes = await fetchLikes(galleryID);
                             setLikeCounts(updatedLikes); 

@@ -5,6 +5,8 @@ const fetchController = require('../controllers/fetchController'); // Fetch кіАл
 
 // gallery API
 router.get('/gallery', fetchController.gallery);
+// gallery/comments API
+router.get('/gallery/comments',fetchController.comments);
 // galleryImage API
 router.get('/galleryImage', fetchController.galleryImage);
 // friendList API

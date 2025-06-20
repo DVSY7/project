@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 
+// 게시글 정보 불러오기
 export async function galleryfetch(page = 1, limit = 15, sort, searchUser) {
     let isSort = 'date DESC';
 
@@ -27,5 +28,29 @@ export async function galleryfetch(page = 1, limit = 15, sort, searchUser) {
     } catch (error) {
         console.error("갤러리 데이터 요청 실패:", error);
         return [];
+    }
+}
+
+// 게시글 댓글 불러오기
+export const fetchComment = async (galleryID, userID) =>{
+    try{
+        if(galleryID && userID){
+            const res = await axios.get(`http://localhost:5000/api/gallery/comments?galleryID=${galleryID}&userID=${userID}`);
+            return res.data;
+        }
+    }catch(error){
+        return {message:"댓글불러오기 실패:",error};
+    }
+}
+
+// 게시글 댓글 저장
+export const updateComment = async(galleryID, userID, commentText) =>{
+    try{
+        const res = await axios.get(`http://localhost:5000/api/users/gallery/updateComment?galleryID=${galleryID}&userID=${userID}&commentText=${commentText}`);
+        console.log("댓글저장중...");
+        return res.data;
+    }catch(error){
+        console.error("댓글 저장 실패:",error);
+        return {message:error};
     }
 }

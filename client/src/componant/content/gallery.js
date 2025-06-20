@@ -195,7 +195,8 @@ export default function Gallery(props) {
                 username={item.name}
                 title = {item.title}
                 text = {item.text}
-                id={item.id}
+                galleryID={item.id}
+                userID = {userID[0]?.id??0}
                 index = {idx}
                 clickedGallery={clickedGallery}
                 setClickedGallery={setClickedGallery}
