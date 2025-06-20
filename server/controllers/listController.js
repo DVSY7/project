@@ -26,7 +26,13 @@ exports.createList = async (req, res) => {
       isOffline,
       isGroup,
       tags,
-      days
+      days,
+      endDate,
+      meetPlace,
+      budget,
+      periodStartDate,
+      periodEndDate,
+      
     } = req.body;
 
     // 필수 필드 검증
@@ -39,8 +45,8 @@ exports.createList = async (req, res) => {
 
     // 리스트 생성 쿼리
     const query = `
-      INSERT INTO lists (title, text, is_planned, interest, max_participants, is_offline, is_group)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO lists (title, text, is_planned, interest, max_participants, is_offline, is_group, end_date, meet_place, budget, period_start_date, period_end_date)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ? ,? ,?, ?, ?)
     `;
 
     try {
@@ -51,7 +57,12 @@ exports.createList = async (req, res) => {
         interest,
         maxParticipants || 1,
         isOffline ? 1 : 0,
-        isGroup ? 1 : 0
+        isGroup ? 1 : 0,
+        endDate,
+        meetPlace,
+        budget,
+        periodStartDate,
+        periodEndDate
       ]);
 
       const listId = result.insertId;
