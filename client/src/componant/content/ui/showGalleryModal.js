@@ -155,16 +155,16 @@ export default function ShowGalleryModal(props) {
                                                 <img className={`w-[40px] h-[40px] rounded-[50%]`} src={`${comment.profile_image}`} alt="미니프로필"></img>
                                             </div>
                                             {/* 갤러리 댓글 내용 */}
-                                            <div className={`w-[62%] pl-2`}>
+                                            <div className={`w-[68%] px-2`}>
                                                 {/* 갤러리 댓글 유저이름 */}
                                                 <div className={`pt-1 font-sans font-bold text-[0.9rem]`}>@{comment.name} <span className={`font-sans text-[0.8rem] ml-1`}>3시간</span></div>
                                                 {/* 갤러리 댓글 본문 */}
-                                                <div className={`pl-2 text-[0.8rem]`}>{comment.comment}</div>
+                                                <div className={`pl-2 text-[0.8rem] whitespace-pre-line`}>{comment.comment}</div>
                                                 {/* 갤러리 댓글 답글달기 */}
                                                 <div className={`text-[0.8rem] text-gray-400 hover:text-gray-600 cursor-pointer`}>답글달기</div>
                                             </div>
                                             {/* 갤러리 댓글 좋아요 */}
-                                            <div className={`w-[13%] flex flex-col justify-center items-end font-sans`}>
+                                            <div className={`w-[5%] flex flex-col justify-center items-center font-sans`}>
                                                 {/* 갤러리 댓글 좋아요 이미지 */}
                                                 <img className={`w-[15px] h-[15px] mb-1`} src={`images/좋아요2.png`} alt="좋아요"></img>
                                                 {/* 갤러리 댓글 좋아요 수 */}
@@ -197,8 +197,6 @@ export default function ShowGalleryModal(props) {
                                         console.log("줄바꿈 실행");
                                     }else if(e.key === "Enter"){
                                         e.preventDefault();
-                                        // 댓글 정보를 상태에 저장
-                                        setCommentText(e.target.value);
                                         // 댓글을 데이터베이스에 저장
                                         await updateComment(galleryID,userID,commentText);
                                         // 댓글 정보 최신화

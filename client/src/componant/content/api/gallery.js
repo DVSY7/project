@@ -46,7 +46,11 @@ export const fetchComment = async (galleryID, userID) =>{
 // 게시글 댓글 저장
 export const updateComment = async(galleryID, userID, commentText) =>{
     try{
-        const res = await axios.get(`http://localhost:5000/api/users/gallery/updateComment?galleryID=${galleryID}&userID=${userID}&commentText=${commentText}`);
+        const res = await axios.post(`http://localhost:5000/api/users/gallery/updateComment`,{
+            galleryID,
+            userID,
+            commentText
+        });
         console.log("댓글저장중...");
         return res.data;
     }catch(error){

@@ -204,7 +204,7 @@ exports.updateViews = async (req, res) => {
 // 댓글 처리
 exports.updateComment = async (req, res) => {
   try{
-    const {galleryID, userID, commentText} = req.query;
+    const {galleryID, userID, commentText} = req.body;
     await db.query(`
       INSERT INTO comments ( gallery_id, user_id, comment )
       VALUES (?,?,?)  

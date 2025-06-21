@@ -16,6 +16,6 @@ router.get(`/likesHandler`,userController.likesHandler);
 router.get(`/views`,userController.updateViews);
 
 // 게시글 댓글 저장 API
-router.get(`/gallery/updateComment`,userController.updateComment);
+router.post(`/gallery/updateComment`,userController.updateComment);
 
 module.exports = router;
