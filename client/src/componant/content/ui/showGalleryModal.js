@@ -145,9 +145,10 @@ export default function ShowGalleryModal(props) {
                         <div className={`h-[37%] overflow-y-auto hide-scrollbar`}>
                             {comments.map((comment,idx) => {
                                 // 댓글의 마지막 체크
-                                const isLast = idx === comments.length - 1;
+                                const isLast = idx === 0;
                                 return (
-                                    <>                             
+                                    <>                           
+                                        {isLast && <div ref={commentEndRef}></div>}  
                                         <div className={`flex mt-2`} key={`${comment}${idx-1}`}>
                                             {/* 갤러리 댓글 이미지 */}
                                             <div className={`w-[17%] flex justify-end pt-1 pr-2`}>
@@ -169,8 +170,7 @@ export default function ShowGalleryModal(props) {
                                                 {/* 갤러리 댓글 좋아요 수 */}
                                                 <span>{comment.likes}</span>
                                             </div>
-                                        </div>  
-                                        {isLast && <div ref={commentEndRef}></div>}                           
+                                        </div>                             
                                     </>
                                 )
                             })}
