@@ -50,6 +50,7 @@ exports.comments = async (req, res) =>{
       JOIN users u ON u.id = p.user_id
       JOIN gallery g ON g.id = c.gallery_id
       WHERE g.id = ?
+      ORDER BY c.created_at DESC
       `,[galleryID]);
     res.status(200).json(rows);
   }catch(error){
