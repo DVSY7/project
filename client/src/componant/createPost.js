@@ -3,11 +3,27 @@ import Menu from "./menu"
 
 export default function CreatePost(){
     const [isOpen, setIsOpen] = useState(true);
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const handleClose = () => {
         if(window.confirm("게시물을 삭제하시겠습니까?"))
         setIsOpen(false);
     }
+
+    const handleImageSelect = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setSelectedImage(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const triggerFileInput = () => {
+        document.getElementById('imageInput').click();
+    };
 
     if(!isOpen){
         return null;
@@ -38,16 +54,23 @@ export default function CreatePost(){
                     <div className={`relative w-[60%] rounded-l-md`}>
                         {/* 갤러리 이미지 */}
                         <div className="bg-blue-100 w-full h-full">
-                            이미지를 선택하세요
+
+                            {selectedImage ? (
+                                <img 
+                                    src={selectedImage}
+                                    alt="선책된 이미지"
+                                    className="w-full h-full object-cover rounded-1-md" />
+                            ) : (
+                            <button className="bg-red-400" onClick={triggerFileInput}>이미지를 선택하세요</button>
+                            )}
+                            <input 
+                                type="file"
+                                id="imageInput"
+                                accept="image/*"
+                                onChange={handleImageSelect}
+                                style={{display : 'none'}}
+                            />
                         </div>
-                        {/* <img
-                        // 이미지를 눌러도 다음이미지로 넘어가도록 설정 
-                       
-                        className={`opacity-100 w-full h-full rounded-l-md cursor-pointer transition-opacity duration-500`}></img> */}
-                        {/* 갤러리 이미지 컨트롤러 */}
-                        {/* <div className={`absolute bottom-4 w-full h-[50px] flex justify-center items-center `}>
-                      
-                        </div> */}
                     </div>
                     {/* 갤러리 본문 영역 */}
                     <div className={`w-[40%] rounded-r-md`}>
