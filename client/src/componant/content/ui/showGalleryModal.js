@@ -2,6 +2,8 @@
 
 import {useEffect, useRef, useState} from "react";
 import { fetchComment, updateComment } from "../api/gallery";
+import { getFormatTime } from "../utilities/formatTime";
+import { updateCommentLikes } from "../api/likes";
 
 export default function ShowGalleryModal(props) {
     const { username,setClickedGallery, galleryImage, galleryInfo, index, title, text, galleryID, userID } = props;
@@ -19,11 +21,44 @@ export default function ShowGalleryModal(props) {
     // 댓글 입력 시 화면을  스크롤
     const commentEndRef = useRef(null);
 
+    // 댓글이 비어있으면 입력란에 포커스
+    const inputRef =useRef(null);
+
     // 댓글 불러오는 함수
     const getComment = async () =>{
             const res = await fetchComment(galleryID, userID);
             console.log("댓글정보 불러오기 실행중");
             setComments(res);
+            await console.log(res);
+    }
+
+    // 댓글을 저장하는 함수
+    const sendComment = async (e) =>{
+        e.preventDefault();
+        if(commentText){
+            // 댓글을 데이터베이스에 저장
+            await updateComment(galleryID,userID,commentText);
+            // 댓글 정보 최신화
+            await getComment();
+            // 댓글 입력 창 초기화
+            setCommentText("");
+        }else{
+            alert("댓글을 입력해주세요.");
+            inputRef.current.focus();
+        }
+
+        // 새로운 댓글 입력 시 스크롤 하는 트리거
+        if(commentEndRef.current){
+            commentEndRef.current.scrollIntoView({behavior:"smooth"});
+        }
+    }
+
+    // 댓글 좋아요 반영하는 함수
+    const commentLiked = async (commentID,userID,isliked)=>{
+            // 좋아요 처리
+            await updateCommentLikes(commentID, userID, isliked);
+            // 댓글 정보 최신화
+            await getComment();
     }
 
     const handleClickByKey = (targetKey) => {
@@ -44,12 +79,6 @@ export default function ShowGalleryModal(props) {
         getComment();
     },[galleryInfo]);
 
-    // 새로운 댓글 입력 시 스크롤 하는 트리거
-    useEffect(()=>{
-        if(commentEndRef.current){
-            commentEndRef.current.scrollIntoView({behavior:"smooth"});
-        }
-    },[comments])
 
     if(!galleryImage || galleryImage.length === 0) {
         return null; // 갤러리 이미지가 없으면 모달을 렌더링하지 않음
@@ -57,7 +86,7 @@ export default function ShowGalleryModal(props) {
 
     return (
         <>
-            <div key={username}
+            <div
                 className={`flex justify-center items-center fixed bg-black bg-opacity-50 w-screen h-screen left-0 top-0 z-20`}
             >
                 <div className={`flex relative w-[60vw] h-[75vh] rounded-md bg-white bg-opacity-100`}>
@@ -102,13 +131,13 @@ export default function ShowGalleryModal(props) {
                         {/* 갤러리 이미지 컨트롤러 */}
                         <div className={`absolute bottom-4 w-full h-[50px] flex justify-center items-center `}>
                             {/* 갤러리 이미지 컨트롤러 버튼 */}
-                            {galleryImage.map((_,idx) => (
+                            {galleryImage.map((item,idx) => (
                                 <div
-                                key={idx} 
+                                key={`image-controller-${idx}`}
                                 onClick={() => {
                                     setClickedImage(idx);
                                 }}
-                                className={`mx-2 ${clickedImage === idx ? "opacity-100" : "opacity-50"} hover:opacity-100 cursor-pointer transition-opacity duration-500 text-white text-[1.5rem]`}>
+                                className={`mx-2 ${clickedImage === idx ? "opacity-100" : "opacity-50"} hover:opacity-100 cursor-pointer transition-opacity duration-500 text-white text-[1rem]`}>
                                     ●
                                 </div>
                             ))}
@@ -142,14 +171,15 @@ export default function ShowGalleryModal(props) {
 
                         </div>
                         {/* 갤러리 댓글 영역 */}
-                        <div className={`h-[37%] overflow-y-auto hide-scrollbar`}>
+                        <div className={`h-[37%] overflow-y-auto hide-scrollbar scroll-smooth`}>
                             {comments.map((comment,idx) => {
                                 // 댓글의 마지막 체크
                                 const isLast = idx === 0;
                                 return (
-                                    <>                           
+                                    <div key={`${comment.name}${idx}`}>
+                                        {/* 마지막 요소 감시자 */}
                                         {isLast && <div ref={commentEndRef}></div>}  
-                                        <div className={`flex mt-2`} key={`${comment}${idx-1}`}>
+                                        <div className={`flex mt-2`}>
                                             {/* 갤러리 댓글 이미지 */}
                                             <div className={`w-[17%] flex justify-end pt-1 pr-2`}>
                                                 <img className={`w-[40px] h-[40px] rounded-[50%]`} src={`${comment.profile_image}`} alt="미니프로필"></img>
@@ -157,21 +187,24 @@ export default function ShowGalleryModal(props) {
                                             {/* 갤러리 댓글 내용 */}
                                             <div className={`w-[68%] px-2`}>
                                                 {/* 갤러리 댓글 유저이름 */}
-                                                <div className={`pt-1 font-sans font-bold text-[0.9rem]`}>@{comment.name} <span className={`font-sans text-[0.8rem] ml-1`}>3시간</span></div>
+                                                <div className={`pt-1 font-sans font-bold text-[0.9rem]`}>@{comment.name} <span className={`font-sans text-[0.7rem] text-gray-400 ml-1`}>{getFormatTime(comment.updated_at)}</span></div>
                                                 {/* 갤러리 댓글 본문 */}
-                                                <div className={`pl-2 text-[0.8rem] whitespace-pre-line`}>{comment.comment}</div>
+                                                <div className={`pl-2 text-[0.8rem] whitespace-pre-line my-2`}>{comment.comment}</div>
                                                 {/* 갤러리 댓글 답글달기 */}
                                                 <div className={`text-[0.8rem] text-gray-400 hover:text-gray-600 cursor-pointer`}>답글달기</div>
                                             </div>
                                             {/* 갤러리 댓글 좋아요 */}
                                             <div className={`w-[5%] flex flex-col justify-center items-center font-sans`}>
                                                 {/* 갤러리 댓글 좋아요 이미지 */}
-                                                <img className={`w-[15px] h-[15px] mb-1`} src={`images/좋아요2.png`} alt="좋아요"></img>
+                                                <img 
+                                                    onClick={()=>{commentLiked(comment.comment_id,userID,comment.isliked)}}
+                                                    className={`w-[15px] h-[15px] mb-1`} src={`images/좋아요${comment.isliked ?? 2}.png`} alt="좋아요">
+                                                </img>
                                                 {/* 갤러리 댓글 좋아요 수 */}
                                                 <span>{comment.likes}</span>
                                             </div>
                                         </div>                             
-                                    </>
+                                    </div>
                                 )
                             })}
                         </div>
@@ -190,19 +223,13 @@ export default function ShowGalleryModal(props) {
                         <div className={`h-[7.5%] flex`}>
                             {/* 갤러리 댓글 인풋 영역 */}
                             <textarea
-                                // ref={inputRef}
+                                ref={inputRef}
                                 value={commentText}
                                 onKeyDown={ async (e)=> {
                                     if(e.key === "Enter" && e.shiftKey){
                                         console.log("줄바꿈 실행");
                                     }else if(e.key === "Enter"){
-                                        e.preventDefault();
-                                        // 댓글을 데이터베이스에 저장
-                                        await updateComment(galleryID,userID,commentText);
-                                        // 댓글 정보 최신화
-                                        await getComment();
-                                        // 댓글 입력 창 초기화
-                                        setCommentText("");
+                                        await sendComment(e);
                                     }
                                 }}
                                 onChange={(e)=>{setCommentText(e.target.value)}} 
@@ -210,7 +237,10 @@ export default function ShowGalleryModal(props) {
                                 placeholder="댓글을 입력해주세요.">
                             </textarea>
                             {/* 갤러리 댓글 게시버튼 */}
-                            <div 
+                            <div
+                                onClick={ async (e) => {
+                                    await sendComment(e);
+                                }} 
                                 className={`w-[15%] flex justify-center items-center text-blue-300 hover:text-blue-500 cursor-pointer transition-all duration-300`}>게시
                             </div>
                         </div>

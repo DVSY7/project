@@ -26,10 +26,10 @@ exports.gallery = async (req, res) => {
    u.name AS name
 FROM gallery g
 LEFT JOIN users u ON u.id = g.user_id
-WHERE g.is_public = 1 AND g.username LIKE ?
+WHERE g.is_public = 1 AND g.username LIKE ? OR u.name LIKE ?
 ORDER BY g.${sort}
 LIMIT ? OFFSET ?
-     `, [likeUser, limit, offset]);
+     `, [likeUser,likeUser, limit, offset]);
      console.log(sort);
 
         return res.status(200).json(rows);
@@ -42,16 +42,17 @@ LIMIT ? OFFSET ?
 // 갤러리 댓글 가져오기
 exports.comments = async (req, res) =>{
   try{
-    const {galleryID} = req.query;
+    const {galleryID, userID} = req.query;
     const [rows] = await db.query(`
-      SELECT u.name AS name, p.profile_image_url AS profile_image, c.comment, c.likes
+      SELECT u.name AS name, p.profile_image_url AS profile_image, c.comment, c.likes, c.updated_at, c.comment_id, cl.isliked
       FROM comments c
       JOIN profiles p ON p.user_id = c.user_id
       JOIN users u ON u.id = p.user_id
       JOIN gallery g ON g.id = c.gallery_id
+      LEFT JOIN comment_likes cl ON c.comment_id = cl.comment_id AND cl.user_id = ?
       WHERE g.id = ?
       ORDER BY c.created_at DESC
-      `,[galleryID]);
+      `,[userID,galleryID]);
     res.status(200).json(rows);
   }catch(error){
     res.status(500).json({message:"댓글 불러오기 실패:",error});

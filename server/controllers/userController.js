@@ -214,3 +214,38 @@ exports.updateComment = async (req, res) => {
     res.status(500).json({message:"댓글저장 실패:",error});
   }
 }
+
+// 댓글 좋아요처리
+exports.updateCommentLikes = async (req, res) => {
+  try{ 
+    // 필요한 정보를 가져옴 
+    const {commentID, userID, isliked} = req.body;
+
+    // 좋아요 증가처리
+    if(isliked){
+      await db.query(`
+        DELETE FROM comment_likes
+        WHERE comment_id = ? AND user_id = ? AND isliked = true
+        `,[commentID, userID]);
+      await db.query(`
+        UPDATE comments
+        SET likes = likes - 1
+        WHERE comment_id = ?
+      `,[commentID]);
+    // 좋아요 감소처리
+    }else{
+      await db.query(`
+        INSERT IGNORE INTO comment_likes(comment_id, user_id)
+        VALUES (?,?)
+      `, [commentID, userID]);
+      await db.query(`
+        UPDATE comments
+        SET likes = likes + 1
+        WHERE comment_id = ?
+      `,[commentID]);
+    }
+    res.status(200).json({messgae:"댓글 좋아요 처리 성공"});
+  }catch(error){
+    res.status(500).json({message:"댓글 좋아요 처리 오류",error});
+  }
+}

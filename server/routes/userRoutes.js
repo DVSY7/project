@@ -18,4 +18,7 @@ router.get(`/views`,userController.updateViews);
 // 게시글 댓글 저장 API
 router.post(`/gallery/updateComment`,userController.updateComment);
 
+// 게시글 댓글 좋아요처리 API
+router.post(`/gallery/updateCommentLikes`,userController.updateCommentLikes);
+
 module.exports = router;

@@ -132,7 +132,7 @@ export default function GalleryHover(props) {
                 </div>
                 {/* 위치정보 표시영역 */}
                 {clickedLocation && 
-                <div className={`ml-5 font-sans`}>{location}</div>}
+                <div className={`ml-5 pr-5 pt-2 font-sans  `}>{location}</div>}
             </div>
 
 
