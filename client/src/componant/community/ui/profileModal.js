@@ -52,7 +52,7 @@ export default function ProfileModal(props) {
     // 설정된 프로필 이름 변수
     const selectedProfile = profile[isChecked][0];
     const profileName = selectedProfile? selectedProfile.name : chattingList[0].name;
-    const friend_id = selectedProfile? selectedProfile.friend_id : "아이디없음";
+    const friend_id = selectedProfile? selectedProfile.friend_id : chattingList[0].friend_id;
     
     // 프로필 옵션 관리 변수
     const profileOptions = [
@@ -62,7 +62,7 @@ export default function ProfileModal(props) {
     // 포로필 옵션동작 함수
     const optionHandlers = {
         "정보보기": ()=>{console.log("정보보기 동작");
-            navigate(`/profile?username=${profileName}`);
+            navigate(`/profile?username=${profileName}&userID=${friend_id}`);
         },
         "친구추가": ()=>{console.log("친구추가 동작");
             handleChangeFunc();
