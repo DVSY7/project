@@ -159,6 +159,7 @@ export default function Gallery(props) {
                 galleryID = {item.id}
                 userID = {userID[0]?.id??0}
                 title={item.title}
+                name={name}
                 username={item.username}
                 profile_image={item.profile_image}
                 date={item.date}
@@ -183,6 +184,7 @@ export default function Gallery(props) {
                     friendList = {friendList}
                     blockedList = {blockedList}
                     chattingList = {[item]}
+                    userID = {userID[0]?.id??0}
                     setActionList = {setActionList}
                     profile_image = {item.profile_image}
                     MemberKey = {item.id}

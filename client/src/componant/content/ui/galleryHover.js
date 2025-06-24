@@ -8,7 +8,7 @@ export default function GalleryHover(props) {
     const {title,date,likes,isliked,views,profile_image, location,clickedGallery, setClickedGallery, index} = props;
 
     // 갤러리 데이터를 가져오기 위한 props
-    const {id,galleryID,userID, setGalleryImage, fetchGalleryImage} = props;
+    const {id,galleryID,userID, setGalleryImage, fetchGalleryImage, name} = props;
 
     // 프로필 모달을 띄우기 위한 props
     const {username, setClickedProfile} = props;
@@ -17,7 +17,7 @@ export default function GalleryHover(props) {
     const {setGalleryInfo} = props;
 
     // 공개 / 비공개 설정  상태관리 스테이트
-    const [clicked, setClicked] = useState(false);
+    const [clicked, setClicked] = useState(true);
     // 좋아요 토글 관리 스테이트
     const [clickedLike, setClickedLike] = useState(isliked[index]);
     // 좋아요 수 증가 스테이트
@@ -102,7 +102,9 @@ export default function GalleryHover(props) {
                     {/* 날짜 표기 영역 */}
                     <div className={`text-[1rem] ml-4`}>{dateOnly}</div>
                     {/* 비공개설정 UI 영역 */}
-                    <div className={`w-[40px] h-[13px] bg-gray-50 rounded-2xl mr-4 `}><div onClick={() => setClicked(clicked ? false : true)} className={`${clicked ? "translate-x-[63%] clicked-before" : ""} translate-y-[-50%] transition-transform duration-500 w-full h-full galleryhover-before`}></div></div>
+                    {username === name &&
+                        <div className={`w-[40px] h-[13px] bg-gray-50 rounded-2xl mr-4 `}><div onClick={() => setClicked(clicked ? false : true)} className={`${clicked ? "translate-x-[63%] clicked-before" : ""} translate-y-[-50%] transition-transform duration-500 w-full h-full galleryhover-before`}></div></div>
+                    }
                 </div>
                 {/* 도구탭 영역 */}
                 <div className={`flex justify-between `}>
@@ -128,7 +130,9 @@ export default function GalleryHover(props) {
                         
                     </div>
                     {/* 비공개 글자 영역 */}
-                    <div className={`mr-4 text-[0.75rem]`}>{clicked ? "공개" : "비공개"}</div>
+                    {username === name &&
+                        <div className={`mr-4 text-[0.75rem]`}>{clicked ? "공개" : "비공개"}</div>
+                    }
                 </div>
                 {/* 위치정보 표시영역 */}
                 {clickedLocation && 
@@ -158,7 +162,7 @@ export default function GalleryHover(props) {
                 <div className={`w-[42px] h-[42px] ml-3 mb-1`}>
                     <img
                     className={`w-[42px] h-[42px] rounded-[50%] cursor-pointer`} 
-                    onClick={()=>{setClickedProfile((prev) => { console.log(prev); return({...prev,[id]: true})})}}
+                    onClick={()=>{setClickedProfile((prev) => { console.log(prev); return({...prev,[galleryID]: true})})}}
                     alt="미니프로필" src={`${profile_image}`}></img>
                 </div>
                

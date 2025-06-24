@@ -33,5 +33,7 @@ router.get('/userID',fetchController.userID);
 router.get(`/isliked`,fetchController.isLiked);
 // likes API
 router.get(`/likes`,fetchController.likes);
+// searchModal API
+router.post(`/searchModal`,fetchController.searchModal);
 
 module.exports = router;

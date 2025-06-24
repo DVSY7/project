@@ -16,7 +16,7 @@ export default function ProfileModal(props) {
         friendList =[],
         chattingList =[], 
         profile_image,
-        setActionList, 
+        setActionList,
         requestComponent,
         userID
     } = props;
@@ -34,7 +34,7 @@ export default function ProfileModal(props) {
     }
 
     // 이미 친구인지 확인하는 변수
-    const isFriend = friendList.some(member => member.friend_id === MemberKey);
+    const isFriend = friendList.some(member => member.friend_id === MemberKey || (chattingList[0]?.friend_id?? 0));
 
     // 친구리스트 차단리스트 구분 변수
     const isChecked = blockedList.some(member => member.friend_id === MemberKey) 
@@ -51,7 +51,7 @@ export default function ProfileModal(props) {
 
     // 설정된 프로필 이름 변수
     const selectedProfile = profile[isChecked][0];
-    const profileName = selectedProfile? selectedProfile.name : "이름없음";
+    const profileName = selectedProfile? selectedProfile.name : chattingList[0].name;
     const friend_id = selectedProfile? selectedProfile.friend_id : "아이디없음";
     
     // 프로필 옵션 관리 변수
@@ -112,6 +112,7 @@ export default function ProfileModal(props) {
 
     // 프로필 클릭 시 랜더링
     if (!clickedProfile[MemberKey]) { return null };
+    console.log(clickedProfile);
     return (
         <>
             {/* 프로필 모달 전체영역 */}
@@ -145,7 +146,11 @@ export default function ProfileModal(props) {
                         {profileOptions.map((options,index)=>{
 
                             if(userID === MemberKey && index === 1 && options.option === "친구추가"){
-                                // 로그인한 유저가 친구추가를 할 수 없도록 설정
+                                // 로그인한 유저가 친구추가를 할 수 없도록 설정1
+                                return null;
+                            }
+                            if((userID === chattingList[0]?.friend_id?? 0) && options.option === "차단"){
+                                // 로그인한 유저가 차단을 할 수 없도록 설정2
                                 return null;
                             }
                             return(

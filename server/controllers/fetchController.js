@@ -375,3 +375,24 @@ exports.likes = async (req, res) =>{
     res.status(500).json({message: "좋아요 최신화 실패"})
   }
 }
+
+// 검색 모달 데이터 가져오기
+exports.searchModal = async ( req, res) =>{
+  try{
+    const {searchValue} = req.body;
+    const likeValue = `%${searchValue}%`
+
+    console.log(searchValue);
+    const [rows] = await db.query(`
+      SELECT p.profile_image_url AS profile_image, u.name, u.username
+      FROM users u
+      JOIN profiles p ON p.user_id = u.id
+      WHERE u.name LIKE ?
+    `,[likeValue]);
+    console.log(rows);
+    res.status(200).json(rows);
+  }catch(error){
+    console.log(error);
+    res.status(500).json({message:error});
+  }
+}

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { search } from "./utilities/search";
 import SearchCategory from "./ui/searchCategory";
+import { SearchModal } from "./ui/searchModal";
+import { fetchSearchModal } from "./api/search";
 
 export default function Header(props) {
 
@@ -37,6 +39,8 @@ export default function Header(props) {
     // 검색창 정보를 관리하는 스테이트
     const [searchValues, setSearchValues] = useState("");
 
+    // 검색창 모달 정보 상태관리
+    const [searchModalValues, setSearchModalValues] = useState([{name:""},{username:""},{profile_image:""}]);
 
     // 해쉬태그를 저장하는 스테이트
     const [searchHashtags, setSearchHashtags] = useState([]);
@@ -106,8 +110,12 @@ export default function Header(props) {
                         placeholder={`${searchImage ? "유저 검색 (아이콘을 눌러 전환)" : "태그 검색 (아이콘을 눌러 전환)"}`}
 
                         // 인풋란에 입력값이 들어올때 마다 상태 업데이트
-                        onChange={(e) => {
+                        onChange={async (e) => {
+                            // 검색 값 업데이트
                             setSearchValues(e.target.value);
+                            // 검색 모달 값 업데이트
+                            const searchModalInfo = await fetchSearchModal(e.target.value);
+                            setSearchModalValues(searchModalInfo);
                             console.log(e.target.value);
                         }}
                         // 엔터를 눌러서도 검색이 가능하도록 변경
@@ -126,7 +134,8 @@ export default function Header(props) {
                         }}
                     >
                     </input>
-
+                    {/* 검색 모달 */}
+                    {<SearchModal setSearchUser = {setSearchUser} setSearchValues={setSearchValues} searchModalValues={searchModalValues} searchValues={searchValues}/>}
                     <img
                         src="/images/검색.png"
                         alt="검색"
