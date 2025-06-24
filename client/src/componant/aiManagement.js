@@ -13,6 +13,7 @@ export default function AIManagement() {
   const [dayPlaceList, setDayPlaceList] = useState([]); // 일차별 장소 리스트
   const [debugPrompt, setDebugPrompt] = useState("");
   const [debugRawResponse, setDebugRawResponse] = useState("");
+  const [selectedDay, setSelectedDay] = useState(0); // 0: 1일차, 1: 2일차, ...
   // 버튼 반복
   const buttons = ["전체", "국내", "해외"];
   const GPTAPIKEY = process.env.REACT_APP_GPT_API_KEY;
@@ -283,6 +284,7 @@ export default function AIManagement() {
           </div>
         </div>
       )}
+
       {planResult && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-[600px] max-h-[80vh] overflow-y-auto">
@@ -300,6 +302,7 @@ export default function AIManagement() {
                   </div>
                 ))
               )}
+
             </div>
             <button
               onClick={() => setPlanResult(null)}
@@ -310,53 +313,61 @@ export default function AIManagement() {
           </div>
         </div>
       )}
+
+      
       {dayPlaceList.length > 0 && (
-        <div className="bg-black w-full max-w-3xl mx-auto mt-8">
-          {dayPlaceList.map((dayList, idx) => (
-            <div key={idx} className="mb-6 bg-white rounded shadow p-4">
-              <div className="font-bold text-blue-600 mb-2">{idx + 1}일차</div>
-              {dayList.length === 0 ? (
-                <div className="text-gray-400">추천 장소 없음</div>
-              ) : (
-                dayList.map((place, pidx) => (
-                  <div
-                    key={pidx}
-                    className="flex items-center gap-4 border-b py-2 last:border-b-0"
-                  >
-                    <img
-                      src={place.image || "/images/noimg.png"}
-                      alt="등록된 이미지"
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                    <div className="flex-1">
-                      <div className="font-bold text-lg">{place.name}</div>
-                      <div className="text-gray-600 text-sm">
-                        {place.address}
-                      </div>
-                      <div className="text-gray-500 text-xs">
-                        {place.category}
-                      </div>
-                      <div className="text-blue-800 text-xs">{place.phone}</div>
-                      <div className="text-xs mt-1">{place.description}</div>
-                      {(place.id || place.place_url) && (
-                        <a
-                          href={place.id ? `https://place.map.kakao.com/${place.id}` : place.place_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 underline text-xs mt-1 inline-block"
-                        >
-                          상세보기
-                        </a>
-                      )}
-                    </div>
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-10">
+        <div className="w-full h-full max-w-3xl mx-auto mt-8 overflow-y-auto">
+          {/* 일차별 탭 */}
+          <div className="flex gap-2 mb-4">
+            {dayPlaceList.map((_, idx) => (
+              <button
+                key={idx}
+                className={`px-4 py-2 rounded ${selectedDay === idx ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
+                onClick={() => setSelectedDay(idx)}
+              >
+                {idx + 1}일차
+              </button>
+            ))}
+          </div>
+          {/* 선택된 일차의 장소 리스트 */}
+          <div>
+            {dayPlaceList[selectedDay].length === 0 ? (
+              <div className="text-gray-400">추천 장소 없음</div>
+            ) : (
+              dayPlaceList[selectedDay].map((place, pidx) => (
+                <div key={pidx} className="flex items-center gap-4 border-b py-2 last:border-b-0 bg-white">
+                  <img src={place.image || "/images/noimg.png"} alt="등록된 이미지" className="w-16 h-16 object-cover rounded" />
+                  <div className="flex-1">
+                    <div className="font-bold text-lg">{place.name}</div>
+                    <div className="text-gray-600 text-sm">{place.address}</div>
+                    <div className="text-gray-500 text-xs">{place.category}</div>
+                    <div className="text-blue-800 text-xs">{place.phone}</div>
+                    <div className="text-xs mt-1">{place.description}</div>
+                    {(place.id || place.place_url) && (
+                      <a
+                        href={place.id ? `https://place.map.kakao.com/${place.id}` : place.place_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline text-xs mt-1 inline-block"
+                      >
+                        상세보기
+                      </a>
+                    )}
                   </div>
-                ))
-              )}
-            </div>
-          ))}
+                  {/* 수정/삭제 버튼 예시 */}
+                  <div className="flex flex-col gap-1 ml-2">
+                    <button className="text-xs text-blue-600">수정</button>
+                    <button className="text-xs text-red-500">삭제</button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
         </div>
       )}
-      {debugPrompt && (
+      {/* {debugPrompt && (
         <div className="bg-gray-100 p-4 my-4 rounded text-xs">
           <div className="font-bold mb-2">[AI 프롬프트]</div>
           <pre>{debugPrompt}</pre>
@@ -367,7 +378,7 @@ export default function AIManagement() {
           <div className="font-bold mb-2">[AI 원본 응답]</div>
           <pre>{debugRawResponse}</pre>
         </div>
-      )}
+      )} */}
     </>
   );
 }
