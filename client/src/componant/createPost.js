@@ -1,16 +1,37 @@
 import { useState } from "react";
 import Menu from "./menu";
+import exifr from "exifr";
 
 export default function CreatePost() {
   const [isOpen, setIsOpen] = useState(true);
   const [selectedImages, setSelectedImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // 이미지별 메타데이터 배열
+  const [imageMeta, setImageMeta] = useState([]);
+  const [imageAddress, setImageAddress] = useState([]);
 
   const handleClose = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) setIsOpen(false);
   };
 
-  const handleImageSelect = (event) => {
+  async function getAddressFromCoords(lat, lng) {
+    const res = await fetch(
+      `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`,
+      {
+        headers: {
+          Authorization: 'KakaoAK e3edda565841b375880733ac67c7e2f8'
+        }
+      }
+    );
+    const data = await res.json();
+    if (data.documents && data.documents.length > 0) {
+      return data.documents[0].address.address_name;
+    }
+    return null;
+  }
+
+  const handleImageSelect = async (event) => {
     // 사용자가 선택한 파일들을 가져와서 배열로 변환
     // event.target.files는 FileList 겍체이기 때문에 배열로 바꿔줌
     const files = Array.from(event.target.files);
@@ -20,21 +41,22 @@ export default function CreatePost() {
       return new Promise((resolve) => {
         // 브라우저 내장 객체 FileReader 생성
         const reader = new FileReader();
-
-        // 파일이 성공적으로 읽혔을 때 실행되는 콜백
-        // 읽은 결과(Base64 문자열)를 resolve로 반환 
-        reader.onload = (e) => resolve(e.target.result);
-
-        // 파일을 Base64 형식의 URL로 읽기 시작
+        reader.onload = async (e) => {
+          // exifr로 위치정보 추출
+          const gps = await exifr.gps(file);
+          let address = null;
+          if (gps && gps.latitude && gps.longitude) {
+            address = await getAddressFromCoords(gps.latitude, gps.longitude);
+          }
+          resolve({ src: e.target.result, gps, address });
+        };
         reader.readAsDataURL(file);
       });
     });
-    // 모든 파일 읽기가 끝나면 실행되는 Promise.all
-    // readers 배열의 모든 Promise가 완료되면 then 실행
     Promise.all(readers).then((images) => {
-      // 이전에 선택된 이미지들(prev)에 새 이미지들(images)을 추가해서 상태 업데이트
-      // setSelectedImages는 상태를 배열로 관리하고 있다고 가정
-      setSelectedImages((prev) => [...prev, ...images]);
+      setSelectedImages((prev) => [...prev, ...images.map(img => img.src)]);
+      setImageMeta((prev) => [...prev, ...images.map(img => img.gps)]);
+      setImageAddress((prev) => [...prev, ...images.map(img => img.address)]);
     });
   };
 
@@ -91,17 +113,33 @@ export default function CreatePost() {
                       <div className="flex gap-2 items-center">
                         {/* 썸네일들 */}
                         {selectedImages.map((img, index) => (
-                          <img
-                            key={index}
-                            src={img}
-                            alt={`썸네일 ${index + 1}`}
-                            className={`w-12 h-12 object-cover rounded cursor-pointer ${
-                              currentImageIndex === index ? 'border-2 border-blue-500' : ''
-                            }`}
-                            onClick={() => setCurrentImageIndex(index)}
-                          />
+                          <div key={index} className="relative w-12 h-12">
+                            <img
+                              src={img}
+                              alt={`썸네일 ${index + 1}`}
+                              className={`w-12 h-12 object-cover rounded cursor-pointer ${currentImageIndex === index ? 'border-2 border-blue-500' : ''}`}
+                              onClick={() => setCurrentImageIndex(index)}
+                            />
+                            {/* X 버튼 */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation(); // 썸네일 클릭 이벤트와 겹치지 않게
+                                setSelectedImages(prev => prev.filter((_, i) => i !== index));
+                                setImageMeta(prev => prev.filter((_, i) => i !== index));
+                                setImageAddress(prev => prev.filter((_, i) => i !== index));
+                                // 삭제 후 인덱스 조정
+                                if (currentImageIndex === index) setCurrentImageIndex(0);
+                                else if (currentImageIndex > index) setCurrentImageIndex(currentImageIndex - 1);
+                              }}
+                              className="absolute top-0 right-0 bg-black bg-opacity-60 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-500"
+                              style={{transform: 'translate(40%,-40%)'}}
+                              tabIndex={-1}
+                            >
+                              ×
+                            </button>
+                          </div>
                         ))}
-                    
+                        
                         {/* + 버튼 */}
                         <div 
                           className="w-12 h-12 bg-blue-400 text-white text-2xl rounded flex items-center justify-center cursor-pointer hover:bg-blue-500"
@@ -169,8 +207,10 @@ export default function CreatePost() {
                 </div>
               </div>
             </div>
-            {/* 갤러리 댓글 영역 */}
-            <div className={`h-[37%] overflow-y-auto hide-scrollbar`}></div>
+            {/* 갤러리 위치 영역 */}
+            <div className={`h-[37%] overflow-y-auto hide-scrollbar`}>
+              위치: {imageAddress[currentImageIndex] ? imageAddress[currentImageIndex] : "위치 정보 없음"}
+            </div>
             {/* 갤러리 아이콘 영역 */}
             <div
               className={`h-[13%] pl-4 font-sans font-bold text-[0.8rem] border-b-[2px] border-gray-200`}
