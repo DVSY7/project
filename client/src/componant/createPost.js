@@ -3,26 +3,38 @@ import Menu from "./menu";
 
 export default function CreatePost() {
   const [isOpen, setIsOpen] = useState(true);
-  const [selectedImage, setSelectedImage] = useState([]);
-  const [severalImages, setSeveralImages] = useState(null);
-  const [,] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleClose = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) setIsOpen(false);
   };
 
   const handleImageSelect = (event) => {
+    // 사용자가 선택한 파일들을 가져와서 배열로 변환
+    // event.target.files는 FileList 겍체이기 때문에 배열로 바꿔줌
     const files = Array.from(event.target.files);
+
+    // 각 파일을 FileReader로 읽어들이기 위한 Promise 배열 생성
     const readers = files.map((file) => {
       return new Promise((resolve) => {
+        // 브라우저 내장 객체 FileReader 생성
         const reader = new FileReader();
+
+        // 파일이 성공적으로 읽혔을 때 실행되는 콜백
+        // 읽은 결과(Base64 문자열)를 resolve로 반환 
         reader.onload = (e) => resolve(e.target.result);
+
+        // 파일을 Base64 형식의 URL로 읽기 시작
         reader.readAsDataURL(file);
       });
     });
+    // 모든 파일 읽기가 끝나면 실행되는 Promise.all
+    // readers 배열의 모든 Promise가 완료되면 then 실행
     Promise.all(readers).then((images) => {
-      setSelectedImage((prev) => [...prev, ...images]);
-      console.log(selectedImage)
+      // 이전에 선택된 이미지들(prev)에 새 이미지들(images)을 추가해서 상태 업데이트
+      // setSelectedImages는 상태를 배열로 관리하고 있다고 가정
+      setSelectedImages((prev) => [...prev, ...images]);
     });
   };
 
@@ -60,47 +72,55 @@ export default function CreatePost() {
           <div className={`relative w-[60%] rounded-l-md`}>
             {/* 갤러리 이미지 */}
             <div className="bg-blue-100 w-full h-full">
-              {selectedImage.length === 0 ? (
+              {selectedImages.length === 0 ? (
                 <button className="bg-red-400" onClick={triggerFileInput}>
                   이미지를 선택하세요
                 </button>
               ) : (
                 <>
+                  {/* 메인 이미지 표시 */}
                   <img
-                    src={selectedImage}
+                    src={selectedImages[currentImageIndex]}
                     alt="선택된 이미지"
-                    className="relative w-full h-full object-cover rounded-1-md"
+                    className="w-full h-full object-cover rounded-l-md"
                   />
-                  <div
-                    className="absolute bottom-5 right-5 bg-white z-10"
-                    onClick={() => setSeveralImages(true)}
-                  >
-                    안녕
-                  </div>
-                  {severalImages && (
-                    <div className="bg-red-300 absolute bottom-16 right-5 h-36 p-2 flex items-center">
-                      <div className="w-32 h-32">
-                        <img
-                          src={selectedImage}
-                          className="w-full h-full object-cover"
-                        />
+                  
+                  {/* 이미지가 여러 장일 때 썸네일과 + 버튼 표시 */}
+                  {selectedImages.length > 0 && (
+                    <div className="absolute bottom-5 right-5 bg-white rounded-lg p-2 shadow-lg">
+                      <div className="flex gap-2 items-center">
+                        {/* 썸네일들 */}
+                        {selectedImages.map((img, index) => (
+                          <img
+                            key={index}
+                            src={img}
+                            alt={`썸네일 ${index + 1}`}
+                            className={`w-12 h-12 object-cover rounded cursor-pointer ${
+                              currentImageIndex === index ? 'border-2 border-blue-500' : ''
+                            }`}
+                            onClick={() => setCurrentImageIndex(index)}
+                          />
+                        ))}
+                    
+                        {/* + 버튼 */}
+                        <div 
+                          className="w-12 h-12 bg-blue-400 text-white text-2xl rounded flex items-center justify-center cursor-pointer hover:bg-blue-500"
+                          onClick={triggerFileInput}
+                        >
+                          +
+                        </div>
                       </div>
-                      <div className="bg-blue-400 text-3xl" onClick={triggerFileInput}>+</div>
-                      <input
-                        type="file"
-                        id="imageInput"
-                        accept="image/*"
-                        onChange={handleImageSelect}
-                        style={{ display: "none" }}
-                      />
                     </div>
                   )}
                 </>
               )}
+              
+              {/* 파일 입력 (하나만 유지) */}
               <input
                 type="file"
                 id="imageInput"
                 accept="image/*"
+                multiple
                 onChange={handleImageSelect}
                 style={{ display: "none" }}
               />
