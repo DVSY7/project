@@ -26,10 +26,10 @@ exports.gallery = async (req, res) => {
    u.name AS name
 FROM gallery g
 LEFT JOIN users u ON u.id = g.user_id
-WHERE g.is_public = 1 AND g.username LIKE ? OR u.name LIKE ?
+WHERE g.is_public = 1 AND g.username LIKE ? OR u.name LIKE ? OR u.id LIKE ?
 ORDER BY g.${sort}
 LIMIT ? OFFSET ?
-     `, [likeUser,likeUser, limit, offset]);
+     `, [likeUser,likeUser,likeUser, limit, offset]);
      console.log(sort);
 
         return res.status(200).json(rows);

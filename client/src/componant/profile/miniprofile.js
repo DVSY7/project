@@ -6,7 +6,10 @@ import { useLocation } from "react-router-dom";
 
 
 
-export default function Miniprofile() {
+export default function Miniprofile(props) {
+
+    const {setSearchUser, name, id, setProfileInfo} = props;
+
     // 플렉스 요소 센터 정렬
     const flexCenter = "justify-center items-center";
 
@@ -14,20 +17,25 @@ export default function Miniprofile() {
     const location = useLocation();
 
     // 프로필의 유저이름 상태관리 스테이트
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState(name);
+    const [userID, setUserID] = useState(id[0].id);
+
+    // 페이지의 url에 있는 정보를 가져오는 코드
     useEffect(()=>{
         const searchParams = new URLSearchParams(location.search);
-        const usernameFromQuery = searchParams.get("username");
-
+        const usernameFromQuery = searchParams.get("username")?? username;
+        const userIDFromQuery = searchParams.get("userID")?? userID;
         if(usernameFromQuery){
             setUsername(usernameFromQuery);
+            setUserID(userIDFromQuery);
+            setProfileInfo({name:usernameFromQuery,id:userIDFromQuery});
         }else{
             const getUsername = async ()=>{
                 await checkedToken(setUsername);
             };
            getUsername();
         }
-    },[location.search])
+    },[location.search,name,id])
 
     return (
         <>

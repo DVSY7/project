@@ -12,6 +12,8 @@ export default function Contents(props) {
     const [sort, setSort] = useState("최신순");
     // 검색된 유저
     const [searchUser, setSearchUser] = useState("");
+    // 프로필 페이지 유저정보 상태관리
+    const [profileInfo, setProfileInfo] = useState({name:name, id:userID[0].id});
 
     useEffect(()=>{
         console.log(sort+1);
@@ -30,13 +32,22 @@ export default function Contents(props) {
 
                 {/* 프로필 페이지로 접근 시 */}
                 <div className={`${src === "profile" ? "sm:flex" : "sm:hidden"} sm:flex-col hidden sm:w-[35%]`}>
-                    <div className={`h-[35%] 2xl:w-full w-[400px] flex justify-center`}><Miniprofile searchName = {searchName}/></div>
+                    <div className={`h-[35%] 2xl:w-full w-[400px] flex justify-center`}>
+                        <Miniprofile 
+                            name={name} 
+                            id={userID} 
+                            setSearchUser={setSearchUser}
+                            setProfileInfo={setProfileInfo}
+                        />
+                    </div>
                     <div className={`flex justify-center items-end h-[65%] 2xl:w-full w-[400px]`}><BucketList/></div>
                 </div>
                 <Gallery 
                 src={src}
                 sort={sort}
                 searchUser={searchUser}
+                setSearchUser={setSearchUser}
+                profileInfo = {profileInfo}
                 name = {name}
                 userID = {userID}
                 />

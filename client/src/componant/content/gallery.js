@@ -11,7 +11,7 @@ import { fetchList } from '../community/api/fetchListAPI';
 import { fetchIsLiked } from './api/likes';
 
 export default function Gallery(props) {
-  const { src, sort,searchUser,name,userID} = props;
+  const { src, sort,searchUser,setSearchUser,profileInfo,name,userID} = props;
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -36,6 +36,7 @@ export default function Gallery(props) {
   const [isliked, setIsLiked] = useState();
 
   const PAGE_SIZE = 15;
+
 
   // 갤러리 프로필 이미지 클릭 시 상태관리
   const [clickedProfile, setClickedProfile] = useState({});
@@ -71,6 +72,7 @@ export default function Gallery(props) {
       }
     };
     loadPage();
+    console.log("profileUserInfo",profileInfo);
   }, [page,sort,searchUser]);
 
   // 무한스크롤: observer가 보이고, 더 가져올 게 있으면 page++

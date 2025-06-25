@@ -1,6 +1,6 @@
 // client/src/componant/community/ui/profileModal.js
 import { useNavigate } from "react-router-dom";
-import {useState,useRef} from "react";
+import {useState,useRef,useEffect} from "react";
 import { CommunityButtons } from "./button";
 
 
@@ -74,6 +74,11 @@ export default function ProfileModal(props) {
             handleChangeFunc();
         }
     }
+
+    // 디버그를 위한 코드
+    useEffect(()=>{
+       console.log(selectedProfile); 
+    },[])
 
 
     // 클릭한 버튼에 따라 동작하는 함수
