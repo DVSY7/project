@@ -9,6 +9,7 @@ import { galleryImageFetch } from './api/galleryImage';
 import ProfileModal from '../community/ui/profileModal';
 import { fetchList } from '../community/api/fetchListAPI';
 import { fetchIsLiked } from './api/likes';
+import { useSearchParams } from 'react-router-dom';
 
 export default function Gallery(props) {
   const { src, sort,searchUser,setSearchUser,profileInfo,name,userID} = props;
@@ -34,6 +35,8 @@ export default function Gallery(props) {
   const [blockedList, setBlockedList] = useState([]);
   // 좋아요 토글관리 스테이트
   const [isliked, setIsLiked] = useState();
+  // url에 있는 유저 아이디
+  const [searchParams] = useSearchParams();
 
   const PAGE_SIZE = 15;
 
@@ -52,8 +55,16 @@ export default function Gallery(props) {
 
   // 데이터 확인을 위한 코드
   useEffect(()=>{
-    console.log({galleryInfo:galleryInfo});
-  },[galleryInfo]);
+    console.log({profileInfo:profileInfo});
+  },[profileInfo]);
+
+  useEffect(()=>{
+    if(src === "profile" && searchParams.get("userID")){
+      setSearchUser(searchParams.get("userID"));
+    }else if(src === "profile"){
+      setSearchUser(profileInfo.name);
+    }
+  })
 
   // 정렬 기준이 바뀔 때 상태 초기화
   useEffect(() => {
@@ -130,6 +141,9 @@ export default function Gallery(props) {
       h-full w-full sm:overflow-y-auto sm:p-4 sm:pr-8
       ${src === "profile" ? "2xl:w-[65%] w-[800px]" : ""}
     `}>
+      {items.length === 0 &&
+      <div className={`h-full w-full flex justify-center items-center border-[1px] border-gray-200 rounded-2xl bg-gray-50`}>게시글이 존재하지 않습니다.</div>
+      }
       {/* PC Masonry */}
       <Masonry
         breakpointCols={breakpointColumnsObj}

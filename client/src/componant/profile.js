@@ -5,6 +5,7 @@ import Menu from "./menu";
 import {useEffect, useState} from 'react';
 import { checkedToken } from "./function/checkedToken";
 import { fetchUserID } from "./function/fetchUserID";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export default function Profile() {
     // 로그인한 유저정보 관리 스테이트
@@ -14,14 +15,17 @@ export default function Profile() {
       const [name, setName] = useState("");
       // 유저 ID 
       const [userID, setUserID] = useState([{id:0}]);
+      // url 정보
+      const [searchParams,setSearchParams] = useSearchParams();
     
       // 로그인 성공 시 토큰 검증
       useEffect(()=>{
-        const getUsername = async ()=>{
+          const getUsername = async ()=>{
           await checkedToken(setUsername,setName);
         }
         getUsername();
       },[])
+
       useEffect(()=>{
         const getUserID = async()=>{
           if(name){
@@ -31,6 +35,24 @@ export default function Profile() {
         };
         getUserID();
       },[name])
+
+      useEffect(()=>{
+        if(!searchParams.get("userID") && !searchParams.get("username") && username && userID[0].id !== 0){
+          searchParams.set("username",username);
+          searchParams.set("userID",userID[0].id);
+          setSearchParams(searchParams);
+        }
+      },[username,userID])
+
+      useEffect(()=>{
+        const reFresh = sessionStorage.getItem("Refresh");
+        if(!reFresh){
+          window.location.reload();
+          sessionStorage.setItem("Refresh",true);
+        }else{
+          sessionStorage.removeItem("Refresh");
+        }
+      },[])
 
     return (
         <>

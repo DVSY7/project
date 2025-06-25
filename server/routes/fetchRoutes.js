@@ -35,5 +35,7 @@ router.get(`/isliked`,fetchController.isLiked);
 router.get(`/likes`,fetchController.likes);
 // searchModal API
 router.post(`/searchModal`,fetchController.searchModal);
+// miniProfile API
+router.post(`/profile/miniProfile`,fetchController.miniProfile);
 
 module.exports = router;

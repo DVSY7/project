@@ -387,12 +387,28 @@ exports.searchModal = async ( req, res) =>{
       SELECT p.profile_image_url AS profile_image, u.name, u.username
       FROM users u
       JOIN profiles p ON p.user_id = u.id
-      WHERE u.name LIKE ?
-    `,[likeValue]);
+      WHERE u.name LIKE ? OR u.username LIKE ?
+    `,[likeValue,likeValue]);
     console.log(rows);
     res.status(200).json(rows);
   }catch(error){
     console.log(error);
     res.status(500).json({message:error});
+  }
+}
+
+// 미니프로필 데이터 가져오기
+exports.miniProfile = async ( req, res ) => {
+  try{
+    const {userID} = req.body;
+    const [rows] = await db.query(`
+      SELECT
+       (SELECT COUNT(*) FROM gallery WHERE user_id = ?) AS gallery_count,
+       (SELECT profile_image_url FROM profiles WHERE user_id = ?) AS profile_image
+    `,[userID,userID]);
+    console.log(rows);
+    res.status(200).json(rows);
+  }catch(error){
+    res.status(500);
   }
 }
