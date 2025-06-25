@@ -54,10 +54,17 @@ export default function CreatePost() {
       });
     });
     Promise.all(readers).then((images) => {
+
+      if(images.some(img => !img.address)){
+        window.alert("위치 정보가 존재하지 않습니다. 위치 정보가 있는 사진만 첨부할 수 있습니다.")
+        return;
+      };
       setSelectedImages((prev) => [...prev, ...images.map(img => img.src)]);
       setImageMeta((prev) => [...prev, ...images.map(img => img.gps)]);
       setImageAddress((prev) => [...prev, ...images.map(img => img.address)]);
     });
+
+   
   };
 
   const triggerFileInput = () => {
