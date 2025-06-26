@@ -1,10 +1,11 @@
 import "../../App.css";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { search } from "./utilities/search";
 import SearchCategory from "./ui/searchCategory";
 import { SearchModal } from "./ui/searchModal";
 import { fetchSearchModal } from "./api/search";
+import { fetchUserInfo } from "../community/api/fetchUserInfo";
 
 export default function Header(props) {
 
@@ -14,7 +15,13 @@ export default function Header(props) {
     const button_hover = "hover:bg-gray-200";
 
     // 토큰에서 검증된 유저이름
-    const { username,setSort,setSearchUser } = props;
+    const { name,username,setSort,setSearchUser,src } = props;
+
+    // 로그인한 유저 정보
+    const [userInfo, setUserInfo] = useState([]);
+
+    // url 파라미터 조작
+    const [searchParams, setSearchParams] = useSearchParams();
 
     // 로그인 로그아웃 상태관리 스테이트
     const [Token, setToken] = useState(null);
@@ -26,7 +33,6 @@ export default function Header(props) {
     const [searchCategory, setSearchCategory] = useState(false);
     // 검색 옵션선택 상태관리 스테이트
     const [selectedCategory, setSelectedCategory] = useState("최신순");
-
 
     // 컴포넌트가 마운트될 때 토큰 가져오기
     useEffect(() => {
@@ -84,7 +90,17 @@ export default function Header(props) {
         search(searchHashtags);
     }, [searchHashtags]);
 
-
+    useEffect(()=>{
+        const getUserInfo = async (name)=>{
+            const res = await fetchUserInfo(name);
+            if(res){
+                setUserInfo(res);
+            }
+        }
+            if(name){
+                getUserInfo(name);
+            }
+    },[name])
 
     return (
         <>
@@ -97,7 +113,7 @@ export default function Header(props) {
                             alt="검색창 이미지"
                             className={"w-[25px] h-[25px] z-10 relative cursor-pointer opacity-50 hover:opacity-100  transition-o duration-500"}
                             onClick={() => { searchImage ? setSearchImage(false) : setSearchImage(true); console.log(searchImage) }}
-                        ></img>
+                        />
                     </div>
 
                     {/* 검색창 영역 */}
@@ -116,11 +132,11 @@ export default function Header(props) {
                             // 검색 모달 값 업데이트
                             const searchModalInfo = await fetchSearchModal(e.target.value);
                             setSearchModalValues(searchModalInfo);
-                            console.log(e.target.value);
+                            console.log("검색된 유저",searchModalInfo);
                         }}
                         // 엔터를 눌러서도 검색이 가능하도록 변경
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
+                            if (e.key === 'Enter' && src !== "/profile") {
                                 if (!searchImage) {
                                     handleTags(searchValues);
                                     setSearchValues("");
@@ -130,6 +146,8 @@ export default function Header(props) {
                                     setSearchUser(searchValues);
                                     setSearchValues("");
                                 }
+                            }else if(e.key === "Enter" && src === "/profile") {
+                                alert("프로필의 경우 하나의 대상만 선택해주세요.")
                             }
                         }}
                     >
@@ -159,7 +177,21 @@ export default function Header(props) {
                     <div className={`${item_center} ${Token !== null ? "hidden" : ""} h-full w-[120px] rounded-full font-sans shadow-lg border-[1px] border-gray-400 ${button_hover}`}><Link to="/signup">회원가입</Link></div>
 
                     {/* 로그인 시 요소 */}
-                    <div className={`flex items-center ${Token === null ? "hidden" : ""} w-[220px] text-[20px]`}>Welcome Mate <p className={`mx-1`}>:</p><p className={`text-center font-sans font-bold block`}>{username}</p></div>
+                    <div className={`flex items-center ${Token === null ? "hidden" : ""} w-[300px] text-[20px] ml-auto mr-14`}>
+                        <p 
+                            onClick={()=>{
+                                console.log("함수가 동작합니다.")
+                                if(src === "/profile"){
+                                    searchParams.set("username",userInfo[0].name);
+                                    searchParams.set("userID",userInfo[0].friend_id);
+                                    setSearchParams(searchParams);
+                                }
+                            }}
+                            className={` flex justify-end items-center text-end font-sans font-bold ml-auto cursor-pointer`}
+                        >
+                            <img src={`${userInfo[0]?.profile_image_url?? "images/미니프로필.png"}`} alt="미니프로필" className={`w-[40px] h-[40px] mr-2 rounded-[50%]`} />{username}
+                        </p>
+                    </div>
 
                 </div>
                 <div className={"hidden sm:flex sm:items-end sm:ml-12 sm:w-full max-w-[1920px] h-[30%] max-h-[30%]"}>
@@ -180,8 +212,7 @@ export default function Header(props) {
                                         src="/images/엑스표시.png"
                                         alt="엑스표시"
                                         className={`w-4 h-4 ml-1 opacity-50`}
-                                    >
-                                    </img>
+                                    />
                                 </div>
                             )
                         })}

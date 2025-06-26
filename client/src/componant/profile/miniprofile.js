@@ -61,13 +61,13 @@ export default function Miniprofile(props) {
                 <div className={`flex w-full h-[80%]`}>
                     {/* 프로필/달성률 */}
                     <div className={`flex flex-col ${flexCenter} h-full w-[30%]`}>
-                        <img src={`${miniProfileUserInfo[0]?.profile_image??"images/미니프로필.png"}`} alt="미니프로필" className={`w-[4.5rem] h-[4.5rem] rounded-[50%]`}></img>
-                        <div className={`flex ${flexCenter}h-6 w-16 mt-6 bg-red-200 text-[0.9rem]`}>달성률</div>
+                        <img src={`${miniProfileUserInfo[0]?.profile_image??"images/미니프로필.png"}`} alt="미니프로필" className={`w-[4.5rem] h-[4.5rem] rounded-[50%] mb-6 mt-2`}></img>
+                        <div className={`flex ${flexCenter} h-6 w-16 mt-6 bg-blue-400 text-white text-[0.9rem] rounded-md`}>달성률</div>
                     </div>
                     {/* 닉네임/별점/퍼센트 */}
                     <div className={`flex flex-col justify-evenly h-full w-[70%]`}>
-                        <div className={`text-[1.5rem] font-sans font-bold`}>{username}</div>
-                        <div className={`text-[1.5rem] font-sans font-bold text-yellow-400`}><span className={`mb-2 inline-block`}>★★★★★</span><span className={`ml-4 text-black font-sans font-normal text-[1rem]`}>4.99</span></div>
+                        <div className={`flex text-[1.5rem] font-sans font-bold`}>{username}</div>
+                        <div className={`text-[1.5rem] font-sans font-bold text-yellow-400`}><span className={`mb-2 inline-block`}>★★★★★</span><span className={`ml-4 text-black font-sans font-blod text-[1rem]`}>4.99</span></div>
                         <div className={`flex justify-start items-center`}>
                         <div className={`flex justify-between items-center w-32 h-4 bg-gray-300 rounded-lg`}>
                             <div className={`w-[50%] h-full rounded-lg bg-green-500`}></div>
@@ -78,9 +78,9 @@ export default function Miniprofile(props) {
                 </div>
                 {/* 리스트/게시글/찜 */}
                 <div className={`flex justify-start items-center font-sans w-full h-[20%]`}>
-                    <div className={`ml-9`}>리스트<span className={`mx-4`}>14</span>|</div>
+                    <div className={`ml-9`}>리스트<span className={`mx-4`}>0</span>|</div>
                     <div className={`ml-4`}>게시글<span className={`mx-4`}>{miniProfileUserInfo[0]?.gallery_count?? 0}</span>|</div>
-                    <div className={`ml-4`}>찜<span className={`2xl:m-4 `}>32</span></div>
+                    <div className={`ml-4`}>찜<span className={`2xl:m-4 `}>0</span></div>
                 </div>
             </div>
 

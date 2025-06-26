@@ -314,6 +314,8 @@ exports.userInfo = async (req, res) =>{
       WHERE u.username = ?
       `,[userName]);
 
+      console.log(rows, "넘어온 아이디",userName);
+
     return res.status(200).json(rows);
   }catch(error){
     return res.status(500).json({message:"유저정보 요청 실패:",error});
@@ -384,7 +386,7 @@ exports.searchModal = async ( req, res) =>{
 
     console.log(searchValue);
     const [rows] = await db.query(`
-      SELECT p.profile_image_url AS profile_image, u.name, u.username
+      SELECT p.profile_image_url AS profile_image, u.name, u.username, u.id AS userID
       FROM users u
       JOIN profiles p ON p.user_id = u.id
       WHERE u.name LIKE ? OR u.username LIKE ?

@@ -23,7 +23,9 @@ export default function Contents(props) {
         <>
             {/* 검색창 */}
             <Header 
+                src = {window.location.pathname}
                 username = {username}
+                name = {name}
                 setSort={setSort}
                 setSearchUser={setSearchUser}
             />

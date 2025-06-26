@@ -61,10 +61,11 @@ export default function Gallery(props) {
   useEffect(()=>{
     if(src === "profile" && searchParams.get("userID")){
       setSearchUser(searchParams.get("userID"));
+      console.log("현재 검색중인 유저",searchUser);
     }else if(src === "profile"){
       setSearchUser(profileInfo.name);
     }
-  })
+  },[profileInfo,searchUser])
 
   // 정렬 기준이 바뀔 때 상태 초기화
   useEffect(() => {
@@ -74,15 +75,20 @@ export default function Gallery(props) {
   }, [sort, searchUser]);
 
   // 페이지 바뀔 때마다 데이터 가져오기
-  useEffect(() => {
-    const loadPage = async () => {
+  const loadPage = async () => {
       const newItems = await galleryfetch(page, PAGE_SIZE, sort, searchUser);
       setItems(prev => [...prev, ...newItems]);
       if (newItems.length < PAGE_SIZE) {
         setHasMore(false);
       }
     };
-    loadPage();
+  useEffect(() => {
+    if(src==="home"){
+      loadPage();
+    }else if(src === "profile" && profileInfo.id !== 0){
+      loadPage();
+      console.log("profile Start");
+    }
     console.log("profileUserInfo",profileInfo);
   }, [page,sort,searchUser]);
 
@@ -135,6 +141,8 @@ export default function Gallery(props) {
       fetchAllIsLiked();
     }
   },[items, userID]);
+
+  if(Object.keys(items) > 0)return;
 
   return (
     <div className={`
