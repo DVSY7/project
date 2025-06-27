@@ -1,7 +1,7 @@
 import { useState} from "react";
 
 
-export default function TravelstyleStep({onBack, onNext}){
+export default function TravelstyleStep({onBack, onNext, onClose}){
 
     const options = ["체험 액티비티", "SNS 핫플레이스", "자연과 함께", "유명 관광지는 필수", "여유롭게 힐링", "문화 예술 역사", "여행지 느김 물씬", "쇼핑은 열정적으로", "관광보다 먹방"]    
 
@@ -22,14 +22,38 @@ export default function TravelstyleStep({onBack, onNext}){
     return(
         <div className="bg-white rounded-lg w-[45%] h-[80%] max-w-full relative flex items-center justify-center">
             <div className="absolute flex flex-col items-center w-[87%] h-full py-16 justify-between">
-                <div className="basis-2/6 w-full flex flex-col items-center">
-                <button onClick={onBack} className='flex text-2xl py-4 self-start '>←</button>
+                <div className="basis-1/8 w-full flex flex-col items-center">
+                    <div className="flex justify-between w-full">
+                        <button onClick={onBack} className="text-2xl">
+                            ←
+                        </button>
+                        {/* x닫기 버튼 */}
+                        <button
+                            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors duration-200"
+                            onClick={onClose}
+                        >
+                            <svg
+                                className="w-5 h-5 text-gray-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div className="basis-3/8 w-full flex flex-col items-center">
                     <div className="flex text-6xl">📸</div>
-    
                     <div className="flex-1 flex text-3xl items-end">내가 선호하는 여행 스타일은?</div>
                     <div className="flex-1 flex justify-center items-end">이번 여행의 동반자를 선택해주세요</div>
                 </div>
-                <div className="basis-3/6 w-full flex justify-center mt-8">
+                <div className="basis-3/8 w-full flex justify-center">
                     <div className="w-[75%] h-full">
                         <div className="grid grid-cols-3 gap-2">
                             {options.map(opt => (
@@ -38,7 +62,7 @@ export default function TravelstyleStep({onBack, onNext}){
                         </div>
                     </div>
                 </div>
-                <div className="basis-1/6 w-full flex flex-col justify-end">
+                <div className="basis-1/8 w-full flex flex-col justify-end">
                     <button
                     onClick={handleNext}
                     disabled={selected.length === 0}

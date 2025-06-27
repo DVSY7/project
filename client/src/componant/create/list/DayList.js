@@ -1,3 +1,5 @@
+// client/DayList.js
+
 import KakaoMap from "./KakaoMap";
 import ListAddPhoto from "./ListAddPhoto";
 import { useState } from "react";
@@ -44,20 +46,27 @@ const DraggableDayButton = ({ day, index, moveDay, isActive, onClick }) => {
 
 // 드래그 가능한 아이템 컴포넌트
 const DraggableItem = ({ item, index, moveItem, handleEditItem, handleDeleteItem }) => {
+  // item: 항목 데이터 (장소 또는 이미지)
+  // index: 현재 아이템의 리스트 내 위치
+  // moveItem: 드래그된 아이템을 새로운 위치로 이동시키는 함수
+  
+  // useDrag 훅으로 드래그 가능한 요소로 설정
   const [{ isDragging }, drag] = useDrag({
-    type: 'ITEM',
-    item: { index },
+    type: 'ITEM', // 드래그 타입
+    item: { index }, // 드래그되는 항목의 데이터
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      isDragging: monitor.isDragging(), // 드래그 중인지 여부를 수집
     }),
   });
 
+  // useDrop 훅으로 드롭 가능한 영역 결정
   const [, drop] = useDrop({
-    accept: 'ITEM',
+    accept: 'ITEM', // 드롭 가능한 항목 타입
     hover: (draggedItem) => {
+      // 다른 위치로 드래그했을 때만 동작
       if (draggedItem.index !== index) {
-        moveItem(draggedItem.index, index);
-        draggedItem.index = index;
+        moveItem(draggedItem.index, index); // 항목 위치 바꾸기
+        draggedItem.index = index; // 드래그 된 항목의 인덱스도 엡데이트
       }
     },
   });
@@ -65,7 +74,7 @@ const DraggableItem = ({ item, index, moveItem, handleEditItem, handleDeleteItem
   return (
     <div
       ref={(node) => drag(drop(node))}
-      className={`flex items-center rounded-lg bg-gray-200 mb-4 h-36 ${isDragging ? 'opacity-50' : ''}`}
+      className={`flex items-center rounded-lg bg-white shadow mb-4 h-36 ${isDragging ? 'opacity-50' : ''}`}
       style={{ cursor: 'move' }}
     >
       <div>
@@ -124,23 +133,21 @@ const DraggableItem = ({ item, index, moveItem, handleEditItem, handleDeleteItem
   );
 };
 
-export default function DayList() {
+export default function DayList({days, setDays, registeredItems,setRegisteredItems}) {
   // 사진 첨부 표시 여부
   const [showImageInput, setshowImageInput] = useState(false);
   // 이미지 URL 상태
   const [ImageSrc, setImageSrc] = useState(null);
   // 텍스트 상태
   const [text, setText] = useState("");
-  // 등록된 항목 상태
-  const [registeredItems, setRegisteredItems] = useState({});
+  
 
   // 사진 첨부 수정
   const [editingItem, setEditingItem] = useState(null);
   const [editText, setEditText] = useState("");
   const [editImage, setEditImage] = useState(null);
 
-  // 일차 목록 스태이트
-  const [days, setDays] = useState(["1일차"]);
+  
   // 현재 활성화된 날짜
   const [activeDay, setActiveDay] = useState("1일차");
 
@@ -152,21 +159,50 @@ export default function DayList() {
   const [editingPlace, setEditingPlace] = useState(null);
 
   // 이미지 업로드 핸들러
-  // CreateList.js 내부의 handleImageUpload 함수 수정
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     e.stopPropagation(); // 이벤트 버블링 중지
     e.preventDefault(); // 기본 동작 방지 (페이지 이동, 제출 등)
 
+    // 1. 파일 선택
     const file = e.target.files?.[0]; // 첫번째 파일 선택
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImageSrc(reader.result);
-      // 파일 선택기 초기화 (중복 첨부 방지용)
+    // 2. 파일 크기 제한 (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert("파일 크기는 10MB 이하여야 합니다.");
       e.target.value = null;
-    };
-    reader.readAsDataURL(file); // 파일을 base64 문자열로 읽음 (미리보기용)
+      return;
+    }
+
+    try {
+      // 3. FormData 생성
+      const formData = new FormData();
+      formData.append('image', file);
+
+      // 4. 서버로 POST 요청
+      const response = await fetch('http://localhost:5000/api/images/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      // 5. 서버 응답 처리
+      const result = await response.json();
+      
+      if (result.success) {
+        // 이미지 경로 설정 (서버의 정적 파일 경로)
+        const imageUrl = `http://localhost:5000/${result.imagePath}`;
+        setImageSrc(imageUrl);
+        console.log('이미지가 성공적으로 업로드되었습니다:', result.filename);
+      } else {
+        alert('이미지 업로드에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('이미지 업로드 오류:', error);
+      alert('이미지 업로드 중 오류가 발생했습니다.');
+    }
+
+    // 파일 선택기 초기화 (중복 첨부 방지용)
+    e.target.value = null;
   };
 
   // 일차 추가 함수
@@ -240,13 +276,18 @@ export default function DayList() {
 
   // 장소 등록 로직
   const handlePlaceSelect = (item) => {
+    // 수정 모드인지 확인
     const isEdit = Boolean(editingPlace);
     if(isEdit) {
+      // 기존 항목을 새로운 item으로 수정
       handleSaveEditPlace(item);
+      // 수정 완료 메시지
       alert("수정이 완료되었습니다");
+      // 함수 종료 (등록 안함)
       return;
     }
 
+    // 새 항목을 등록하는 경우
     setRegisteredItems((prevItems) => {
       // 선택한 날짜에 해당하는 기존 항복이 있는지 확인, 없으면 빈 배열
       const existingItems = prevItems[activeDay] || [];
@@ -257,15 +298,17 @@ export default function DayList() {
       // 증복이면 기존 항목을 그대로 반환, 추가 안함
       if (isDuplicate) return prevItems;
 
-      // 새로 등록인 경우
+      // 새로 항목 추가 : 기존 항목 유지 + 현재 선택된 일차에 추가
       const newItems = {
         ...prevItems,
         [activeDay]: [
           ...existingItems,
-          { ...item, type: "place", id: Date.now() },
+          { ...item, type: "place", id: Date.now() }, // 고유 Id 부여
         ],
       };
       console.log('장소 등록 후 모든 항목:', newItems);
+
+      // 업데이트된 항목 변환 (setRegisteredItems에 적용)
       return newItems;
     });
     setShowMap(false);
