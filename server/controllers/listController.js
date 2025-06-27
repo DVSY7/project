@@ -18,6 +18,7 @@ exports.createList = async (req, res) => {
 
     // 요청에서 값 꺼내기
     const {
+      userID,
       title,
       description,
       isPlanned,
@@ -45,12 +46,13 @@ exports.createList = async (req, res) => {
 
     // 리스트 생성 쿼리
     const query = `
-      INSERT INTO lists (title, text, is_planned, interest, max_participants, is_offline, is_group, end_date, meet_place, budget, period_start_date, period_end_date)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ? ,? ,?, ?, ?)
+      INSERT INTO lists (user_id, title, text, is_planned, interest, max_participants, is_offline, is_group, end_date, meet_place, budget, period_start_date, period_end_date)
+      VALUES (?,?, ?, ?, ?, ?, ?, ?, ? ,? ,?, ?, ?)
     `;
 
     try {
       const [result] = await db.query(query, [
+        userID,
         title,
         description,
         isPlanned ? 1 : 0,
@@ -110,6 +112,33 @@ exports.createList = async (req, res) => {
             item.displayOrder || 0
           ]);
         }
+      }
+
+      if(result.affectedRows){
+        // 리스트가 생성되면 채팅방을 생성
+        await db.query(`
+          INSERT INTO chat_rooms ( title, theme, owner_id, current_members, max_members)
+          VALUES (?,?,?,1,?)
+        `,[title, interest, userID, maxParticipants]);
+
+        // 생성된 채팅방 아이디를 가져옴
+        const [chat_room_id] = await db.query(`
+          SELECT cr.chat_room_id FROM chat_rooms cr
+          JOIN lists l ON cr.title = l.title AND cr.owner_id = l.user_id AND cr.created_at = l.created_at
+          WHERE cr.title = ? AND cr.owner_id = ?
+          `,[title, userID]);
+
+        // 채팅방과 유저를 연결
+        await db.query(`
+          INSERT IGNORE INTO user_rooms ( user_id, chat_room_id, is_active )
+          VALUES (?,?,1),(?,?,0)
+        `,[userID, chat_room_id[0].chat_room_id,55, chat_room_id[0].chat_room_id]);
+
+        // 생성된 채팅방에 시스템 메세지를 보냄
+        await db.query(`
+          INSERT INTO messages ( chat_room_id, sender_id, content )
+          VALUES (?, 55, "시스템.\n[${title}] 채팅방이 생성되었습니다.\n 계획을 토론해보세요.");
+          `,[chat_room_id[0].chat_room_id]);
       }
 
       // 태그 저장

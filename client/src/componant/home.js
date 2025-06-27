@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import { checkedToken } from './function/checkedToken';
 import { fetchUserID } from './function/fetchUserID';
 
-export default function Home() {
+export default function Home(props) {
+  
+  const {setUserID2} = props;
 
   // 유저이름
   const [username, setUsername] = useState("");
@@ -26,6 +28,7 @@ export default function Home() {
       if(name){
         const id = await fetchUserID(name);
         setUserID(id);
+        setUserID2(id);
       }
     };
     getUserID();

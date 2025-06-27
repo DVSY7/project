@@ -9,7 +9,10 @@ import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
 import axios from "axios";
 
-export default function CreateList() {
+export default function CreateList(props) {
+
+  const {userID} = props;
+
   // 계획형, 비계획형 상태관리 스테이트
   const [isPlanned, setIsPlanned] = useState(true);
   // 제목과 소개글 상태 추가
@@ -216,6 +219,7 @@ export default function CreateList() {
 
       // ---서버에 보낼 데이터 구성---
       const listData = {
+        userID:userID[0].id,
         title: title.trim(),
         description: text.trim(),
         isPlanned,
