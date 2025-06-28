@@ -308,7 +308,7 @@ export default function CreatePost() {
               <span>레이첼</span>
             </div>
             {/* 갤러리 본문 요소 */}
-            <div className={`h-[32.5%] flex border-b-[2px] border-gray-200`}>
+            <div className={`h-[42.5%] flex border-b-[2px] border-gray-200`}>
               {/* 갤러리 본문 프로필 */}
               <div className={`w-[15%] flex justify-center mt-4`}>
                 {/* 갤러리 본문 프로필 요소 */}
@@ -322,17 +322,17 @@ export default function CreatePost() {
               <div className={`w-[85%]`}>
                 {/* 갤러리 본문 내용 */}
                 <div
-                  className={`h-[87%] flex justify-center items-center bg-blue-300`}
+                  className={`h-[80%] flex justify-center items-end`}
                 >
                   <textarea
-                    className="w-full h-[80%] resize-none outline-none"
+                    className="w-full h-[90%] resize-none outline-none pb-0" 
                     placeholder="글을 입력하세요"
                     value={postText}
                     onChange={(e) => setPostText(e.target.value)}
                   ></textarea>
                 </div>
                 {/* 갤러리 본문 태그 */}
-                <div className={`h-[13%] flex items-center px-2`}>
+                <div className={`h-[20%] flex  items-center`}>
                   <TagManager
                     tags={tags}
                     setTags={setTags}
@@ -352,14 +352,12 @@ export default function CreatePost() {
                 </div>
               </div>
             </div>
-            {/* 갤러리 위치 영역 */}
-            <div className={`h-[20%] overflow-y-auto hide-scrollbar`}>
-              <div className="p-4 text-xl ">{imageAddress[currentImageIndex] ? imageAddress[currentImageIndex] : "위치"}</div>
-            </div>
             {/* 갤러리 아이콘 영역 */}
             <div
-              className={`h-[30%] pl-4 font-sans font-bold text-[0.8rem] border-b-[2px] border-gray-200`}
-            ></div>
+              className={`h-[40%] p-4 font-sans font-bold text-[0.8rem] border-b-[2px] border-gray-200`}
+            >
+              <div className="text-xl ">{imageAddress[currentImageIndex] ? imageAddress[currentImageIndex] : "위치"}</div>
+            </div>
             {/* 갤러리 댓글 입력창 */}
             <div className={`h-[7.5%] flex`}>
               {/* 갤러리 댓글 인풋 영역 */}

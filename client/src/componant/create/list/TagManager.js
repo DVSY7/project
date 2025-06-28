@@ -61,7 +61,13 @@ export default function TagManager({
           value={currentTag}
           onChange={(e) => setCurrentTag(e.target.value)}
           onKeyPress={handleKeyPress}
-          onBlur={handleAddTag} // 입력 필드 외부 클릭 시 태그 추가
+          onBlur={() => {
+            if(currentTag.trim() !== ""){
+              handleAddTag();
+            } else{
+              setShowInput(false);
+            }
+          }} // 입력 필드 외부 클릭 시 태그 추가
           autoFocus
         />
       ) : (
