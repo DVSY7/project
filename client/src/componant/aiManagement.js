@@ -314,71 +314,65 @@ export default function AIManagement() {
         </div>
       )}
 
-      
       {dayPlaceList.length > 0 && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-10">
-        <div className="w-full h-full max-w-3xl mx-auto mt-8 overflow-y-auto">
-          {/* 일차별 탭 */}
-          <div className="flex gap-2 mb-4">
-            {dayPlaceList.map((_, idx) => (
-              <button
-                key={idx}
-                className={`px-4 py-2 rounded ${selectedDay === idx ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
-                onClick={() => setSelectedDay(idx)}
-              >
-                {idx + 1}일차
-              </button>
-            ))}
-          </div>
-          {/* 선택된 일차의 장소 리스트 */}
-          <div>
-            {dayPlaceList[selectedDay].length === 0 ? (
-              <div className="text-gray-400">추천 장소 없음</div>
-            ) : (
-              dayPlaceList[selectedDay].map((place, pidx) => (
-                <div key={pidx} className="flex items-center gap-4 border-b py-2 last:border-b-0 bg-white">
-                  <img src={place.image || "/images/noimg.png"} alt="등록된 이미지" className="w-16 h-16 object-cover rounded" />
-                  <div className="flex-1">
-                    <div className="font-bold text-lg">{place.name}</div>
-                    <div className="text-gray-600 text-sm">{place.address}</div>
-                    <div className="text-gray-500 text-xs">{place.category}</div>
-                    <div className="text-blue-800 text-xs">{place.phone}</div>
-                    <div className="text-xs mt-1">{place.description}</div>
-                    {(place.id || place.place_url) && (
-                      <a
-                        href={place.id ? `https://place.map.kakao.com/${place.id}` : place.place_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline text-xs mt-1 inline-block"
-                      >
-                        상세보기
-                      </a>
-                    )}
-                  </div>
-                  {/* 수정/삭제 버튼 예시 */}
-                  <div className="flex flex-col gap-1 ml-2">
-                    <button className="text-xs text-blue-600">수정</button>
-                    <button className="text-xs text-red-500">삭제</button>
-                  </div>
+        <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white w-[44%] h-[78%] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            {/* 일차별 탭 */}
+            <div className="flex gap-2 px-8 pt-8 pb-4 bg-white sticky top-0 z-10">
+              {dayPlaceList.map((_, idx) => (
+                <button
+                  key={idx}
+                  className={`px-5 py-2 rounded-full font-semibold transition-colors duration-200
+                    ${selectedDay === idx
+                      ? "bg-[#357ae8] text-white shadow"
+                      : "bg-gray-100 text-gray-700 hover:bg-blue-100"}`}
+                  onClick={() => setSelectedDay(idx)}
+                >
+                  {idx + 1}일차
+                </button>
+              ))}
+            </div>
+            {/* 선택된 일차의 장소 리스트 */}
+            <div className="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
+              {dayPlaceList[selectedDay].length === 0 ? (
+                <div className="text-gray-400 text-center py-20">추천 장소 없음</div>
+              ) : (
+                <div className="space-y-4">
+                  {dayPlaceList[selectedDay].map((place, pidx) => (
+                    <div
+                      key={pidx}
+                      className="flex items-center gap-5 bg-[#f7fafd] rounded-xl shadow-sm p-4 hover:shadow-lg transition-shadow"
+                    >
+                      <img
+                        src={place.image || "/images/noimg.png"}
+                        alt="등록된 이미지"
+                        className="w-20 h-20 object-cover rounded-lg border"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-lg truncate">{place.name}</div>
+                        <div className="text-gray-600 text-sm truncate">{place.address}</div>
+                        <div className="text-gray-500 text-xs">{place.category}</div>
+                        <div className="text-blue-800 text-xs">{place.phone}</div>
+                        <div className="text-xs mt-1 line-clamp-2">{place.description}</div>
+                        {(place.id || place.place_url) && (
+                          <a
+                            href={place.id ? `https://place.map.kakao.com/${place.id}` : place.place_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline text-xs mt-1 inline-block"
+                          >
+                            상세보기
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))
-            )}
+              )}
+            </div>
           </div>
         </div>
-        </div>
       )}
-      {/* {debugPrompt && (
-        <div className="bg-gray-100 p-4 my-4 rounded text-xs">
-          <div className="font-bold mb-2">[AI 프롬프트]</div>
-          <pre>{debugPrompt}</pre>
-        </div>
-      )}
-      {debugRawResponse && (
-        <div className="bg-gray-100 p-4 my-4 rounded text-xs">
-          <div className="font-bold mb-2">[AI 원본 응답]</div>
-          <pre>{debugRawResponse}</pre>
-        </div>
-      )} */}
     </>
   );
 }
