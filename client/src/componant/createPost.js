@@ -368,7 +368,7 @@ export default function CreatePost() {
               ></div>
               {/* 게시물 댓글 게시버튼 */}
               <div
-                className={`w-[15%] flex justify-center items-center text-blue-500`}
+                className={`w-[15%] flex justify-center items-center text-blue-500 hover:font-bold`}
               >
                 공유하기
               </div>
