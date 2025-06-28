@@ -29,7 +29,7 @@ export default function PreferTravelPlan({onBack, onNext, onClose}){
                             ←
                         </button>
                         <button
-                            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors duration-200"
+                            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#6ea8fd] transition-colors duration-200"
                             onClick={onClose}
                         >
                             <svg
@@ -57,7 +57,15 @@ export default function PreferTravelPlan({onBack, onNext, onClose}){
                     <div className="w-[75%] h-full">
                         <div className="flex flex-col gap-2">
                             {options.map(opt => (
-                                <button key={opt} className={` py-5 rounded-3xl font-bold text-gray-600  ${selected.includes(opt) ? "bg-blue-400 text-white" : "bg-gray-100"}`} onClick={() => handleSelect(opt)}>{opt}</button>
+                                <button
+                                    key={opt}
+                                    className={`py-5 rounded-3xl font-bold hover:bg-blue-300 hover:text-white transition-colors duration-300 ${
+                                        selected.includes(opt) ? "bg-[#357ae8] text-white" : "bg-gray-100 text-gray-600"
+                                    }`}
+                                    onClick={() => handleSelect(opt)}
+                                >
+                                    {opt}
+                                </button>
                             ))}
                         </div>
                     </div>
@@ -71,7 +79,7 @@ export default function PreferTravelPlan({onBack, onNext, onClose}){
                         transition-colors duration-200 w-full
                         ${selected.length === 0
                             ? 'bg-gray-300 cursor-not-allowed'
-                            : 'bg-[#FF385C] hover:bg-[#E31C5F]'
+                            : 'bg-[#6ea8fd] hover:bg-[#357ae8]'
                         }
                     `}
                     >

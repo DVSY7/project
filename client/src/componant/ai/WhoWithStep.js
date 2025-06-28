@@ -69,8 +69,8 @@ export default function WhoWithStep({ onNext, onBack, onClose }) {
               {options.map((opt) => (
                 <button
                   key={opt}
-                  className={` py-5 rounded-3xl font-bold text-gray-600  ${
-                    selected === opt ? "bg-blue-400 text-white" : "bg-gray-100"
+                  className={` py-5 rounded-3xl font-bold text-gray-600 hover:bg-blue-300 hover:text-white transition-colors duration-300 ${
+                    selected === opt ? "bg-[#357ae8] text-white" : "bg-gray-100"
                   }`}
                   onClick={() => setSelected(opt)}
                 >
@@ -90,7 +90,7 @@ export default function WhoWithStep({ onNext, onBack, onClose }) {
                     ${
                       !selected
                         ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-[#FF385C] hover:bg-[#E31C5F]"
+                        : "bg-blue-300 hover:bg-[#357ae8]"
                     }
                 `}
           >

@@ -79,7 +79,7 @@ const DateRangeStep = ({
               locale={ko}
               minDate={today}
               maxDate={getMaxDate()}
-              rangeColors={["#FF385C"]}
+              rangeColors={["#6ea8fd"]}
               className="w-full h-full"
               monthDisplayFormat="yyyy년 M월"
               maxDateRange={10}
@@ -97,7 +97,7 @@ const DateRangeStep = ({
             ${
               !dateRange.startDate || !dateRange.endDate
                 ? "bg-gray-300 cursor-not-allowed"
-                : "bg-[#FF385C] hover:bg-[#E31C5F]"
+                : "bg-[#6ea8fd] hover:bg-[#357ae8]"
             }
           `}
           >

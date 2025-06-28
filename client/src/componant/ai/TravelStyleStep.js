@@ -29,7 +29,7 @@ export default function TravelstyleStep({onBack, onNext, onClose}){
                         </button>
                         {/* x닫기 버튼 */}
                         <button
-                            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors duration-200"
+                            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#6ea8fd] transition-colors duration-200"
                             onClick={onClose}
                         >
                             <svg
@@ -51,13 +51,13 @@ export default function TravelstyleStep({onBack, onNext, onClose}){
                 <div className="basis-3/8 w-full flex flex-col items-center">
                     <div className="flex text-6xl">📸</div>
                     <div className="flex-1 flex text-3xl items-end">내가 선호하는 여행 스타일은?</div>
-                    <div className="flex-1 flex justify-center items-end">이번 여행의 동반자를 선택해주세요</div>
+                    <div className="flex-1 flex justify-center items-end">복수 선택이 가능합니다</div>
                 </div>
                 <div className="basis-3/8 w-full flex justify-center">
                     <div className="w-[75%] h-full">
                         <div className="grid grid-cols-3 gap-2">
                             {options.map(opt => (
-                                <button key={opt} className={` py-5 rounded-3xl font-bold text-gray-600  ${selected.includes(opt) ? "bg-blue-400 text-white" : "bg-gray-100"}`} onClick={() => handleSelect(opt)}>{opt}</button>
+                                <button key={opt} className={` py-5 rounded-3xl font-bold text-gray-600 hover:bg-blue-300 hover:text-white transition-colors duration-300 ${selected.includes(opt) ? "bg-[#357ae8] text-white" : "bg-gray-100"}`} onClick={() => handleSelect(opt)}>{opt}</button>
                             ))}
                         </div>
                     </div>
@@ -71,7 +71,7 @@ export default function TravelstyleStep({onBack, onNext, onClose}){
                         transition-colors duration-200 w-full
                         ${selected.length === 0
                             ? 'bg-gray-300 cursor-not-allowed'
-                            : 'bg-[#FF385C] hover:bg-[#E31C5F]'
+                            : 'bg-[#6ea8fd] hover:bg-[#357ae8]'
                         }
                     `}
                     >
