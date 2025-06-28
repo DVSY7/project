@@ -317,8 +317,12 @@ export default function AIManagement() {
       {dayPlaceList.length > 0 && (
         <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white w-[44%] h-[78%] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            {/* 제목 */}
+            <div className="px-8 pt-8 pb-2">
+              <h2 className="text-2xl font-bold text-gray-800">AI 여행 추천 일정</h2>
+            </div>
             {/* 일차별 탭 */}
-            <div className="flex gap-2 px-8 pt-8 pb-4 bg-white sticky top-0 z-10">
+            <div className="flex gap-2 px-8 pb-4 bg-white sticky top-0 z-10">
               {dayPlaceList.map((_, idx) => (
                 <button
                   key={idx}
@@ -369,6 +373,21 @@ export default function AIManagement() {
                   ))}
                 </div>
               )}
+            </div>
+            {/* 오른쪽 하단 버튼 영역 */}
+            <div className="flex justify-end gap-3 px-8 pb-6">
+              <button
+                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200"
+                onClick={() => {/* 다시 생성하기 로직 추가 필요 */}}
+              >
+                다시 생성하기
+              </button>
+              <button
+                className="bg-[#6ea8fd] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#357ae8] transition-colors duration-200"
+                onClick={() => {/* 적용하기 로직 추가 필요 */}}
+              >
+                적용하기
+              </button>
             </div>
           </div>
         </div>
