@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Menu from "./menu";
 import exifr from "exifr";
+import TagManager from "./create/list/TagManager";
 
 export default function CreatePost() {
   const [isOpen, setIsOpen] = useState(true);
@@ -10,6 +11,14 @@ export default function CreatePost() {
   // 이미지별 메타데이터 배열
   const [imageMeta, setImageMeta] = useState([]);
   const [imageAddress, setImageAddress] = useState([]);
+
+  // 태그 관련 상태 추가
+  const [tags, setTags] = useState([]);
+  const [showInput, setShowInput] = useState(false);
+  const [currentTag, setCurrentTag] = useState("");
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingTag, setEditingTag] = useState("");
+  const [postText, setPostText] = useState("");
 
   const handleClose = () => {
     if (window.confirm("게시물을 삭제하시겠습니까?")) setIsOpen(false);
@@ -71,6 +80,86 @@ export default function CreatePost() {
     document.getElementById("imageInput").click();
   };
 
+  // 태그 추가 함수
+  const handleAddTag = () => {
+    if (currentTag.trim() !== "") {
+      // 글에서 단어 추출
+      const textWords = postText.split(/\s+/).filter((word) => word.length > 1);
+      const availableWords = [...new Set(textWords)];
+
+      // 앞에 #이 붙였으면 자르고, 없으면 그대로 비교
+      const tagWithoutHash = currentTag.startsWith("#")
+        ? currentTag.slice(1)
+        : currentTag;
+      // 입력된 태그가 글에 포함된 단어인지 확인
+      if (!availableWords.some((word) => word.includes(tagWithoutHash))) {
+        alert("태그는 글에 포함된 단어만 사용할 수 있습니다.");
+        // 잘못된 태그 입력시 입력값 초기화
+        setCurrentTag("");
+        // 잘못된 태그 입력시 입력 필드 숨김
+        setShowInput(false);
+        return;
+      }
+
+      // 태그 앞에 #이 없으면 추가
+      const formattedTag = currentTag.startsWith("#")
+        ? currentTag.trim()
+        : `#${currentTag.trim()}`;
+
+      setTags([...tags, formattedTag]);
+      // 입력 필드 초기화
+      setCurrentTag("");
+      // 입력 필드 숨기기
+      setShowInput(false);
+    }
+  };
+
+  // 태그 수정 완료 함수
+  const handleEditTag = () => {
+    if (editingTag.trim() !== "") {
+      // 글에서 단어 추출
+      const textWords = postText.split(/\s+/).filter((word) => word.length > 1);
+      const availableWords = [...new Set(textWords)];
+
+      // 수정된 태그가 앞에 #붙어있으면 자르고, 없으면 그대로 비교
+      const tagWithoutHash = editingTag.startsWith("#")
+        ? editingTag.slice(1)
+        : editingTag;
+      // 포함된 단어가 없다면 alert창 실행
+      if (!availableWords.some((word) => word.includes(tagWithoutHash))) {
+        alert("태그는 글에 포함된 단어만 사용할 수 있습니다.");
+        return;
+      }
+
+      const formattedTag = editingTag.startsWith("#")
+        ? editingTag.trim()
+        : `#${editingTag.trim()}`;
+
+      const updatedTags = [...tags];
+      // 수정된 태그 저장
+      updatedTags[editingIndex] = formattedTag;
+      setTags(updatedTags);
+    }
+    // 수정 상태 초기화
+    setEditingIndex(null);
+    // 수정 필드 초기화
+    setEditingTag("");
+  };
+
+  // 태그 삭제 함수
+  const handleDeleteTag = (index) => {
+    // 해당 인덱스의 태그 제거
+    const updatedTags = tags.filter((_, i) => i !== index);
+    setTags(updatedTags);
+  };
+
+  // 엔터 키로 태그 추가
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleAddTag();
+    }
+  };
+
   if (!isOpen) {
     return null;
   }
@@ -100,11 +189,43 @@ export default function CreatePost() {
           {/* 갤러리 이미지 영역 */}
           <div className={`relative w-[60%] rounded-l-md`}>
             {/* 갤러리 이미지 */}
-            <div className="bg-blue-100 w-full h-full">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-100 w-full h-full flex items-center justify-center">
               {selectedImages.length === 0 ? (
-                <button className="bg-red-400" onClick={triggerFileInput}>
-                  이미지를 선택하세요
-                </button>
+                <div className="text-center">
+                  <button 
+                    className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out border-0 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                    onClick={triggerFileInput}
+                  >
+                    <svg 
+                      className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform duration-300" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                      />
+                    </svg>
+                    이미지를 선택하세요
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </button>
+                  <p className="mt-4 text-gray-600 text-sm font-medium">
+                    📍 위치 정보가 포함된 사진을 선택해주세요
+                  </p>
+                  <div className="mt-6 flex justify-center space-x-4 text-xs text-gray-500">
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                      <span>지원 형식: JPG, PNG, GIF</span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+                      <span>최대 10MB</span>
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <>
                   {/* 메인 이미지 표시 */}
@@ -204,23 +325,40 @@ export default function CreatePost() {
                   className={`h-[87%] flex justify-center items-center bg-blue-300`}
                 >
                   <textarea
-                    className="w-full h-[80%]"
+                    className="w-full h-[80%] resize-none outline-none"
                     placeholder="글을 입력하세요"
+                    value={postText}
+                    onChange={(e) => setPostText(e.target.value)}
                   ></textarea>
                 </div>
                 {/* 갤러리 본문 태그 */}
-                <div className={`h-[13%]`}>
-                  #<input type="text" placeholder="태그입력"></input>
+                <div className={`h-[13%] flex items-center px-2`}>
+                  <TagManager
+                    tags={tags}
+                    setTags={setTags}
+                    showInput={showInput}
+                    setShowInput={setShowInput}
+                    currentTag={currentTag}
+                    setCurrentTag={setCurrentTag}
+                    editingIndex={editingIndex}
+                    setEditingIndex={setEditingIndex}
+                    editingTag={editingTag}
+                    setEditingTag={setEditingTag}
+                    handleAddTag={handleAddTag}
+                    handleEditTag={handleEditTag}
+                    handleDeleteTag={handleDeleteTag}
+                    handleKeyPress={handleKeyPress}
+                  />
                 </div>
               </div>
             </div>
             {/* 갤러리 위치 영역 */}
-            <div className={`h-[37%] overflow-y-auto hide-scrollbar`}>
-              위치: {imageAddress[currentImageIndex] ? imageAddress[currentImageIndex] : "위치 정보 없음"}
+            <div className={`h-[20%] overflow-y-auto hide-scrollbar`}>
+              <div className="p-4 text-xl ">{imageAddress[currentImageIndex] ? imageAddress[currentImageIndex] : "위치"}</div>
             </div>
             {/* 갤러리 아이콘 영역 */}
             <div
-              className={`h-[13%] pl-4 font-sans font-bold text-[0.8rem] border-b-[2px] border-gray-200`}
+              className={`h-[30%] pl-4 font-sans font-bold text-[0.8rem] border-b-[2px] border-gray-200`}
             ></div>
             {/* 갤러리 댓글 입력창 */}
             <div className={`h-[7.5%] flex`}>
@@ -228,7 +366,7 @@ export default function CreatePost() {
               <div
                 className={`resize-none outline-none w-[85%] h-full pt-4 pl-4 `}
               ></div>
-              {/* 갤러리 댓글 게시버튼 */}
+              {/* 게시물 댓글 게시버튼 */}
               <div
                 className={`w-[15%] flex justify-center items-center text-blue-500`}
               >
