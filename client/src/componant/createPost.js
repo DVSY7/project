@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Menu from "./menu";
 import exifr from "exifr";
 import TagManager from "./create/list/TagManager";
+import { checkedToken } from "./function/checkedToken";
+import { fetchUserID } from "./function/fetchUserID";
+import { fetchUserInfo } from "./community/api/fetchUserInfo";
+import { createPost } from "./api/createPost";
 
 export default function CreatePost() {
   const [isOpen, setIsOpen] = useState(true);
@@ -19,9 +23,56 @@ export default function CreatePost() {
   const [editingIndex, setEditingIndex] = useState(null);
   const [editingTag, setEditingTag] = useState("");
   const [postText, setPostText] = useState("");
+  const [titleText, setTitleText] = useState("");
+
+  // 유저 정보 상태관리
+  const [userName, setUsername] = useState("");
+  const [name, setName] = useState("");
+  const [userInfo, setUserInfo] = useState([]);
+  const [formatInfo, setFormatInfo] = useState({})
+
+  useEffect(()=>{
+    const getUserInfo = async ()=>{
+      await checkedToken(setUsername, setName);
+    }
+    getUserInfo();
+    
+  },[])
+
+  useEffect(()=>{
+    const getUserInfo = async ()=>{
+      const res = await fetchUserInfo(name);
+      setUserInfo(res);
+    }
+    if(userName && name){
+      getUserInfo();
+    }
+  },[userName, name])
+
+  // 서버로 전송하기 위해 가공한 데이터
+  useEffect(()=>{
+    if(userName && name && userInfo.length !== 0){
+      setFormatInfo({
+        id:userInfo[0]?.friend_id?? 0,
+        name:userName,
+        email:name,
+        profile:userInfo[0]?.profile_image_url?? 0,
+        postText:postText,
+        titleText:titleText,
+        address:imageAddress,
+        imageData: selectedImages
+      });
+    }
+  },[userName,name,userInfo,postText,titleText,imageAddress,selectedImages]);
+
+  useEffect(()=>{
+  },[formatInfo,postText,selectedImages]);
 
   const handleClose = () => {
-    if (window.confirm("게시물을 삭제하시겠습니까?")) setIsOpen(false);
+    if (window.confirm("게시물을 삭제하시겠습니까?")){
+      setIsOpen(false);
+      window.history.back();
+    };                                                                                                                                                          
   };
 
   async function getAddressFromCoords(lat, lng) {
@@ -36,7 +87,7 @@ export default function CreatePost() {
     const data = await res.json();
     if (data.documents && data.documents.length > 0) {
       return data.documents[0].address.address_name;
-    }
+    }           
     return null;
   }
 
@@ -159,6 +210,22 @@ export default function CreatePost() {
       handleAddTag();
     }
   };
+
+  // 작성된 데이터를 서버로 전송
+  const handleSubmitPost = async () => {
+    if(postText && titleText && imageAddress){
+      if(formatInfo.id !== 0 && formatInfo.profile !== 0 && Object.keys(formatInfo).length !== 0){
+        const res = await createPost(formatInfo);
+        if(res.result){
+          window.location.href = '/home';
+        }
+      }else{
+        alert("게시글 작성 오류!");
+      }
+    }else{
+      alert("모든 내용을 작성해주세요.");
+    }
+  }
 
   if (!isOpen) {
     return null;
@@ -300,12 +367,12 @@ export default function CreatePost() {
             >
               {/* 갤러리 제목 프로필 */}
               <img
-                className={`w-[40px] h-[40px] mr-4`}
-                src="images/미니프로필.png"
+                className={`w-[40px] h-[40px] mr-4 rounded-[50%]`}
+                src={`${formatInfo.profile}`}
                 alt="미니프로필"
               ></img>
               {/* <span>{username}의 게시글</span> */}
-              <span>레이첼</span>
+              <span>{userName}</span>
             </div>
             {/* 갤러리 본문 요소 */}
             <div className={`h-[42.5%] flex border-b-[2px] border-gray-200`}>
@@ -313,8 +380,8 @@ export default function CreatePost() {
               <div className={`w-[15%] flex justify-center mt-4`}>
                 {/* 갤러리 본문 프로필 요소 */}
                 <img
-                  className={`w-[40px] h-[40px]`}
-                  src={`images/미니프로필.png`}
+                  className={`w-[40px] h-[40px] rounded-[50%]`}
+                  src={`${formatInfo.profile}`}
                   alt="미니프로필"
                 ></img>
               </div>
@@ -322,13 +389,20 @@ export default function CreatePost() {
               <div className={`w-[85%]`}>
                 {/* 갤러리 본문 내용 */}
                 <div
-                  className={`h-[80%] flex justify-center items-end`}
+                  className={`h-[80%] flex flex-col justify-center`}
                 >
+                  <input 
+                    type="text" 
+                    placeholder="제목을 입력하세요" 
+                    className={`flex justify-start my-2 mt-6 outline-none text-[1.2rem] font-bold`}
+                    value={titleText}
+                    onChange={(e)=> {setTitleText(e.target.value); }}
+                  ></input>
                   <textarea
                     className="w-full h-[90%] resize-none outline-none pb-0" 
                     placeholder="글을 입력하세요"
                     value={postText}
-                    onChange={(e) => setPostText(e.target.value)}
+                    onChange={(e) => {setPostText(e.target.value); }}
                   ></textarea>
                 </div>
                 {/* 갤러리 본문 태그 */}
@@ -366,7 +440,8 @@ export default function CreatePost() {
               ></div>
               {/* 게시물 댓글 게시버튼 */}
               <div
-                className={`w-[15%] flex justify-center items-center text-blue-500 hover:font-bold`}
+                onClick={handleSubmitPost}
+                className={`w-[15%] flex justify-center items-center text-blue-500 hover:font-bold cursor-pointer`}
               >
                 공유하기
               </div>
