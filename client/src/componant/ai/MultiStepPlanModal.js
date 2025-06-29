@@ -7,8 +7,7 @@ import WhoWithStep from "./WhoWithStep";
 import TravelstyleStep from "./TravelStyleStep";
 import PreferTravelPlan from "./PreferTravelPlan";
 
-export default function MultiStepPlanModal({open, onClose, place, onComplete}) {
-    const [step, setStep] = useState(1);
+export default function MultiStepPlanModal({open, onClose, place, onComplete, step, setStep}) {
     const [selectedValues, setSelectedValues] = useState({
         place: null,
         date: null,

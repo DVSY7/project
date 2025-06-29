@@ -14,6 +14,10 @@ export default function AIManagement() {
   const [debugPrompt, setDebugPrompt] = useState("");
   const [debugRawResponse, setDebugRawResponse] = useState("");
   const [selectedDay, setSelectedDay] = useState(0); // 0: 1일차, 1: 2일차, ...
+  // 사용자가 선택한 정보를 저장할 상태 추가
+  const [userSelections, setUserSelections] = useState(null);
+  // MultiStepPlanModal의 step 상태 추가
+  const [step, setStep] = useState(1);
   // 버튼 반복
   const buttons = ["전체", "국내", "해외"];
   const GPTAPIKEY = process.env.REACT_APP_GPT_API_KEY;
@@ -152,10 +156,19 @@ export default function AIManagement() {
       result[idx % daysCount].push(item);
     });
     setDayPlaceList(result);
+    
+    // 첫 번째로 장소가 있는 일차를 자동으로 선택
+    const firstDayWithPlaces = result.findIndex(dayPlaces => dayPlaces.length > 0);
+    if (firstDayWithPlaces !== -1) {
+      setSelectedDay(firstDayWithPlaces);
+    }
   }
 
   // 여행계획 완료 시 ChatGPT 호출
   const handlePlanComplete = async (userSelections) => {
+    // 사용자 선택 정보 저장
+    setUserSelections(userSelections);
+    
     setPlanLoading(true);
     setPlanResult(null);
     setDayPlaceList([]);
@@ -166,11 +179,18 @@ export default function AIManagement() {
         userSelections.companion
       }\n- 여행 기간: ${userSelections.date?.startDate?.toLocaleDateString()} ~ ${userSelections.date?.endDate?.toLocaleDateString()}\n- 일정 스타일: ${(
         userSelections.prefer || []
-      ).join(", ")}${
-        userSelections.style ? ", " + userSelections.style.join(", ") : ""
-      }\n\n위 조건에 맞는 여행 일정(장소, 추천 활동 등)을 JSON 형식으로 5개 추천해줘.\n응답 예시:\n{\n  \"recommendations\": [\n    {\n      \"name\": \"장소명\",\n      \"description\": \"설명\",\n      \"address\": \"주소\",\n      \"activity\": \"추천 활동\"\n    }\n  ]\n}`;
+      ).join(", ")}
+      ${
+        userSelections.style?.includes("빼곡한 일정")
+          ? "- 사용자는 하루에 여러 장소(최소 3곳 이상)를 방문하고 다양한 활동을 경험하는 **빼곡한 일정**을 선호합니다. 각 날짜별로 최소 3곳 이상 추천해주세요."
+          : userSelections.style?.includes("널널한 일정")
+          ? "- 사용자는 한두 곳만 방문하고 쉬는 시간을 많이 포함하는 **널널한 일정**을 선호합니다. 각 날짜별로 1~2곳만 추천해주세요."
+          : ""
+      }
+      \n\n위 조건에 맞는 여행 일정(장소, 추천 활동 등)을 JSON 형식으로 추천해줘.\n응답 예시:\n{\n  \"recommendations\": [\n    {\n      \"name\": \"장소명\",\n      \"description\": \"설명\",\n      \"address\": \"주소\",\n      \"activity\": \"추천 활동\"\n    }\n  ]\n}`;
 
       setDebugPrompt(prompt); // 프롬프트 저장
+      setStep(1);
 
       const response = await fetch(
         "https://api.openai.com/v1/chat/completions",
@@ -217,6 +237,121 @@ export default function AIManagement() {
     } finally {
       setPlanLoading(false);
     }
+  };
+
+  // 다시 생성하기 기능
+  const handleRegenerate = async () => {
+    if (!userSelections) {
+      alert("재생성할 정보가 없습니다.");
+      return;
+    }
+    
+    setPlanLoading(true);
+    setPlanResult(null);
+    setDayPlaceList([]);
+    try {
+      const prompt = `사용자가 다음과 같이 여행을 계획했습니다.\n- 여행지: ${
+        userSelections.place?.korName
+      }\n- 동행자: ${
+        userSelections.companion
+      }\n- 여행 기간: ${userSelections.date?.startDate?.toLocaleDateString()} ~ ${userSelections.date?.endDate?.toLocaleDateString()}\n- 일정 스타일: ${(
+        userSelections.prefer || []
+      ).join(", ")}
+      ${
+        userSelections.style?.includes("빼곡한 일정")
+          ? "- 사용자는 하루에 여러 장소(최소 3곳 이상)를 방문하고 다양한 활동을 경험하는 **빼곡한 일정**을 선호합니다. 각 날짜별로 최소 3곳 이상 추천해주세요."
+          : userSelections.style?.includes("널널한 일정")
+          ? "- 사용자는 한두 곳만 방문하고 쉬는 시간을 많이 포함하는 **널널한 일정**을 선호합니다. 각 날짜별로 1~2곳만 추천해주세요."
+          : ""
+      }
+      \n\n위 조건에 맞는 여행 일정(장소, 추천 활동 등)을 JSON 형식으로 추천해주세요. 이전과 다른 새로운 장소들을 추천해주세요.\n응답 예시:\n{\n  \"recommendations\": [\n    {\n      \"name\": \"장소명\",\n      \"description\": \"설명\",\n      \"address\": \"주소\",\n      \"activity\": \"추천 활동\"\n    }\n  ]\n}`;
+
+      setDebugPrompt(prompt); // 프롬프트 저장
+      setStep(1);
+
+      const response = await fetch(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${GPTAPIKEY}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.8, // 더 다양한 결과를 위해 temperature를 높임
+          }),
+        }
+      );
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+      setDebugRawResponse(content); // 원본 응답 저장
+      let aiList = [];
+      try {
+        const parsed = JSON.parse(content);
+        aiList = parsed.recommendations || [];
+        setPlanResult(aiList);
+      } catch (e) {
+        setPlanResult([]);
+        alert("AI 결과 파싱 오류!");
+      }
+      // 카카오맵 enrich + 일차별 분배
+      if (
+        aiList.length > 0 &&
+        userSelections.date?.startDate &&
+        userSelections.date?.endDate
+      ) {
+        await handleAIResultToDays(
+          aiList,
+          new Date(userSelections.date.startDate),
+          new Date(userSelections.date.endDate)
+        );
+      }
+    } catch (e) {
+      setPlanResult([]);
+      alert("AI 추천 재생성 오류!");
+    } finally {
+      setPlanLoading(false);
+    }
+  };
+
+  // AI 추천 결과를 리스트에 적용하는 기능
+  const handleApplyToCreateList = () => {
+    if (!dayPlaceList || dayPlaceList.length === 0) {
+      alert("적용할 AI 추천 결과가 없습니다.");
+      return;
+    }
+
+    // dayPlaceList를 리스트 형식으로 변환
+    const convertedItems = {};
+    
+    dayPlaceList.forEach((dayPlaces, dayIndex) => {
+      if (dayPlaces.length > 0) {
+        const dayKey = `${dayIndex + 1}일차`;
+        convertedItems[dayKey] = dayPlaces.map((place, placeIndex) => ({
+          description: place.name,
+          type: "place",
+          address: place.address || "",
+          category: place.category || "",
+          placeId: place.id || "",
+          phone: place.phone || "",
+          placeUrl: place.place_url || place.image || "",
+          x: place.x || "",
+          y: place.y || "",
+          id: Date.now() + placeIndex, // 고유 ID 생성
+          activity: place.activity || ""
+        }));
+      }
+    });
+
+    // localStorage에 저장하여 리스트 생성 페이지에서 사용할 수 있도록 함
+    localStorage.setItem('aiRecommendedItems', JSON.stringify(convertedItems));
+    localStorage.setItem('aiRecommendedTitle', `${userSelections.place?.korName} AI 추천 여행`);
+    localStorage.setItem('aiRecommendedDescription', `${userSelections.place?.korName}에서 ${userSelections.companion}와 함께하는 ${userSelections.style?.join(', ') || ''} 여행`);
+    
+    // 리스트 생성 페이지로 이동
+    window.location.href = '/createList';
   };
 
   return (
@@ -270,6 +405,8 @@ export default function AIManagement() {
                 onClose={() => setSelectedPlace(null)}
                 place={selectedPlace}
                 onComplete={handlePlanComplete}
+                step={step}
+                setStep={setStep}
               />
             </div>
           </div>
@@ -318,27 +455,53 @@ export default function AIManagement() {
         <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white w-[44%] h-[78%] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
             {/* 제목 */}
-            <div className="px-8 pt-8 pb-2">
+            <div className="px-8 pt-8 pb-2 flex justify-between items-start">
               <h2 className="text-2xl font-bold text-gray-800">AI 여행 추천 일정</h2>
+              {/* 닫기 버튼 */}
+              <button
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors duration-200"
+                onClick={() => {
+                  setDayPlaceList([]);
+                  setUserSelections(null);
+                  setPlanResult(null);
+                }}
+              >
+                <svg
+                  className="w-5 h-5 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
             {/* 일차별 탭 */}
             <div className="flex gap-2 px-8 pb-4 bg-white sticky top-0 z-10">
-              {dayPlaceList.map((_, idx) => (
-                <button
-                  key={idx}
-                  className={`px-5 py-2 rounded-full font-semibold transition-colors duration-200
-                    ${selectedDay === idx
-                      ? "bg-[#357ae8] text-white shadow"
-                      : "bg-gray-100 text-gray-700 hover:bg-blue-100"}`}
-                  onClick={() => setSelectedDay(idx)}
-                >
-                  {idx + 1}일차
-                </button>
-              ))}
+              {dayPlaceList.map((dayPlaces, idx) => 
+                // 장소가 있는 일차만 탭으로 표시
+                dayPlaces.length > 0 ? (
+                  <button
+                    key={idx}
+                    className={`px-5 py-2 rounded-full font-semibold transition-colors duration-200
+                      ${selectedDay === idx
+                        ? "bg-[#357ae8] text-white shadow"
+                        : "bg-gray-100 text-gray-700 hover:bg-blue-100"}`}
+                    onClick={() => setSelectedDay(idx)}
+                  >
+                    {idx + 1}일차
+                  </button>
+                ) : null
+              )}
             </div>
             {/* 선택된 일차의 장소 리스트 */}
             <div className="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
-              {dayPlaceList[selectedDay].length === 0 ? (
+              {!dayPlaceList[selectedDay] || dayPlaceList[selectedDay].length === 0 ? (
                 <div className="text-gray-400 text-center py-20">추천 장소 없음</div>
               ) : (
                 <div className="space-y-4">
@@ -377,14 +540,19 @@ export default function AIManagement() {
             {/* 오른쪽 하단 버튼 영역 */}
             <div className="flex justify-end gap-3 px-8 pb-6">
               <button
-                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200"
-                onClick={() => {/* 다시 생성하기 로직 추가 필요 */}}
+                className={`px-6 py-2 rounded-lg font-semibold transition-colors duration-200 ${
+                  userSelections 
+                    ? "bg-gray-200 text-gray-700 hover:bg-gray-300" 
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
+                onClick={handleRegenerate}
+                disabled={!userSelections}
               >
                 다시 생성하기
               </button>
               <button
                 className="bg-[#6ea8fd] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#357ae8] transition-colors duration-200"
-                onClick={() => {/* 적용하기 로직 추가 필요 */}}
+                onClick={handleApplyToCreateList}
               >
                 적용하기
               </button>

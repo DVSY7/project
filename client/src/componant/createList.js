@@ -164,6 +164,46 @@ export default function CreateList(props) {
     }
   };
 
+  // AI 추천 결과 자동 적용
+  useEffect(() => {
+    const aiRecommendedItems = localStorage.getItem('aiRecommendedItems');
+    const aiRecommendedTitle = localStorage.getItem('aiRecommendedTitle');
+    const aiRecommendedDescription = localStorage.getItem('aiRecommendedDescription');
+    
+    if (aiRecommendedItems) {
+      try {
+        const parsedItems = JSON.parse(aiRecommendedItems);
+        
+        // 일차 수에 맞게 days 배열 업데이트
+        const dayKeys = Object.keys(parsedItems);
+        if (dayKeys.length > 0) {
+          setDays(dayKeys);
+        }
+        
+        // AI 추천 항목들을 registeredItems에 적용
+        setRegisteredItems(parsedItems);
+        
+        // 제목과 설명도 자동으로 설정
+        if (aiRecommendedTitle) {
+          setTitle(aiRecommendedTitle);
+        }
+        if (aiRecommendedDescription) {
+          setText(aiRecommendedDescription);
+        }
+        
+        // localStorage에서 데이터 삭제 (한 번만 적용되도록)
+        localStorage.removeItem('aiRecommendedItems');
+        localStorage.removeItem('aiRecommendedTitle');
+        localStorage.removeItem('aiRecommendedDescription');
+        
+        console.log('AI 추천 결과가 성공적으로 적용되었습니다:', parsedItems);
+      } catch (error) {
+        console.error('AI 추천 결과 적용 중 오류:', error);
+        alert('AI 추천 결과 적용 중 오류가 발생했습니다.');
+      }
+    }
+  }, []);
+
   // 등록버튼 로직
   const handleSubmit = async () => {
     try {
@@ -194,6 +234,7 @@ export default function CreateList(props) {
         return true;
       });
 
+      
       // 유효하지 않으면 아래 코드 실행하지 않음
       if (!hasValidItems) return;
 
