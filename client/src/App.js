@@ -34,7 +34,7 @@ function App() {
           <Route path="/auth/naver/callback" element={<NaverRedirectPage/>}/>
           <Route path="/auth/google/callback" element={<GoogleRedirectPage/>}/>
           <Route path="/createList" element={<CreateList userID={userID}/>}/>
-          <Route path="/createPost" element={<CreatePost/>} />
+          <Route path="/createPost" element={<CreatePost userID={userID} />} />
           <Route path="/day/:day" element={<DayDetails/>}/>
           <Route path="/AIManagement" element={<AIManagement/>}/>
         </Routes>

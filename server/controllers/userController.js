@@ -4,9 +4,15 @@ require('dotenv').config({ path: '../config/.env' });
 const db = require('../config/db'); // DB 연결
 const bcrypt = require('bcryptjs'); // bcrypt 모듈 불러오기
 const jwt = require('jsonwebtoken'); // jsonwebtoken 불러오기
+const fs = require('fs');
+const path = require('path');
 const { logLoginAttempt } = require('../utiles/logHelper');
-
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
 const JWT_SECRET = process.env.JWT_SECRET; // env에서 가져옴
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // 회원가입 처리
 exports.signup = async (req, res) => {
@@ -319,5 +325,86 @@ exports.addUserRoom = async (req, res) => {
   }catch(error){
     res.status(500).json({message:error});
   }
+  }
+}
+
+// 게시글 작성 처리
+exports.createPost = async (req, res) =>{
+  const {postInfo} = req.body;
+  const {id, name, email, profile, postText, titleText, address} = postInfo;
+  
+  // 전달된 body데이터에서 이미지데이터를 추출
+  const imageDataArray = postInfo.imageData;
+  console.log(postInfo.address);
+  try{
+    if(!imageDataArray || !Array.isArray(imageDataArray)){
+      return res.status(400).json({message:"이미지 데이터가 없습니다."});
+    }
+
+    // 이미지 경로를 저장할 변수선언
+    const savedPath = [];
+
+    // 서버 디렉토리에 이미지를 저장하는 반복문
+    imageDataArray.map((base64String,index) => {
+      // base64 헤더 제거
+      const base64Data = base64String.replace(/^data:image\/\w+;base64,/, '');
+      const extension = base64String.match(/^data:image\/(\w+);base64/)[1]; // 예: jpeg, png
+      const buffer = Buffer.from(base64Data, 'base64');
+
+      // 저장 경로 및 파일명 지정
+      const koreaTimestamp = dayjs().tz('Asia/Seoul').format('YYYYMMDDHHmmssSSS');
+      const filename = `PostImage_${koreaTimestamp}_${index}.${extension}`;
+      const filePath = path.join(__dirname, '../uploads/posts', filename);
+
+      // 저장된 파일 경로 기록
+      savedPath.push(`http://localhost:5000/images/posts/${filename}`);
+
+      // 파일저장
+      fs.writeFileSync(filePath, buffer);
+    });
+
+    console.log("image저장 성공!",savedPath);
+    if(savedPath.length > 0){
+      const [galleryResult] = await db.query(`
+        INSERT INTO gallery ( user_id, username, title, text, profile_image, location )
+        VALUES (?,?,?,?,?,?)  
+      `,[id,email,titleText,postText,profile,address[0]]);
+      
+      // 데이터가 삽입된 게시글 ID를 저장
+      const galleryID = galleryResult.insertId;
+
+      const insertPromise = savedPath.map((path, index)=>{
+        return db.query(`
+          INSERT INTO gallery_image ( image_url, description )
+          VALUES (?,?)  
+        `,[path,postInfo.address[index]]);
+      });
+
+      const results = await Promise.all(insertPromise);
+      const imageID = results.map(([result])=> (result.insertId));
+
+      // 결과 값이 정렬순서가 섞일 수 있어서 다시 정렬
+      const sortImageId = imageID.sort((a,b)=>a-b);
+
+      // 게시글과 이미지를 연결
+      const insertPromise2 = sortImageId.map((imageID,index)=>{
+        return db.query(`
+        INSERT INTO gallery_image_relation ( gallery_id, gallery_image_id, display_order )
+        VALUES (?,?,?)   
+      `,[galleryID,imageID,index + 1]);
+      });
+
+      const results2 = await Promise.all(insertPromise2);
+
+      console.log("이미지연결 결과:",results2);
+      console.log("삽입된 이미지아이디",sortImageId);
+      console.log("삽입할 정보:",postInfo);
+      console.log("삽입된 게시글 아이디",galleryID);
+    }
+
+    res.status(200).json({result:true});
+  }catch(error){
+    console.log(error);
+    res.status(500).json({message:error})
   }
 }

@@ -283,7 +283,7 @@ export default function CreateList(props) {
         ...(isPlanned && {
           endDate: endDate,
           meetPlace: meetPlace,
-          budget: budget,
+          budget: parseInt(budget) || 0,
           periodStartDate: periodStartDate,
           periodEndDate: periodEndDate,
         }),

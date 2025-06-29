@@ -189,7 +189,7 @@ export default function Header(props) {
                             }}
                             className={` flex justify-end items-center text-end font-sans font-bold ml-auto cursor-pointer`}
                         >
-                            <img src={`${userInfo[0]?.profile_image_url?? "images/미니프로필.png"}`} alt="미니프로필" className={`w-[40px] h-[40px] mr-2 rounded-[50%]`} />{username}
+                            <img src={`${userInfo[0]?.profile_image_url?? "images/미니프로필.png"}`} alt="미니프로필" className={`w-[40px] h-[40px] mr-2 rounded-[50%] aspect-square`} />{username}
                         </p>
                     </div>
 

@@ -8,7 +8,8 @@ const db = mysql.createPool({
     user: 'root',
     password: '0000',
     database: 'bucketmate',
-    port: process.env.DB_PORT // .env에 DB_PORT=3400 으로 되어 있어야 함
+    port: process.env.DB_PORT || 3400 // 기본값 3400 설정
 });
 
 module.exports = db;
+
