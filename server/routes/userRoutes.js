@@ -27,5 +27,7 @@ router.post(`/bookmark`,userController.bookmark);
 // 리스트 참여 API
 router.post(`/addUserRoom`,userController.addUserRoom);
 
+// 게시글 작성 API
+router.post(`/createPost`,userController.createPost);
 
 module.exports = router;
