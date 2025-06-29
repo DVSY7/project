@@ -182,12 +182,12 @@ export default function AIManagement() {
       ).join(", ")}
       ${
         userSelections.style?.includes("빼곡한 일정")
-          ? "- 사용자는 하루에 여러 장소(최소 3곳 이상)를 방문하고 다양한 활동을 경험하는 **빼곡한 일정**을 선호합니다. 각 날짜별로 최소 3곳 이상 추천해주세요."
+          ? "- 사용자는 하루에 여러 장소(최소 3곳 이상)를 방문하고 다양한 활동을 경험하는 **빼곡한 일정**을 선호합니다. 각 날짜별로 최소 5곳 이상 추천해주세요."
           : userSelections.style?.includes("널널한 일정")
-          ? "- 사용자는 한두 곳만 방문하고 쉬는 시간을 많이 포함하는 **널널한 일정**을 선호합니다. 각 날짜별로 1~2곳만 추천해주세요."
+          ? "- 사용자는 여유로운 여행을 선호하며, 하루에 1~2곳 정도의 장소를 방문하고 충분한 휴식 시간을 가지는 **널널한 일정**을 원합니다. 각 날짜별로 1~2곳 정도로 추천해주세요. 너무 적게 추천하지 마세요."
           : ""
       }
-      \n\n위 조건에 맞는 여행 일정(장소, 추천 활동 등)을 JSON 형식으로 추천해줘.\n응답 예시:\n{\n  \"recommendations\": [\n    {\n      \"name\": \"장소명\",\n      \"description\": \"설명\",\n      \"address\": \"주소\",\n      \"activity\": \"추천 활동\"\n    }\n  ]\n}`;
+      \n\n위 조건에 맞는 여행 일정(장소, 추천 활동 등)을 JSON 형식으로 추천해주세요. 여행 일수에 맞춰 충분한 수의 장소를 추천해주세요. 예를 들어 3일 여행이면 최소 6-9곳, 5일 여행이면 최소 10-15곳을 추천해주세요. 이전과 다른 새로운 장소들을 추천해주세요.\n응답 예시:\n{\n  \"recommendations\": [\n    {\n      \"name\": \"장소명\",\n      \"description\": \"설명\",\n      \"address\": \"주소\",\n      \"activity\": \"추천 활동\"\n    }\n  ]\n}`;
 
       setDebugPrompt(prompt); // 프롬프트 저장
       setStep(1);
@@ -249,22 +249,33 @@ export default function AIManagement() {
     setPlanLoading(true);
     setPlanResult(null);
     setDayPlaceList([]);
+    
+    // 여행 일수 계산
+    const daysCount = Math.max(
+      1,
+      Math.ceil((new Date(userSelections.date.endDate) - new Date(userSelections.date.startDate)) / (1000 * 60 * 60 * 24)) + 1
+    );
+    
+    // 일수에 따른 최소 추천 장소 수 계산
+    const minPlaces = daysCount * 2; // 최소 하루 2곳
+    const maxPlaces = daysCount * 3; // 최대 하루 3곳
+    
     try {
       const prompt = `사용자가 다음과 같이 여행을 계획했습니다.\n- 여행지: ${
         userSelections.place?.korName
       }\n- 동행자: ${
         userSelections.companion
-      }\n- 여행 기간: ${userSelections.date?.startDate?.toLocaleDateString()} ~ ${userSelections.date?.endDate?.toLocaleDateString()}\n- 일정 스타일: ${(
+      }\n- 여행 기간: ${userSelections.date?.startDate?.toLocaleDateString()} ~ ${userSelections.date?.endDate?.toLocaleDateString()} (${daysCount}일)\n- 일정 스타일: ${(
         userSelections.prefer || []
       ).join(", ")}
       ${
         userSelections.style?.includes("빼곡한 일정")
-          ? "- 사용자는 하루에 여러 장소(최소 3곳 이상)를 방문하고 다양한 활동을 경험하는 **빼곡한 일정**을 선호합니다. 각 날짜별로 최소 3곳 이상 추천해주세요."
+          ? "- 사용자는 하루에 여러 장소(최소 3곳 이상)를 방문하고 다양한 활동을 경험하는 **빼곡한 일정**을 선호합니다. 각 날짜별로 최소 5곳 이상 추천해주세요."
           : userSelections.style?.includes("널널한 일정")
-          ? "- 사용자는 한두 곳만 방문하고 쉬는 시간을 많이 포함하는 **널널한 일정**을 선호합니다. 각 날짜별로 1~2곳만 추천해주세요."
+          ? "- 사용자는 여유로운 여행을 선호하며, 하루에 1~2곳 정도의 장소를 방문하고 충분한 휴식 시간을 가지는 **널널한 일정**을 원합니다. 각 날짜별로 1~2곳 정도로 추천해주세요. 너무 적게 추천하지 마세요."
           : ""
       }
-      \n\n위 조건에 맞는 여행 일정(장소, 추천 활동 등)을 JSON 형식으로 추천해주세요. 이전과 다른 새로운 장소들을 추천해주세요.\n응답 예시:\n{\n  \"recommendations\": [\n    {\n      \"name\": \"장소명\",\n      \"description\": \"설명\",\n      \"address\": \"주소\",\n      \"activity\": \"추천 활동\"\n    }\n  ]\n}`;
+      \n\n위 조건에 맞는 여행 일정(장소, 추천 활동 등)을 JSON 형식으로 추천해주세요. ${daysCount}일 여행이므로 최소 ${minPlaces}곳에서 ${maxPlaces}곳 정도의 장소를 추천해주세요. 이전과 다른 새로운 장소들을 추천해주세요.\n응답 예시:\n{\n  \"recommendations\": [\n    {\n      \"name\": \"장소명\",\n      \"description\": \"설명\",\n      \"address\": \"주소\",\n      \"activity\": \"추천 활동\"\n    }\n  ]\n}`;
 
       setDebugPrompt(prompt); // 프롬프트 저장
       setStep(1);
