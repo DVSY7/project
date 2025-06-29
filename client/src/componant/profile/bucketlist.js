@@ -80,7 +80,10 @@ export default function BucketList(props){
                         const interest = listInfo.interest.split("&")[0].trim();
                         const interestColor = changeInterestColor(interest);
                         return(
-                        <div key={`list-${listInfo.list_id}`} className={`flex w-[90%] h-[25%] border-b border-b-gray-200 ml-6`}>
+                        <div 
+                            key={`list-${listInfo.list_id}`} 
+                            className={`flex w-[90%] h-[25%] border-b border-b-gray-200 ml-6 hover:bg-gray-200 rounded-md transition-colors duration-300`}
+                        >
                             <div className={`2xl:flex justify-center items-end w-[15%] h-full hidden`}><img src={listInfo.profile_image} alt="프로필" className={`mb-2 w-[55px] h-[55px] rounded-[50%]`}></img></div>
                             <div className={`flex flex-col justify-end w-[65%] h-full`}>
                                 <div className={`font-bold ml-4`}>{listInfo.title}</div>
