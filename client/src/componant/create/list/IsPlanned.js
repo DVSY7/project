@@ -56,16 +56,16 @@ export default function IsPlanned({setEndDate, setMeetPlace, setBudget, setPerio
       <div className="rounded-2xl bg-blue-100 shadow-md p-6 flex flex-col items-start mr-4">
         <span className="text-3xl mb-2">⏳</span>
         <label className="font-semibold mb-1">실행 기간</label>
-        <div className="flex gap-2 w-full">
+        <div className="flex gap-2 w-full text-xs">
           <input
             type="date"
-            className="flex-1 rounded-lg border border-gray-300 p-2 mt-1"
+            className="flex-1 min-w-0 rounded-lg border border-gray-300 p-2 mt-1"
             onChange={(e) => setPeriodStartDate(e.target.value)}
           />
           <span className="self-center">~</span>
           <input
             type="date"
-            className="flex-1 rounded-lg border border-gray-300 p-2 mt-1"
+            className="flex-1 min-w-0 rounded-lg border border-gray-300 p-2 mt-1"
             onChange={(e) => setPeriodEndDate(e.target.value)}
           />
         </div>
