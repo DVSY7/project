@@ -27,7 +27,7 @@ export default function FilterSelectBar(props){
             <div 
             key={optionkey}
             onClick={()=>{setClicked((prev) => !prev);}}
-            className={`flex justify-center bg-gray-200 border-[6px] px-[10px] border-gray-200 border-solid rounded-md relative font-sans font-bold`}>
+            className={`flex justify-center bg-gray-200 border-[6px] px-[20px] border-gray-200 border-solid rounded-md relative font-sans font-bold`}>
                 {/* 선택된 옵션 */}
                 {isselected}
                 {/* 셀렉트 바 드롭다운 영역 */}

@@ -6,6 +6,7 @@ import { insertDateHeaders, formatDateKorean } from "./utilities/dateUtils";
 import { CheckedCurrentMemberButton, CommunityButtons } from "./ui/button";
 import { fetchMessageAPI, fetchMessageReadAPI } from "./api/fetchMessageAPI";
 import io from "socket.io-client";
+import { changeChatRoomColor, changeInterestColor } from "../profile/utilities/interestColor";
 
 export default function Chatroom(props) {
 
@@ -49,7 +50,7 @@ export default function Chatroom(props) {
 
     // selectedList 값이 변동이 있을때만 실행
     useEffect(() => {
-        const selectedFriend = chattingList.find((friend) => friend.title === selectedList);
+        const selectedFriend = chattingList.find((friend) => friend.chat_room_id === selectedList);
         if (selectedFriend) {
             setChatroom(selectedFriend.owner_name);
             setChatroomProfile(selectedFriend.profile_image_url);
@@ -199,6 +200,10 @@ export default function Chatroom(props) {
         setFetchChatList(messaging);
     },[messaging]);
 
+    // ineterest Color 변수
+    const interestColor = changeInterestColor(chatroomTheme.split("&")[0].trim());
+    // chatRoom Color 변수
+    const chatRoomColor = changeChatRoomColor(chatroomTheme.split("&")[0].trim());
 
     return (
         <>
@@ -211,11 +216,12 @@ export default function Chatroom(props) {
                 // 대화방 선택 시
                 <>
                     {/* 선택된 대화방 헤더영역 */}
-                    <div className={`flex items-center w-full h-[70px] border-b border-solid border-gary-300`}>
+                    <div className={`flex items-center w-full h-[70px] border-b border-solid border-gary-300 bg-white rounded-t-3xl`}>
                         {/* 선택된 대화방 헤더요소 */}
+                        
                         <img src={`${chatroomProfile}`} alt="미니프로필" className={`w-[40px] h-[40px] rounded-[50%] ml-4`} />
                         <span className={`ml-4`}>{chatroom}</span>
-                        <span className={`ml-4 p-1 px-3 rounded-3xl bg-yellow-100 font-sans font-bold`}>
+                        <span className={`ml-4 p-[0.15rem] px-3 text-[0.8rem] rounded-3xl ${interestColor} font-sans font-bold`}>
                             {chatroomTheme}
                         </span>
                         <div
@@ -256,12 +262,12 @@ export default function Chatroom(props) {
                     </div>
 
                     {/* 선택된 대화방 채팅영역 */}
-                    <div className={`flex flex-col w-full h-[calc(100%_-_140px)] overflow-y-auto`}>
+                    <div className={`flex flex-col w-full h-[calc(100%_-_140px)] overflow-y-auto ${chatRoomColor}`}>
                         {formattedMessages.map((item, index) => {
                             if (item.type === "date-stamp") {
                                 return (
                                     <div key={`date-${index}`} className="flex justify-center text-gray-500 font-bold my-4 font-sans">
-                                        <div className={`border-[1px] border-solid border-black px-2 rounded-2xl`}>📅 {formatDateKorean(item.date)}</div>
+                                        <div className={`shadow-md px-2 rounded-2xl bg-white`}>📅 {formatDateKorean(item.date)}</div>
                                     </div>
                                 );
                             }
@@ -287,7 +293,7 @@ export default function Chatroom(props) {
                     </div>
 
                     {/* 채팅내용 입력 영역 */}
-                    <div className={` flex items-center w-full h-[70px] border-t-[2px] border-solid border-gray-200`}>
+                    <div className={` flex items-center w-full h-[70px] border-t-[2px] border-solid border-gray-200 bg-white rounded-b-3xl`}>
                         <textarea
                         value={messageText}
                         onKeyDown={(e) => {

@@ -13,6 +13,8 @@ export default function CreateList(props) {
 
   const {userID} = props;
 
+  console.log(userID);
+
   // 계획형, 비계획형 상태관리 스테이트
   const [isPlanned, setIsPlanned] = useState(true);
   // 제목과 소개글 상태 추가

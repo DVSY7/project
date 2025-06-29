@@ -202,6 +202,7 @@ export default function Gallery(props) {
               }
             </div>
             {/* 프로필 모달 */}
+                    {console.log(item)}
                     <ProfileModal
                     clickedProfile = {clickedProfile}
                     setClickedProfile = {setClickedProfile}

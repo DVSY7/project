@@ -22,6 +22,8 @@ export default function AIManagement() {
   const buttons = ["전체", "국내", "해외"];
   const GPTAPIKEY = process.env.REACT_APP_GPT_API_KEY;
 
+  console.log("GPTKEY",GPTAPIKEY);
+
   const places = [
     {
       engName: "OSAKA",

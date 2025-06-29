@@ -21,4 +21,11 @@ router.post(`/gallery/updateComment`,userController.updateComment);
 // 게시글 댓글 좋아요처리 API
 router.post(`/gallery/updateCommentLikes`,userController.updateCommentLikes);
 
+// 북마크 처리 API
+router.post(`/bookmark`,userController.bookmark);
+
+// 리스트 참여 API
+router.post(`/addUserRoom`,userController.addUserRoom);
+
+
 module.exports = router;

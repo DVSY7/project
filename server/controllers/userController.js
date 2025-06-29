@@ -249,3 +249,75 @@ exports.updateCommentLikes = async (req, res) => {
     res.status(500).json({message:"댓글 좋아요 처리 오류",error});
   }
 }
+
+// 북마크 처리
+exports.bookmark = async (req, res) => {
+  const {listID, userID, isBookmark} = req.body;
+  try{
+    await db.query(`
+      UPDATE list_relation
+      SET is_bookmark = ?
+      WHERE list_id = ? AND user_id = ?
+      `,[isBookmark, listID, userID]);
+    console.log("서버: 북마크 변경완료");
+    res.status(200).json({message:'변경 성공'});
+  }catch(error){
+    res.status(500);
+  }
+}
+
+// 리스트 참가 처리
+exports.addUserRoom = async (req, res) => {
+  const {userID, listID} = req.body;
+  if(userID && listID){
+    try{
+    // 요청을 보낸 유저를 채팅방에 추가
+    const [result] = await db.query(`
+      INSERT IGNORE INTO user_rooms ( user_id, chat_room_id )
+      VALUES (?,?)
+      `,[userID, listID]);
+    
+    // 참여한 리스트를 목록에 추가
+    await db.query(`
+      INSERT INTO list_relation ( list_id, user_id, is_bookmark )
+      VALUES (?,?,?)  
+    `,[listID, userID, 0]);
+
+    // 유저의 이름을 가져옴
+    const [userName] = await db.query(`
+      SELECT name FROM users
+      WHERE id = ?
+      `,[userID]);
+
+    // 대화방 제목을 가져옴
+    const [listTitle] = await db.query(`
+      SELECT title FROM lists
+      WHERE list_id = ?
+      `,[listID]);
+
+    if(result.affectedRows){
+      // 유저가 참가되면 채팅방에 메세지를 보냄
+      await db.query(`
+        INSERT INTO messages ( chat_room_id, sender_id, content )
+        VALUES (?,?,?)
+        `,
+        [
+          listID,
+          55,
+          `<시스템>\n[${userName[0].name}]님이\n[${listTitle[0].title}]에 참여하셨습니다.`
+        ]
+      )
+      // 채팅방 참여 인원수 증가
+      await db.query(`
+        UPDATE chat_rooms
+        SET current_members = current_members + 1
+        WHERE chat_room_id = ?
+      `,[listID]);
+    }
+
+    res.status(200).json(result);
+  }catch(error){
+    res.status(500).json({message:error});
+  }
+  }
+}
