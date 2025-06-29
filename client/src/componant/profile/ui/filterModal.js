@@ -16,7 +16,7 @@ export default function FilterModal(props) {
     };
     const selectBarOptions = {
         option4: ["인원","2","4","6","8","16","24","40","100"],
-        option5: ["테마","여행","요리","만들기","취미","운동"],
+        option5: ["여행","도전","자기계발","건강","문화","요리","봉사","취미","기타"],
         option6: ["정렬","최신순", "지난순", "조회순", "인기순"],
     }
 

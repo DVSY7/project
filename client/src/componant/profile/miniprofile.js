@@ -8,7 +8,7 @@ import { fetchMiniProfileInfo } from "./api/MiniProfile";
 
 export default function Miniprofile(props) {
 
-    const {name, id, setProfileInfo} = props;
+    const {name, id, setProfileInfo, clickedBookmark} = props;
 
     // 플렉스 요소 센터 정렬
     const flexCenter = "justify-center items-center";
@@ -51,7 +51,7 @@ export default function Miniprofile(props) {
             }
             getMiniProfileInfo();
         }
-    },[username,userID])
+    },[username,userID,clickedBookmark])
 
     console.log(miniProfileUserInfo);
 
@@ -78,9 +78,9 @@ export default function Miniprofile(props) {
                 </div>
                 {/* 리스트/게시글/찜 */}
                 <div className={`flex justify-start items-center font-sans w-full h-[20%]`}>
-                    <div className={`ml-9`}>리스트<span className={`mx-4`}>0</span>|</div>
+                    <div className={`ml-9`}>리스트<span className={`mx-4`}>{miniProfileUserInfo[0]?.list_count?? 0}</span>|</div>
                     <div className={`ml-4`}>게시글<span className={`mx-4`}>{miniProfileUserInfo[0]?.gallery_count?? 0}</span>|</div>
-                    <div className={`ml-4`}>찜<span className={`2xl:m-4 `}>0</span></div>
+                    <div className={`ml-4`}>찜<span className={`2xl:m-4 `}>{miniProfileUserInfo[0]?.bookmark_count?? 0}</span></div>
                 </div>
             </div>
 

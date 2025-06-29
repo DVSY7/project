@@ -32,9 +32,9 @@ export default function ProfileModal(props) {
             return updateClickedMember;
         })
     }
-
+    
     // 이미 친구인지 확인하는 변수
-    const isFriend = friendList.some(member => member.friend_id === MemberKey || (chattingList[0]?.friend_id?? 0));
+    const isFriend = friendList.some(member => member.friend_id === MemberKey );
 
     // 친구리스트 차단리스트 구분 변수
     const isChecked = blockedList.some(member => member.friend_id === MemberKey) 
@@ -74,11 +74,6 @@ export default function ProfileModal(props) {
             handleChangeFunc();
         }
     }
-
-    // 디버그를 위한 코드
-    useEffect(()=>{
-       console.log(selectedProfile); 
-    },[])
 
 
     // 클릭한 버튼에 따라 동작하는 함수

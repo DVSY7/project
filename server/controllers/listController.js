@@ -115,17 +115,24 @@ exports.createList = async (req, res) => {
       }
 
       if(result.affectedRows){
+        // 리스트가 생성되면 방금 생성된 리스트의 아이디를 가져옴
+        const [listID] = await db.query(`
+          SELECT list_id FROM lists
+          ORDER BY created_at DESC
+          `)
+
         // 리스트가 생성되면 채팅방을 생성
         await db.query(`
-          INSERT INTO chat_rooms ( title, theme, owner_id, current_members, max_members)
-          VALUES (?,?,?,1,?)
-        `,[title, interest, userID, maxParticipants]);
+          INSERT INTO chat_rooms ( chat_room_id, title, theme, owner_id, current_members, max_members)
+          VALUES (?,?,?,?,1,?)
+        `,[listID[0].list_id, title, interest, userID, maxParticipants]);
 
         // 생성된 채팅방 아이디를 가져옴
         const [chat_room_id] = await db.query(`
           SELECT cr.chat_room_id FROM chat_rooms cr
           JOIN lists l ON cr.title = l.title AND cr.owner_id = l.user_id AND cr.created_at = l.created_at
           WHERE cr.title = ? AND cr.owner_id = ?
+          ORDER BY cr.created_at DESC LIMIT 1
           `,[title, userID]);
 
         // 채팅방과 유저를 연결
@@ -134,11 +141,17 @@ exports.createList = async (req, res) => {
           VALUES (?,?,1),(?,?,0)
         `,[userID, chat_room_id[0].chat_room_id,55, chat_room_id[0].chat_room_id]);
 
+        // 생성된 리스트와 유저를 연결
+        await db.query(`
+          INSERT INTO list_relation ( list_id, user_id )
+          VALUES (?,?)  
+        `,[listID[0].list_id, userID]);
+
         // 생성된 채팅방에 시스템 메세지를 보냄
         await db.query(`
           INSERT INTO messages ( chat_room_id, sender_id, content )
-          VALUES (?, 55, "시스템.\n[${title}] 채팅방이 생성되었습니다.\n 계획을 토론해보세요.");
-          `,[chat_room_id[0].chat_room_id]);
+          VALUES (?,?,?)
+          `,[chat_room_id[0].chat_room_id],55,"<시스템>\n[${title}] 채팅방이 생성되었습니다.\n 계획을 토론해보세요.");
       }
 
       // 태그 저장

@@ -64,7 +64,7 @@ export function CheckedCurrentMemberButton(props) {
         userID
     } = props;
 
-    console.log("userID",userID);
+    console.log("현재현재userID",userID);
     // 프로필 클릭 상태관리 스테이트
     const [clickedProfile, setClickedProfile] = useState({});
     // 참여인원 버튼 클릭 시 랜더링
@@ -79,7 +79,7 @@ export function CheckedCurrentMemberButton(props) {
                         <span className={`ml-4`}>대화상대</span>
                         {/* 이부분에 백엔드 필요 */}
                         <span className={`ml-2`}>{chattingList.length}</span>
-                        {console.log(chattingList)}
+                        {console.log("chattingList",chattingList)}
                     </div>
                     {/* 대화상대 목록영역 */}
                     <div
@@ -89,7 +89,9 @@ export function CheckedCurrentMemberButton(props) {
                                 <React.Fragment key = {key}>
                                     <div
                                     onClick={()=> {
-                                        setClickedProfile(prev => ({...prev, [Member.friend_id] : true}))}} 
+                                        setClickedProfile(prev => ({...prev, [Member.friend_id] : true}));
+                                        console.log("참여인원 멤버키:",Member.friend_id);
+                                    }} 
                                     className={`${key === 0 && "mt-5"} flex hover:bg-gray-200 transition-colors duration-300 items-center bg-white border-[1px] border-gray-200 rounded-md min-h-[70px] h-[70px] w-[550px] my-2`}>
                                         <img alt="미니프로필" src={`${Member.profile_image_url}`} className={`h-[50px] w-[50px] rounded-[50%] mx-4`}></img>
                                         {Member.name}
@@ -98,9 +100,10 @@ export function CheckedCurrentMemberButton(props) {
                                         </div>
                                     </div>
                                     <ProfileModal
+                                        requestComponent = "conversation"
                                         MemberKey = {Member.friend_id}
                                         clickedProfile = {clickedProfile}
-                                        chattingList = {chattingList}
+                                        chattingList = {[Member]}
                                         friendList = {friendList}
                                         blockedList = {blockedList}
                                         setClickedProfile = {setClickedProfile}

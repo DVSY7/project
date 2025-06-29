@@ -18,7 +18,7 @@ import {useState} from "react";
 function App() {
 
   const [userID, setUserID2] = useState([]);
-
+  console.log(userID);
 
   return (
     <BrowserRouter>
@@ -29,7 +29,7 @@ function App() {
           <Route path="/signup" element={<Login href = "signup"/>}/>
           <Route path="/home" element={<Home setUserID2 = {setUserID2}/>}></Route>
           <Route path="/community" element={<Community/>}/>
-          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/profile" element={<Profile setUserID2 = {setUserID2}/>}/>
           <Route path="/auth/kakao/callback" element={<KakaoRedirectPage/>}/>
           <Route path="/auth/naver/callback" element={<NaverRedirectPage/>}/>
           <Route path="/auth/google/callback" element={<GoogleRedirectPage/>}/>

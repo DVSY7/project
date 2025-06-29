@@ -157,7 +157,6 @@ exports.chattingList = async (req, res) =>{
           ON lm.sender_id = p.user_id
         WHERE lm.rn = 1
       )
-
       SELECT DISTINCT
         cr.chat_room_id,
         cr.title,
@@ -405,11 +404,44 @@ exports.miniProfile = async ( req, res ) => {
     const {userID} = req.body;
     const [rows] = await db.query(`
       SELECT
+       (SELECT COUNT(*) FROM list_relation WHERE user_id = ? AND is_bookmark = 1) AS bookmark_count,
+       (SELECT COUNT(*) FROM list_relation WHERE user_id = ? ) AS list_count,
        (SELECT COUNT(*) FROM gallery WHERE user_id = ?) AS gallery_count,
        (SELECT profile_image_url FROM profiles WHERE user_id = ?) AS profile_image
-    `,[userID,userID]);
+    `,[userID,userID,userID,userID]);
     console.log(rows);
     res.status(200).json(rows);
+  }catch(error){
+    res.status(500);
+  }
+}
+
+// 버킷리스트 데이터 가져오기
+exports.listInfo = async ( req, res ) => {
+  try{
+    const {urlUserID,currentUserID} = req.body;
+    if(urlUserID && currentUserID){
+      const [rows] = await db.query(`
+      SELECT 
+      l.list_id, 
+      p.profile_image_url as profile_image, 
+      l.title, l.interest, 
+      DATE_FORMAT(l.period_start_date, '%Y-%m-%d') AS period_start_date, 
+      DATE_FORMAT(l.period_end_date, '%Y-%m-%d') AS period_end_date, 
+      cr.current_members, 
+      cr.max_members,
+      COALESCE(lr2.is_bookmark,0) AS is_bookmark
+      FROM list_relation lr
+      LEFT JOIN list_relation lr2 ON lr.list_id = lr2.list_id AND lr2.user_id = ?
+      JOIN lists l ON lr.list_id = l.list_id
+      JOIN profiles p ON p.user_id = l.user_id
+      JOIN chat_rooms cr ON l.list_id = cr.chat_room_id
+      WHERE lr.user_id = ?
+      ORDER BY l.created_at DESC;
+      `,[currentUserID, urlUserID]);
+      console.log(currentUserID,urlUserID);
+      res.status(200).json(rows);
+    }
   }catch(error){
     res.status(500);
   }
