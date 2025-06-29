@@ -433,7 +433,7 @@ export default function AIManagement() {
         </div>
       )}
 
-      {planResult && (
+      {/* {planResult && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-[600px] max-h-[80vh] overflow-y-auto">
             <h3 className="text-lg font-bold mb-4">AI 추천 여행 일정</h3>
@@ -460,7 +460,7 @@ export default function AIManagement() {
             </button>
           </div>
         </div>
-      )}
+      )} */}
 
       {dayPlaceList.length > 0 && (
         <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm">
