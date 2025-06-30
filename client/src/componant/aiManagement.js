@@ -2,8 +2,9 @@ import "../App.css";
 import Footer from "./content/footer";
 import Header from "./content/header";
 import Menu from "./menu";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import MultiStepPlanModal from "./ai/MultiStepPlanModal";
+import { checkedToken } from "./function/checkedToken";
 
 export default function AIManagement() {
   const [selectedPlace, setSelectedPlace] = useState(null);
@@ -14,6 +15,8 @@ export default function AIManagement() {
   const [debugPrompt, setDebugPrompt] = useState("");
   const [debugRawResponse, setDebugRawResponse] = useState("");
   const [selectedDay, setSelectedDay] = useState(0); // 0: 1일차, 1: 2일차, ...
+  const [name,setName] = useState("");
+  const [userName, setUsername] = useState("");
   // 사용자가 선택한 정보를 저장할 상태 추가
   const [userSelections, setUserSelections] = useState(null);
   // MultiStepPlanModal의 step 상태 추가
@@ -21,6 +24,19 @@ export default function AIManagement() {
   // 버튼 반복
   const buttons = ["전체", "국내", "해외"];
   const GPTAPIKEY = process.env.REACT_APP_GPT_API_KEY;
+
+
+  // 토큰으로 유저 정보 요청
+  useEffect(()=>{
+      const getUserInfo = async()=>{
+        try{
+          await checkedToken(setUsername, setName);
+        }catch(error){
+          console.error(error);
+        }
+      }
+      getUserInfo();
+    },[])
 
   console.log("GPTKEY",GPTAPIKEY);
 
@@ -213,6 +229,7 @@ export default function AIManagement() {
       const content = data.choices[0].message.content;
       setDebugRawResponse(content); // 원본 응답 저장
       let aiList = [];
+      console.log(debugRawResponse);
       try {
         const parsed = JSON.parse(content);
         aiList = parsed.recommendations || [];
@@ -375,7 +392,7 @@ export default function AIManagement() {
         <Menu current_src={3} />
         {/* 오른쪽: 가로 8 비율 (8/9) */}
         <div className=" flex flex-col flex-wrap row-span-9 sm:col-span-8 ">
-          <Header />
+          <Header src={3} name={name} username={userName}/>
 
           <div className={`w-full h-[75%] p-4`}>
             {/* 버튼 배치 */}
@@ -524,10 +541,11 @@ export default function AIManagement() {
                       className="flex items-center gap-5 bg-[#f7fafd] rounded-xl shadow-sm p-4 hover:shadow-lg transition-shadow"
                     >
                       <img
-                        src={place.image || "/images/noimg.png"}
+                        src={"/images/장소준비중.png"}
                         alt="등록된 이미지"
                         className="w-20 h-20 object-cover rounded-lg border"
                       />
+                      {console.log(place.image)}
                       <div className="flex-1 min-w-0">
                         <div className="font-bold text-lg truncate">{place.name}</div>
                         <div className="text-gray-600 text-sm truncate">{place.address}</div>

@@ -4,14 +4,15 @@ export default function TitleAndSelectInterest({
     setSelectedInterest,
     title,
     setTitle,
+    userInfo
 }) {
   return (
     <div className="flex-1 flex items-center justify-between border-b">
       <div className="flex gap-2">
         <img
-          src="/images/미니프로필.png"
+          src={userInfo[0]?.profile_image_url??"/images/미니프로필.png"}  
           alt="미니 프로필"
-          className="w-10 h-10"
+          className="w-10 h-10 rounded-[50%]"
         />
         <div className="text-2xl flex items-center font-semibold font-sans">
           <input

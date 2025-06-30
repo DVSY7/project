@@ -217,21 +217,23 @@ export default function Header(props) {
                             )
                         })}
                     </div>
-                    <div 
-                    onClick={(e)=>{setSearchCategory(prev => !prev)}}
-                    className={'font-sans text-[12px] text-gray-500 ml-auto mr-20 relative cursor-pointer'}>
-                        {selectedCategory}▼
-                        {searchCategory&& 
-                            <SearchCategory 
-                                onSelect={(value) => {
-                                    setSelectedCategory(value);
-                                    setSearchCategory(false);
-                                    console.log("선택된 정렬 기준:",value);
-                                    setSort(value);
-                                }}
-                                
+                    {src !== 3 &&
+                        <div 
+                        onClick={(e)=>{setSearchCategory(prev => !prev)}}
+                        className={'font-sans text-[12px] text-gray-500 ml-auto mr-20 relative cursor-pointer'}>
+                            {selectedCategory}▼
+                            {searchCategory&& 
+                                <SearchCategory 
+                                    onSelect={(value) => {
+                                        setSelectedCategory(value);
+                                        setSearchCategory(false);
+                                        console.log("선택된 정렬 기준:",value);
+                                        setSort(value);
+                                    }}
+                                    
                             />}
                     </div>
+                    }
                 </div>
 
                 {/* 모바일화면 기본요소 */}

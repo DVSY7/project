@@ -79,7 +79,7 @@ const DraggableItem = ({ item, index, moveItem, handleEditItem, handleDeleteItem
     >
       <div>
         <img
-          src={item.image}
+          src={item.image || `images/장소준비중.png`}
           alt="등록된 이미지"
           className="ml-2 w-48 h-32 object-cover rounded"
         />

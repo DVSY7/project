@@ -10,6 +10,7 @@ import DayList from "./create/list/DayList.js";
 import axios from "axios";
 import { checkedToken } from "./function/checkedToken.js";
 import { fetchUserID } from "./function/fetchUserID.js";
+import { fetchUserInfo } from "./community/api/fetchUserInfo.js";
 
 export default function CreateList() {
 
@@ -17,6 +18,7 @@ export default function CreateList() {
   const [name,setName] = useState("");
   const [userName, setUsername] = useState("");
   const [userID, setUserID] = useState("");
+  const [userInfo, setUserInfo] = useState("");
 
   useEffect(()=>{
     const getUserInfo = async()=>{
@@ -33,7 +35,9 @@ export default function CreateList() {
     const getUserID = async()=>{
       try{
         const id = await fetchUserID(name);
+        const userInfo = await fetchUserInfo(name);
         setUserID(id);
+        setUserInfo(userInfo);
       }catch(error){
         console.error(error);
       }
@@ -378,6 +382,7 @@ export default function CreateList() {
                   setSelectedInterest={setSelectedInterest}
                   title={title}
                   setTitle={setTitle}
+                  userInfo={userInfo}
                 />
               </div>
               {/* 중간 영역 */}

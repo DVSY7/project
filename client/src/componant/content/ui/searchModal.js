@@ -20,6 +20,7 @@ export const SearchModal = ({setSearchUser,setSearchValues,searchModalValues,sea
                                 searchParams.set("userID",info.userID);
                                 setSearchParams(searchParams);
                             }
+                            setSearchUser(info.userID);
                             setSearchValues("");
                         }}
                         className={`flex items-center h-[60px] pl-2 hover:bg-gray-200`}>

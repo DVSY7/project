@@ -367,8 +367,8 @@ export default function CreatePost() {
             >
               {/* 갤러리 제목 프로필 */}
               <img
-                className={`w-[40px] h-[40px] mr-4`}
-                src="images/미니프로필.png"
+                className={`w-[40px] h-[40px] mr-4 rounded-[50%]`}
+                src={userInfo[0]?.profile_image_url?? "images/미니프로필.png"}
                 alt="미니프로필"
               ></img>
               {/* <span>{username}의 게시글</span> */}
@@ -380,8 +380,8 @@ export default function CreatePost() {
               <div className={`w-[15%] flex justify-center mt-4`}>
                 {/* 갤러리 본문 프로필 요소 */}
                 <img
-                  className={`w-[40px] h-[40px]`}
-                  src={`images/미니프로필.png`}
+                  className={`w-[40px] h-[40px] rounded-[50%]`}
+                  src={userInfo[0]?.profile_image_url ?? `images/미니프로필.png`}
                   alt="미니프로필"
                 ></img>
               </div>

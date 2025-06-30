@@ -151,7 +151,7 @@ exports.createList = async (req, res) => {
         await db.query(`
           INSERT INTO messages ( chat_room_id, sender_id, content )
           VALUES (?,?,?)
-          `,[chat_room_id[0].chat_room_id,55,"<시스템>\n[${title}] 채팅방이 생성되었습니다.\n 계획을 토론해보세요."]);
+          `,[chat_room_id[0].chat_room_id,55,`<시스템>\n[${title}] 채팅방이 생성되었습니다.\n 계획을 토론해보세요.`]);
       }
 
       // 태그 저장
