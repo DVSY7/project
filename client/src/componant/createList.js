@@ -8,12 +8,42 @@ import TagManager from "./create/list/TagManager.js";
 import TitleAndSelectInterest from "./create/list/TitleAndSelectInterest.js";
 import DayList from "./create/list/DayList.js";
 import axios from "axios";
+import { checkedToken } from "./function/checkedToken.js";
+import { fetchUserID } from "./function/fetchUserID.js";
 
-export default function CreateList(props) {
+export default function CreateList() {
 
-  const {userID} = props;
 
-  console.log(userID);
+  const [name,setName] = useState("");
+  const [userName, setUsername] = useState("");
+  const [userID, setUserID] = useState("");
+
+  useEffect(()=>{
+    const getUserInfo = async()=>{
+      try{
+        await checkedToken(setUsername, setName);
+      }catch(error){
+        console.error(error);
+      }
+    }
+    getUserInfo();
+  },[])
+
+  useEffect(()=>{
+    const getUserID = async()=>{
+      try{
+        const id = await fetchUserID(name);
+        setUserID(id);
+      }catch(error){
+        console.error(error);
+      }
+    }
+    getUserID();
+  },[name,userName]);
+
+  useEffect(()=>{
+    console.log(userID);
+  },[userID])
 
   // 계획형, 비계획형 상태관리 스테이트
   const [isPlanned, setIsPlanned] = useState(true);
