@@ -34,10 +34,12 @@ export async function galleryfetch(page = 1, limit = 15, sort, searchUser) {
 // 게시글 댓글 불러오기
 export const fetchComment = async (galleryID, userID) =>{
     try{
-        if(galleryID && userID){
+        if(galleryID){
             const res = await axios.get(`http://localhost:5000/api/gallery/comments?galleryID=${galleryID}&userID=${userID}`);
+            console.log("정상적으로 실행중");
             return res.data;
         }
+        console.log("아이디가 존재하지 않음");
     }catch(error){
         return {message:"댓글불러오기 실패:",error};
     }

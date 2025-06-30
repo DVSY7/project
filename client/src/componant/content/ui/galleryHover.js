@@ -44,18 +44,20 @@ export default function GalleryHover(props) {
         func: {
             // 좋아요 로직
             "좋아요":async ()=>{
-                setClickedLike(prev => !prev);
-                // 좋아요 취소처리
-                if(clickedLike){
-                    // 데이터베이스에 좋아요 반영
-                    await likesHandler("decrease",galleryID,userID);
-                }else if(!clickedLike){
-                    // 데이터베이스에 좋아요 반영
-                    await likesHandler("increase",galleryID,userID);
+                if(userID !== 0){
+                    setClickedLike(prev => !prev);
+                    // 좋아요 취소처리
+                    if(clickedLike){
+                        // 데이터베이스에 좋아요 반영
+                        await likesHandler("decrease",galleryID,userID);
+                    }else if(!clickedLike){
+                        // 데이터베이스에 좋아요 반영
+                        await likesHandler("increase",galleryID,userID);
+                    }
+                    // 현재 UI에 좋아요 수 반영
+                    const updatedLikes = await fetchLikes(galleryID);
+                    setLikeCounts(updatedLikes);
                 }
-                // 현재 UI에 좋아요 수 반영
-                const updatedLikes = await fetchLikes(galleryID);
-                setLikeCounts(updatedLikes);
             },
             // 조회수 로직
             "조회":async()=>{console.log("조회수 동작")
@@ -65,8 +67,10 @@ export default function GalleryHover(props) {
                 const toDayDate = koreaTimeStr.split(" ")[0];
 
                 console.log(`한국 시간: ${toDayDate}`);
-                const resViews = await updateViews(galleryID, userID, toDayDate);
-                setCurrentViews(resViews);
+                if(userID !== 0){
+                    const resViews = await updateViews(galleryID, userID, toDayDate);
+                    setCurrentViews(resViews);
+                }
             }
         }
     }

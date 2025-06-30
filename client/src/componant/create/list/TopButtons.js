@@ -9,7 +9,7 @@ export default function TopButtons({ isPlanned, setIsPlanned, Group, setGroup, O
   
   return (
     <div className="flex-1 flex items-center justify-between">
-      <div className="sm:text-xl text-lg">20xx.MM.DD</div>
+      <div className="sm:text-xl text-lg"></div>
       <div>
         <button
           className="mr-2 border px-4 py-0.5 rounded"

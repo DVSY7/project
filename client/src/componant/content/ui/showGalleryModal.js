@@ -6,7 +6,7 @@ import { getFormatTime } from "../utilities/formatTime";
 import { updateCommentLikes } from "../api/likes";
 
 export default function ShowGalleryModal(props) {
-    const { username,setClickedGallery, galleryImage, galleryInfo, index, title, text, galleryID, userID } = props;
+    const { username,setClickedGallery, galleryImage, galleryInfo, index, title, text, galleryID, userID} = props;
 
 
     // 입력한 댓글 상태관리
@@ -29,7 +29,7 @@ export default function ShowGalleryModal(props) {
             const res = await fetchComment(galleryID, userID);
             console.log("댓글정보 불러오기 실행중");
             setComments(res);
-            await console.log(res);
+            console.log(res);
     }
 
     // 댓글을 저장하는 함수
@@ -55,10 +55,12 @@ export default function ShowGalleryModal(props) {
 
     // 댓글 좋아요 반영하는 함수
     const commentLiked = async (commentID,userID,isliked)=>{
-            // 좋아요 처리
-            await updateCommentLikes(commentID, userID, isliked);
-            // 댓글 정보 최신화
-            await getComment();
+            if(userID !== 0){
+                // 좋아요 처리
+                await updateCommentLikes(commentID, userID, isliked);
+                // 댓글 정보 최신화
+                await getComment();
+            }
     }
 
     const handleClickByKey = (targetKey) => {
@@ -131,7 +133,7 @@ export default function ShowGalleryModal(props) {
                         {/* 갤러리 이미지 컨트롤러 */}
                         <div className={`absolute bottom-4 w-full h-[50px] flex justify-center items-center `}>
                             {/* 갤러리 이미지 컨트롤러 버튼 */}
-                            {galleryImage.map((item,idx) => (
+                            {galleryImage?.map((item,idx) => (
                                 <div
                                 key={`image-controller-${idx}`}
                                 onClick={() => {
@@ -172,7 +174,7 @@ export default function ShowGalleryModal(props) {
                         </div>
                         {/* 갤러리 댓글 영역 */}
                         <div className={`h-[37%] overflow-y-auto hide-scrollbar scroll-smooth`}>
-                            {comments.map((comment,idx) => {
+                            {comments?.map((comment,idx) => {
                                 // 댓글의 마지막 체크
                                 const isLast = idx === 0;
                                 return (

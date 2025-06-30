@@ -52,7 +52,7 @@ exports.comments = async (req, res) =>{
       LEFT JOIN comment_likes cl ON c.comment_id = cl.comment_id AND cl.user_id = ?
       WHERE g.id = ?
       ORDER BY c.created_at DESC
-      `,[userID,galleryID]);
+      `,[userID?? 0,galleryID]);
     res.status(200).json(rows);
   }catch(error){
     res.status(500).json({message:"댓글 불러오기 실패:",error});
