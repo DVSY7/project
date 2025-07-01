@@ -133,7 +133,7 @@ export default function ShowGalleryModal(props) {
                         {/* 갤러리 이미지 컨트롤러 */}
                         <div className={`absolute bottom-4 w-full h-[50px] flex justify-center items-center `}>
                             {/* 갤러리 이미지 컨트롤러 버튼 */}
-                            {galleryImage?.map((item,idx) => (
+                            {galleryImage.length !== 1 && galleryImage?.map((item,idx) => (
                                 <div
                                 key={`image-controller-${idx}`}
                                 onClick={() => {
