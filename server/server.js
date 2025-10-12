@@ -20,7 +20,9 @@ const io = socketIO(server, {
 const socketHandler = require("./socket");
 socketHandler(io);
 
-const PORT = process.env.SERVER_PORT || 5000;
+const PORT = process.env.PORT || 5000;
+
+server.emit("서버가 실행중입니다.")
 
 server.listen(PORT, () => {
   console.log(`서버가 ${PORT} 포트에서 실행 중`);

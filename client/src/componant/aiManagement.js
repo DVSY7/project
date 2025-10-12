@@ -38,8 +38,6 @@ export default function AIManagement() {
       getUserInfo();
     },[])
 
-  console.log("GPTKEY",GPTAPIKEY);
-
   const places = [
     {
       engName: "OSAKA",

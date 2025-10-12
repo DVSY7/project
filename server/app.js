@@ -30,6 +30,9 @@ app.use('/auth',authRoutes);
 app.use('/api',fetchRoutes);
 app.use('/api/lists', listRoutes);
 app.use('/api/images', imageRoutes);
+app.get("/", (req,res) => {
+    res.send("server started!")
+})
 
 module.exports = app;
 
