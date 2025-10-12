@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+
+.App {
+  text-align: center;
+}
+
+body {
+  font-family: 'Lilita One', sans-serif;
+}
+
+
+@layer components {
+  .right-line-after {
+    @apply relative;
+  }
+
+  .right-line-after::after {
+    content: '';
+    bottom: 0;
+    left: 0;
+    border-right: 1px solid rgb(192, 192, 192);
+    position: absolute;
+    width: 100%;
+    height: 95%;
+    transform: translateY(-2.5%);
+    z-index: -1;
+  }
+  .right-search-line-after{
+    @apply relative;
+  }
+  
+  .right-search-line-after::after{
+    content: '';
+    bottom: 0;
+    left: 0;
+    border-right: 2px solid gray;
+    position: absolute;
+    width: 100%;
+    height: 120%;
+    transform:translate(10%, 10%)
+  }
+  .galleryhover-before{
+    @apply relative;
+  }
+  .galleryhover-before::before {
+    content: '';
+    position: absolute;
+    top: 50%;         /* 세로 중앙 기준 */
+    left: 3%;          /* 가로는 왼쪽 끝 */    
+    width: 13px;
+    height: 13px;
+    background-color: gray;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  .clicked-before::before {
+    background-color: #3b82f6; /* Tailwind bg-blue-500 */
+  }
+}
+
+.custom-height {
+  height: calc(200px - 100%);
+}
+
+.hide-scrollbar {
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* IE and Edge */
+  }
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;              /* Chrome, Safari, Opera */
+  }
+.all-unset{
+  all:unset;
+}
+
+/* react-date-range 커스터마이징 스타일 */
+/* 선택 기간 표시 - 제거 */
+.rdrDateDisplayWrapper {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: none !important;
+}
+
+/* 옵션박스 년도, 월 제거 */
+.rdrMonthPicker,
+.rdrYearPicker {
+  display: none !important;
+}
+
+/* 월 가운데 정렬 */
+.rdrMonths{
+  justify-content: center !important;
+}
+
+/* */
+.rdrMonthAndYearWrapper {
+  width: 100%;
+  position: absolute;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 달력 전체 */
+.rdrCalendarWrapper {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', '맑은 고딕', 'Malgun Gothic', 'sans-serif' !important;
+  color: black  !important;
+  font-weight: 400 !important;
+}
+
+.rdrMonths {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+}
+
+.rdrMonth {
+  width: 50% !important; /* 두 달이니까 50%씩 */
+  min-width: 0 !important;
+  position: relative;
+}
+
+/* 해당 달의 이름 */
+.rdrMonthName{
+  display: flex !important;
+  font-size: 2em;
+  align-items: center !important;
+  justify-content: center !important;
+  /* background-color: aqua; */
+  padding: 4px 0 !important;
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', '맑은 고딕', 'Malgun Gothic', 'sans-serif' !important;
+  color:black !important;
+  font-weight: 400 !important;
+} 
+
+.rdrWeekDay, .rdrDayNumber span  {
+  font-size: 1.8em;
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', '맑은 고딕', 'Malgun Gothic', 'sans-serif' !important;
+  color: black  !important;
+  font-weight: 400 !important;
+}
+
+/* 날짜간의 위아래 간격 */
+.rdrDay {
+  padding-top: 15px !important;
+  height: 44px !important;
+  box-sizing: border-box !important;
+}
+
+.rdrDayDisabled {
+  color: #b0b0b0 !important;
+}
+
+
+/* 
+.rdrDayhovered .rdrDayNumber span,
+.rdrDayActive .rdrDayNumber span {
+  background-color: #3b82f6 !important;
+  color: #fff !important;
+} */
