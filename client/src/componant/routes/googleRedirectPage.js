@@ -15,7 +15,7 @@ export default function GoogleRedirectPage(){
             calledRef.current = true;
             const getToken = async () => {
                 try{
-                    const response = await axios.post('http://localhost:5000/auth/google/token',{
+                    const response = await axios.post('https://bucketmate.onrender.com/auth/google/token',{
                         code:code // code를 백엔드로 전달
                     });
                     console.log("구글 토큰 응답:", response.data.token);

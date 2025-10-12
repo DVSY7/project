@@ -6,7 +6,7 @@ export default function GoogleLogin() {
 
   // 구글 로그인 기본 설정
   const CLIENT_ID = '346251693294-hhgrlj2rdttkktte5hklbc23pnv17afl.apps.googleusercontent.com';
-  const REDIRECT_URI = 'http://localhost:3000/auth/google/callback';
+  const REDIRECT_URI = 'http://bucketmate.vercel.app/auth/google/callback';
   const STATE = 'RANDOM_STATE_STRING';
   const SCOPE = encodeURIComponent('https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile');
 
