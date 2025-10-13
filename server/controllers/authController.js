@@ -1,6 +1,6 @@
 // server/controller/authController
 
-require('dotenv').config({ path: '../config/.env' });
+require('dotenv').config();
 const qs = require('qs');
 const axios = require('axios');
 const {signupCheck} = require('../function/signup');
