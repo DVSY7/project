@@ -4,8 +4,8 @@ export default function GoogleLogin() {
   const button_element = 'w-48 h-8 rounded-md sm:w-[15rem] font-bold';
 
   // 구글 로그인 기본 설정
-  const CLIENT_ID = '346251693294-hhgrlj2rdttkktte5hklbc23pnv17afl.apps.googleusercontent.com';
-  const REDIRECT_URI = 'https://bucketmate.vercel.app/auth/google/callback/';
+  const CLIENT_ID = '346251693294-6adadfb5btinn266h0lmtsupej29nvhr.apps.googleusercontent.com';
+  const REDIRECT_URI = 'https://bucketmate.vercel.app/auth/google/callback';
   const STATE = 'RANDOM_STATE_STRING';
   const SCOPE = encodeURIComponent('https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile');
 
