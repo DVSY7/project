@@ -104,7 +104,7 @@ export default function Chatroom(props) {
     useEffect(() => {
         // 소켓 생성
         if (!socketRef.current && userInfo !== undefined) {
-            socketRef.current = io("http://localhost:5000", {
+            socketRef.current = io("https://bucketmate.onrender.com/", {
                 transports: ["websocket"], // 안정적인 연결 방식 사용
                 autoConnect: false,        // 직접 connect() 호출
                 query:{
