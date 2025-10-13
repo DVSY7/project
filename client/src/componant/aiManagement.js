@@ -217,7 +217,7 @@ export default function AIManagement() {
             Authorization: `Bearer ${GPTAPIKEY}`,
           },
           body: JSON.stringify({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4.1",
             messages: [{ role: "user", content: prompt }],
             temperature: 0.7,
           }),
@@ -306,7 +306,7 @@ export default function AIManagement() {
             Authorization: `Bearer ${GPTAPIKEY}`,
           },
           body: JSON.stringify({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4.1",
             messages: [{ role: "user", content: prompt }],
             temperature: 0.8, // 더 다양한 결과를 위해 temperature를 높임
           }),
