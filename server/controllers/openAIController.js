@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const axios = require('axios');
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 
 exports.openAIGPT = async ( req, res ) => {
     const {prompt} = req.body;
@@ -17,7 +18,7 @@ exports.openAIGPT = async ( req, res ) => {
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+                    Authorization: `Bearer ${OPENAI_API_KEY}`,
                 },
             }
         );
