@@ -1,4 +1,3 @@
-import React from 'react';
 
 export default function GoogleLogin() {
   // 버튼 요소 클래스
@@ -6,7 +5,7 @@ export default function GoogleLogin() {
 
   // 구글 로그인 기본 설정
   const CLIENT_ID = '346251693294-hhgrlj2rdttkktte5hklbc23pnv17afl.apps.googleusercontent.com';
-  const REDIRECT_URI = 'https://bucketmate.vercel.app/auth/google/callback';
+  const REDIRECT_URI = 'https://bucketmate.vercel.app/auth/google/callback/';
   const STATE = 'RANDOM_STATE_STRING';
   const SCOPE = encodeURIComponent('https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile');
 
