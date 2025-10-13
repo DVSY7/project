@@ -333,9 +333,7 @@ export default function AIManagement() {
     dayPlaceList.forEach((dayPlaces, dayIndex) => {
       if (dayPlaces.length > 0) {
         const dayKey = `${dayIndex + 1}일차`;
-        convertedItems[dayKey] = dayPlaces.map((place, placeIndex) =>
-          console.log(place.image)
-          ({
+        convertedItems[dayKey] = dayPlaces.map((place, placeIndex) =>({
           description: place.name,
           type: "place",
           address: place.address || "",
