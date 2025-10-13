@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Select from 'react-select';
+import GoogleLogin from './login/googleLogin';
 import KakaoLogin from './login/kakaoLogin';
 import NaverLogin from './login/naverLogin';
-import GoogleLogin from './login/googleLogin';
 
 export default function Login(props) {
   // 들어온 경로
@@ -92,7 +92,7 @@ export default function Login(props) {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/users/login',
+        'https://bucketmate.onrender.com/api/users/login',
         inputData,
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -221,7 +221,7 @@ export default function Login(props) {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/users/signup',
+        'https://bucketmate.onrender.com/api/users/signup',
         userData
       );
       alert('회원가입 성공!');

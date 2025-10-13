@@ -1,8 +1,8 @@
 // client/src/componant/routes/kakaoRedirectPage.js
 
-import {useEffect, useRef} from "react";
-import {useSearchParams} from "react-router-dom";
 import axios from 'axios';
+import { useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 
 
 export default function KakaoRedirectPage(){
@@ -18,7 +18,7 @@ export default function KakaoRedirectPage(){
             // 백엔드로 code를 보내서 토큰 요청
             const getToken = async () =>{
                try{
-                const response = await axios.post('http://localhost:5000/auth/kakao/token',{
+                const response = await axios.post('https://bucketmate.onrender.com/auth/kakao/token',{
                     code: code, // code값을 body로 전송
                 });
 

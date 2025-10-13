@@ -1,10 +1,10 @@
 // client/DayList.js
 
-import KakaoMap from "./KakaoMap";
-import ListAddPhoto from "./ListAddPhoto";
 import { useState } from "react";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import KakaoMap from "./KakaoMap";
+import ListAddPhoto from "./ListAddPhoto";
 
 // 드래그 가능한 일차 버튼 컴포넌트
 const DraggableDayButton = ({ day, index, moveDay, isActive, onClick }) => {
@@ -180,7 +180,7 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
       formData.append('image', file);
 
       // 4. 서버로 POST 요청
-      const response = await fetch('http://localhost:5000/api/images/upload', {
+      const response = await fetch('https://bucketmate.onrender.com/api/images/upload', {
         method: 'POST',
         body: formData
       });
@@ -190,7 +190,7 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
       
       if (result.success) {
         // 이미지 경로 설정 (서버의 정적 파일 경로)
-        const imageUrl = `http://localhost:5000/${result.imagePath}`;
+        const imageUrl = `https://bucketmate.onrender.com/${result.imagePath}`;
         setImageSrc(imageUrl);
         console.log('이미지가 성공적으로 업로드되었습니다:', result.filename);
       } else {

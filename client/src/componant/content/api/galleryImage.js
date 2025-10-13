@@ -5,7 +5,7 @@ import axios from 'axios';
 export async function galleryImageFetch(galleryID){
     try {
         const response = await axios.get(
-            `http://localhost:5000/api/galleryImage?galleryID=${galleryID}`
+            `https://bucketmate.onrender.com/api/galleryImage?galleryID=${galleryID}`
         );
         return response.data;
     }catch (error) {

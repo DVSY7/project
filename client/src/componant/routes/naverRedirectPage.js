@@ -1,8 +1,8 @@
 // client/src/componant/routes/NaverRedirectPage.js
 
+import axios from 'axios';
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import axios from 'axios';
 
 export default function NaverRedirectPage() {
   const [searchParams] = useSearchParams();
@@ -19,7 +19,7 @@ export default function NaverRedirectPage() {
 
       const getNaverToken = async () => {
         try {
-          const response = await axios.post('http://localhost:5000/auth/naver/token', {
+          const response = await axios.post('https://bucketmate.onrender.com/auth/naver/token', {
             code,
             state,
           });
