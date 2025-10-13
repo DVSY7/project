@@ -1,5 +1,6 @@
 // server/app.js
 
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -31,7 +32,7 @@ app.use('/api',fetchRoutes);
 app.use('/api/lists', listRoutes);
 app.use('/api/images', imageRoutes);
 app.get("/", (req,res) => {
-    res.send("server started!")
+    res.send(process.env.GOOGLE_REDIRECT_URL)
 })
 
 module.exports = app;
