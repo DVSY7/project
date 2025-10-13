@@ -517,11 +517,12 @@ export default function AIManagement() {
                       className="flex items-center gap-5 bg-[#f7fafd] rounded-xl shadow-sm p-4 hover:shadow-lg transition-shadow"
                     >
                       <img
-                        src={"/images/장소준비중.png"}
+                        src={"https://place.map.kakao.com/11331488#photoList?type=all&pidx=0" || "/images/장소준비중.png"}
                         alt="등록된 이미지"
                         className="w-20 h-20 object-cover rounded-lg border"
                       />
                       {console.log(place.image)}
+                      {console.log(place.thumbnail)}
                       <div className="flex-1 min-w-0">
                         <div className="font-bold text-lg truncate">{place.name}</div>
                         <div className="text-gray-600 text-sm truncate">{place.address}</div>
