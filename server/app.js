@@ -8,6 +8,7 @@ const userRoutes = require("./routes/userRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 const authRoutes = require("./routes/authRoutes");
 const searchRoutes = require("./routes/searchRoutes");
+const openAIRoutes = require("./routes/openAIRoutes")
 const fetchRoutes = require('./routes/fetchRoutes');
 const listRoutes = require('./routes/listRoutes');
 const imageRoutes = require('./routes/imageRoutes');
@@ -29,6 +30,7 @@ app.use('/api/token',protectedRoutes);
 app.use('/api',searchRoutes);
 app.use('/auth',authRoutes);
 app.use('/api',fetchRoutes);
+app.use('/api',openAIRoutes);
 app.use('/api/lists', listRoutes);
 app.use('/api/images', imageRoutes);
 app.get("/", (req,res) => {

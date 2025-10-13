@@ -5,6 +5,7 @@ import Menu from "./menu";
 import { useState,useEffect } from "react";
 import MultiStepPlanModal from "./ai/MultiStepPlanModal";
 import { checkedToken } from "./function/checkedToken";
+import axios from "axios";
 
 export default function AIManagement() {
   const [selectedPlace, setSelectedPlace] = useState(null);
@@ -23,7 +24,6 @@ export default function AIManagement() {
   const [step, setStep] = useState(1);
   // 버튼 반복
   const buttons = ["전체", "국내", "해외"];
-  const GPTAPIKEY = process.env.REACT_APP_GPT_API_KEY;
 
 
   // 토큰으로 유저 정보 요청
@@ -208,23 +208,11 @@ export default function AIManagement() {
       setDebugPrompt(prompt); // 프롬프트 저장
       setStep(1);
 
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${GPTAPIKEY}`,
-          },
-          body: JSON.stringify({
-            model: "gpt-4.1",
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.7,
-          }),
-        }
+      const response = await axios.post(
+        "https://bucketmate.onrender.com/api/openAIGPT",
+        { prompt },
       );
-      const data = await response.json();
-      const content = data.choices[0].message.content;
+      const content = response.data.choices[0].message.content;
       setDebugRawResponse(content); // 원본 응답 저장
       let aiList = [];
       console.log(debugRawResponse);
@@ -297,23 +285,11 @@ export default function AIManagement() {
       setDebugPrompt(prompt); // 프롬프트 저장
       setStep(1);
 
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${GPTAPIKEY}`,
-          },
-          body: JSON.stringify({
-            model: "gpt-4.1",
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.8, // 더 다양한 결과를 위해 temperature를 높임
-          }),
-        }
+      const response = await axios.post(
+        "https://bucketmate.onrender.com/api/openAIGPT",
+        { prompt }
       );
-      const data = await response.json();
-      const content = data.choices[0].message.content;
+      const content = response.data.choices[0].message.content;
       setDebugRawResponse(content); // 원본 응답 저장
       let aiList = [];
       try {
