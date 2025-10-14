@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- 홈페이지 (인트로 페이지만 노출) -->
   <url>
     <loc>https://bucketmate.vercel.app/</loc>
     <lastmod>2025-10-14</lastmod>
@@ -8,3 +6,4 @@
     <priority>1.0</priority>
   </url>
 </urlset>
+
