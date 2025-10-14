@@ -1,3 +1,15 @@
 # https://www.robotstxt.org/robotstxt.html
+# 모든 검색엔진에게 허용/제한
 User-agent: *
-Disallow:
+Allow: /      # 홈(인트로)만 허용
+Disallow: /home
+Disallow: /profile
+Disallow: /community
+Disallow: /createList
+Disallow: /createPost
+Disallow: /AIManagement
+Disallow: /auth/kakao/callback
+Disallow: /auth/naver/callback
+Disallow: /auth/google/callback
+Disallow: /day/
+
