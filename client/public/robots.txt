@@ -1,7 +1,14 @@
 # https://www.robotstxt.org/robotstxt.html
 # 모든 검색엔진에게 허용/제한
+
 User-agent: *
-Allow: /      # 홈(인트로)만 허용
+# 홈(인트로) 페이지 허용
+Allow: /
+
+# 사이트맵 허용
+Allow: /sitemap.xml
+
+# 노출하지 않을 SPA 라우트
 Disallow: /home
 Disallow: /profile
 Disallow: /community
@@ -12,4 +19,3 @@ Disallow: /auth/kakao/callback
 Disallow: /auth/naver/callback
 Disallow: /auth/google/callback
 Disallow: /day/
-
