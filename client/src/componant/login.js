@@ -356,7 +356,7 @@ export default function Login(props) {
       <div ref={loginSectionRef}>
         <div
           className={
-            'bg-gray-300 relative min-h-screen w-full overflow-y-scroll overflow-x-hidden'
+            'bg-gray-300 relative min-h-screen w-full overflow-x-hidden'
           }
         >
           <video
