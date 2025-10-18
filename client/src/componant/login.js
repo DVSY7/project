@@ -90,6 +90,10 @@ export default function Login(props) {
   const [local, setLocal] = useState('');
   const [selectedInterests, setSelectedInterestsList] = useState([]);
 
+  useEffect(()=>{
+    document.body.style.overflow = 'hidden'; // 스크롤 막기
+  },[])
+
   // 회원가입 성공 시 폼 초기화 함수
   const resetForm = () => {
     setUserName('');
