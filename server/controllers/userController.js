@@ -16,7 +16,7 @@ dayjs.extend(timezone);
 
 // 회원가입 처리
 exports.signup = async (req, res) => {
-  const { username, password, name, sex, birth, email, local, interests } = req.body;
+  const { username, password, name, sex, birth, email, local, interests, profile_image } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -39,8 +39,8 @@ exports.signup = async (req, res) => {
       local,
     ]);
 
-    const userId = result.insertId;
-    console.log('회원가입 성공. 사용자 ID:', userId);
+    const insertId = result.insertId;
+    console.log('회원가입 성공. 사용자 ID:', insertId);
 
     // 관심사 없으면 바로 응답
     if (!interests || interests.length === 0) {
@@ -65,9 +65,24 @@ exports.signup = async (req, res) => {
       // 중계 테이블 삽입
       await db.query(
         'INSERT INTO UserInterests (user_id, interest_id) VALUES (?, ?)',
-        [userId, interestId]
+        [insertId, interestId]
       );
     }
+
+    // 등록된 프로필이 없으면 기본이미지 제공
+    if (!profile_image){
+      const basicProfile = "images/미니프로필.png";
+      try{
+        await db.query(
+          "INSERT INTO profiles(user_id, profile_image_url) VALUES(?,?)",
+          [insertId, basicProfile]
+        )
+      } catch(error) {
+        console.error(`프로필 이미지 등록 실패: ${error}`);
+      }
+    }
+    
+    
 
     res.status(200).json({ message: '회원가입 성공 (관심사 포함)' });
   } catch (err) {
