@@ -24,6 +24,14 @@ export default function AIManagement() {
   const [step, setStep] = useState(1);
   // 버튼 반복
   const buttons = ["전체", "국내", "해외"];
+  // 사용자에게 AI일정 생성 진행단계 표시
+  const AIplanLodingMessage = {
+    step1:"Buki가 키워드 확인중...",
+    step2:"Buki가 결과를 기다리중...",
+    step3:"Buki가 일정을 최종 정리 중..."
+  };
+  // 진행단계를 상태저장
+  const [bukiProgess, setBukiProgess] = useState(null);
 
 
   // 토큰으로 유저 정보 요청
@@ -172,7 +180,6 @@ export default function AIManagement() {
       result[idx % daysCount].push(item);
     });
     setDayPlaceList(result);
-    
     // 첫 번째로 장소가 있는 일차를 자동으로 선택
     const firstDayWithPlaces = result.findIndex(dayPlaces => dayPlaces.length > 0);
     if (firstDayWithPlaces !== -1) {
@@ -182,13 +189,16 @@ export default function AIManagement() {
 
   // 여행계획 완료 시 ChatGPT 호출
   const handlePlanComplete = async (userSelections) => {
+    // 3초 기다리는 유틸 함수
+    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     // 사용자 선택 정보 저장
     setUserSelections(userSelections);
-    
     setPlanLoading(true);
     setPlanResult(null);
     setDayPlaceList([]);
     try {
+      setBukiProgess(AIplanLodingMessage.step1);
+      await wait(2000);
       const prompt = `사용자가 다음과 같이 여행을 계획했습니다.\n- 여행지: ${
         userSelections.place?.korName
       }\n- 동행자: ${
@@ -207,7 +217,7 @@ export default function AIManagement() {
 
       setDebugPrompt(prompt); // 프롬프트 저장
       setStep(1);
-
+      setBukiProgess(AIplanLodingMessage.step2);
       const response = await axios.post(
         "https://bucketmate.onrender.com/api/openAIGPT",
         { prompt },
@@ -230,6 +240,8 @@ export default function AIManagement() {
         userSelections.date?.startDate &&
         userSelections.date?.endDate
       ) {
+        setBukiProgess(AIplanLodingMessage.step3);
+        await wait(2000);
         await handleAIResultToDays(
           aiList,
           new Date(userSelections.date.startDate),
@@ -418,13 +430,50 @@ export default function AIManagement() {
         </div>
       </div>
       {/* AI 추천 결과 팝업 */}
-      {planLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 text-xl font-bold">
-            AI 여행 일정 생성 중...
+{planLoading && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg p-4 text-xl font-bold relative">
+      
+      {/* 그라데이션 border wrapper */}
+      <div className="relative rounded-lg p-1">
+        
+        {/* 그라데이션 border */}
+        <div className="absolute inset-0 rounded-lg border-[4px] border-transparent
+                        bg-clip-border bg-gradient-to-t from-purple-500 via-pink-500 to-yellow-400
+                        animate-gradient-move"></div>
+        
+        {/* 실제 내용 */}
+        <div className="relative flex flex-col items-center p-12 bg-white rounded-lg z-10">
+          
+          {/* 글자 그라데이션 */}
+          <div className="mb-4 text-[30px] 
+                          bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 
+                          animate-gradient-move bg-clip-text text-transparent">
+            Buki가 일정을 생성 중
           </div>
+          
+          {/* 스피너 */}
+          <div className="relative w-16 h-16 my-6 spinner-container">
+            {/* 두근두근 배경 */}
+            <div className="absolute inset-0 m-auto w-full h-full rounded-full bg-purple-200 animate-pulse z-0"></div>
+
+            {/* 핑크 원 + 잔상 */}
+            <div className="absolute inset-0 m-auto w-full h-full spinner-dot spinner-dot-pink"></div>
+            <div className="absolute inset-0 m-auto w-full h-full spinner-trail spinner-trail-pink"></div>
+
+            {/* 보라 원 + 잔상 (180도 반대) */}
+            <div className="absolute inset-0 m-auto w-full h-full spinner-dot spinner-dot-purple opposite"></div>
+            <div className="absolute inset-0 m-auto w-full h-full spinner-trail spinner-trail-purple opposite1"></div>
+          </div>
+
+          {/* 진행률 표시 */}
+          {bukiProgess}
         </div>
-      )}
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* {planResult && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -461,6 +510,8 @@ export default function AIManagement() {
             {/* 제목 */}
             <div className="px-8 pt-8 pb-2 flex justify-between items-start">
               <h2 className="text-2xl font-bold text-gray-800">AI 여행 추천 일정</h2>
+              <div className="text-2x1 font-bold text-gray-800 text-2xl bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 
+                          animate-gradient-move">Buki가 일정을 완성했어요!</div>
               {/* 닫기 버튼 */}
               <button
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors duration-200"

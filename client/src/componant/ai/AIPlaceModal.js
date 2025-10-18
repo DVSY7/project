@@ -1,6 +1,9 @@
 //client/src/componant/ai/AIPlaceModal.js
+import {useState} from "react";
 
 export default function AIPlaceModal({onClose, place, onNext}){
+
+    const [hosvered, setHovered] = useState(false);
 
     return(
         <div className="bg-white rounded-lg py-8 w-[50%] h-[61%] max-w-full relative flex items-center justify-center">
@@ -29,14 +32,26 @@ export default function AIPlaceModal({onClose, place, onNext}){
                 <div className="text-gray-400 text-2xl font-thin">{place.engName}</div>
                 <div className="text-black-400 text-4xl font-bold mb-4">{place.korName}</div>
                 <div className="text-sm mb-4 h-[175px] whitespace-pre-line leading-relaxed text-justify">{place.desc}</div>
-                {/* 일정생성 버튼*/}
-                <button
-                    className="bg-black text-white px-10 py-4 rounded-lg absolute bottom-0 font-bold"
-                    onClick={onNext}
-                    // onClick={() => console.log(2)}
-                >
-                    일정 만들기
-                </button> 
+                <div className="group">
+                    <span 
+                        className={`flex items-center h-24 text-2xl transition-opacity duration-700
+                                    bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400
+                                    bg-clip-text text-transparent font-semibold animate-gradient-move
+                                    ${hosvered? "opacity-100":"opacity-0"}`}
+                    >
+                        AI: Buki와 일정을 생성해보세요!
+                    </span>
+                    {/* 일정생성 버튼*/}
+                    <button
+                        className="bg-black absolute text-white px-10 py-4 rounded-lg bottom-0 font-bold hover:bg-blue-500 transition-colors duration-300"
+                        onClick={onNext}
+                        onMouseOver={()=>setHovered(true)}
+                        onMouseLeave={()=>setHovered(false)}
+                        // onClick={() => console.log(2)}
+                    >
+                        일정 만들기
+                    </button>
+                </div> 
             </div>
             {/* 이미지 */}
             <div className="flex-1 flex flex-col h-full justify-between w-full">

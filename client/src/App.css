@@ -164,6 +164,96 @@ body {
   color: #b0b0b0 !important;
 }
 
+@keyframes gradient-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-move {
+  background-size: 200% 200%;
+  animation: gradient-move 2s ease infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg) translateX(24px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(24px) rotate(-360deg); }
+}
+
+.spinner-container {
+  position: relative;
+  width: 4rem;
+  height: 4rem;
+}
+
+/* 공통 점 */
+.spinner-dot {
+  position: absolute;
+  margin:auto;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  transform-origin: center;
+  animation: spin 1.2s linear infinite;
+}
+
+/* 잔상 (트레일) */
+.spinner-trail {
+  position: absolute;
+  margin:auto;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  transform-origin: center;
+  filter: blur(4px);
+  opacity: 0.6;
+  animation: spin 1.2s linear infinite;
+}
+
+/* 핑크 */
+.spinner-dot-pink { background: #ec4899; }
+.spinner-trail-pink { 
+  background: rgba(236, 72, 153, 0.6); 
+  animation-delay: 0.05s; /* 핑크 잔상 지연 */
+}
+
+/* 보라 */
+.spinner-dot-purple { background: #8b5cf6; }
+.spinner-trail-purple { 
+  background: rgba(139, 92, 246, 0.6); 
+}
+
+/* 반대쪽 (180° 지연) */
+.opposite {
+  animation-delay: -0.6s !important; /* 점과 잔상 모두 적용 */
+}
+/* 반대쪽 (180° 지연) */
+.opposite1 {
+  animation-delay: -0.55s !important; /* 점과 잔상 모두 적용 */
+}
+
+.spinner-background {
+  position: absolute;
+  inset: 0; /* top/right/bottom/left = 0 */
+  margin: auto; /* 중앙 정렬 */
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.1);
+  animation: pulse 1.2s ease-in-out infinite;
+  z-index: 0; /* 원 뒤 */
+}
+
+/* 두근두근 애니메이션 */
+@keyframes pulse {
+  0%, 100% { transform: scale(0.3); }
+  50% { transform: scale(0.8); }
+}
+
+
+
+
+
 
 /* 
 .rdrDayhovered .rdrDayNumber span,
