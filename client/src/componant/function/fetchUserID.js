@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const fetchUserID = async (name)=>{
     try{
-        const response = await axios.get(`https://bucketmate.onrender.com/api/userID?name=${name}`);
+        const response = await axios.get(`http://localhost:5000/api/userID?name=${name}`);
         console.log("데이터 요청중:",response.data[0].id);
         return response.data;
     }catch(error){

@@ -19,7 +19,7 @@ export default function NaverRedirectPage() {
 
       const getNaverToken = async () => {
         try {
-          const response = await axios.post('https://bucketmate.onrender.com/auth/naver/token', {
+          const response = await axios.post('http://localhost:5000/auth/naver/token', {
             code,
             state,
           });

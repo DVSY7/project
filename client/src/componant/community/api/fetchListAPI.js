@@ -17,7 +17,7 @@ export const fetchList = async (listType,userName,searchKeyWord = "") => {
   console.log("친구리스트 요청중 : home",userName);
 
   try {
-    const response = await axios.get(`https://bucketmate.onrender.com/api/${listType}?username=${userName}&status=${status[listType]}&searchKeyWord=${searchKeyWord}`);
+    const response = await axios.get(`http://localhost:5000/api/${listType}?username=${userName}&status=${status[listType]}&searchKeyWord=${searchKeyWord}`);
     return response.data;
   } catch (error) {
     console.error('친구목록 불러오기 실패', error);

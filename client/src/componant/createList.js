@@ -326,7 +326,7 @@ export default function CreateList() {
 
       // post 요청으로 로컬호스트 5000번에 보냄, 2번째 인자: 전송할 json데이터, 3번째 인자: 옴션
       const response = await axios.post(
-        "https://bucketmate.onrender.com/api/lists/create",
+        "http://localhost:5000/api/lists/create",
         listData,
         {
           headers: {

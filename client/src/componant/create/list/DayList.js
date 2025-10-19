@@ -180,7 +180,7 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
       formData.append('image', file);
 
       // 4. 서버로 POST 요청
-      const response = await fetch('https://bucketmate.onrender.com/api/images/upload', {
+      const response = await fetch('http://localhost:5000/api/images/upload', {
         method: 'POST',
         body: formData
       });
@@ -190,7 +190,7 @@ export default function DayList({days, setDays, registeredItems,setRegisteredIte
       
       if (result.success) {
         // 이미지 경로 설정 (서버의 정적 파일 경로)
-        const imageUrl = `https://bucketmate.onrender.com/${result.imagePath}`;
+        const imageUrl = `http://localhost:5000/${result.imagePath}`;
         setImageSrc(imageUrl);
         console.log('이미지가 성공적으로 업로드되었습니다:', result.filename);
       } else {

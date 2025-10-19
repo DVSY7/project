@@ -21,7 +21,7 @@ export async function galleryfetch(page = 1, limit = 15, sort, searchUser) {
 
     try {
         const response = await axios.get(
-            `https://bucketmate.onrender.com/api/gallery?page=${page}&limit=${limit}&sort=${isSort}&searchUser=${searchUser}`
+            `http://localhost:5000/api/gallery?page=${page}&limit=${limit}&sort=${isSort}&searchUser=${searchUser}`
         );
         // response.data = [{ id, username, …, thumbnail_url }, …]
         return response.data;
@@ -35,7 +35,7 @@ export async function galleryfetch(page = 1, limit = 15, sort, searchUser) {
 export const fetchComment = async (galleryID, userID) =>{
     try{
         if(galleryID){
-            const res = await axios.get(`https://bucketmate.onrender.com/api/gallery/comments?galleryID=${galleryID}&userID=${userID}`);
+            const res = await axios.get(`http://localhost:5000/api/gallery/comments?galleryID=${galleryID}&userID=${userID}`);
             console.log("정상적으로 실행중");
             return res.data;
         }
@@ -48,7 +48,7 @@ export const fetchComment = async (galleryID, userID) =>{
 // 게시글 댓글 저장
 export const updateComment = async(galleryID, userID, commentText) =>{
     try{
-        const res = await axios.post(`https://bucketmate.onrender.com/api/users/gallery/updateComment`,{
+        const res = await axios.post(`http://localhost:5000/api/users/gallery/updateComment`,{
             galleryID,
             userID,
             commentText

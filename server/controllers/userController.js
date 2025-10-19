@@ -372,7 +372,7 @@ exports.createPost = async (req, res) =>{
       const filePath = path.join(__dirname, '../uploads/posts', filename);
 
       // 저장된 파일 경로 기록
-      savedPath.push(`https://bucketmate.onrender.com/images/posts/${filename}`);
+      savedPath.push(`http://localhost:5000/images/posts/${filename}`);
 
       // 파일저장
       fs.writeFileSync(filePath, buffer);

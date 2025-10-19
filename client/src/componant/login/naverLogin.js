@@ -4,7 +4,7 @@ export default function NaverLogin() {
   
     // 네이버 로그인 기본 설정
     const CLIENT_ID = '4Dz2Y9Ovs8NYRENEZDMq';
-    const REDIRECT_URI = 'https://bucketmate.vercel.app/auth/naver/callback';
+    const REDIRECT_URI = 'http://localhost:3000/auth/naver/callback';
     const STATE = 'RANDOM_STATE_STRING';
 
     const naverURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`;

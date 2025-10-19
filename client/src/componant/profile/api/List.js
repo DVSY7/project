@@ -5,7 +5,7 @@ import axios from "axios";
 export const fetchListInfo = async(urlUserID,currentUserID)=>{
     try{
         if(urlUserID){
-            const res = await axios.post(`https://bucketmate.onrender.com/api/listInfo`,{ urlUserID,currentUserID });
+            const res = await axios.post(`http://localhost:5000/api/listInfo`,{ urlUserID,currentUserID });
             return res.data;
         }
     }catch(error){
@@ -19,7 +19,7 @@ export const bookmarkChange = async(listID, userID, isBookmark) => {
     try{
         // 북마크 변경 정보가 모두 있으면 요청을 보냄
         if(listID && userID){
-            const res = await axios.post(`https://bucketmate.onrender.com/api/users/bookmark`,{listID,userID,isBookmark})
+            const res = await axios.post(`http://localhost:5000/api/users/bookmark`,{listID,userID,isBookmark})
             console.log("북마크 변경 중",res);
             return res;
         }
@@ -35,7 +35,7 @@ export const addUserRoom = async(listID, userID) =>{
     console.log(userID,listID);
     if(userID && listID){
         try{
-            const res = await axios.post(`https://bucketmate.onrender.com/api/users/addUserRoom`,{listID,userID});
+            const res = await axios.post(`http://localhost:5000/api/users/addUserRoom`,{listID,userID});
             return res.data;
         }catch(error){
             return 0;

@@ -10,7 +10,7 @@ export const actionList = async (actionType, userID)=>{
     }
 
     try{
-        const response = await axios.post(`https://bucketmate.onrender.com/api/${actionType}`,{
+        const response = await axios.post(`http://localhost:5000/api/${actionType}`,{
             // 요청받은 유저 ID
             requestID : userID,
             // 요청받은 값

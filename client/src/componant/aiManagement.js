@@ -219,7 +219,7 @@ export default function AIManagement() {
       setStep(1);
       setBukiProgess(AIplanLodingMessage.step2);
       const response = await axios.post(
-        "https://bucketmate.onrender.com/api/openAIGPT",
+        "http://localhost:5000/api/openAIGPT",
         { prompt },
       );
       const content = response.data.choices[0].message.content;
@@ -298,7 +298,7 @@ export default function AIManagement() {
       setStep(1);
 
       const response = await axios.post(
-        "https://bucketmate.onrender.com/api/openAIGPT",
+        "http://localhost:5000/api/openAIGPT",
         { prompt }
       );
       const content = response.data.choices[0].message.content;

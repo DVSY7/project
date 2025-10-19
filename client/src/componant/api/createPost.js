@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const createPost = async (postInfo)=>{
     try{
-        const res = await axios.post(`https://bucketmate.onrender.com/api/users/createPost`,{
+        const res = await axios.post(`http://localhost:5000/api/users/createPost`,{
             postInfo,
         })
         return res.data;
