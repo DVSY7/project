@@ -18,7 +18,7 @@ export default function KakaoRedirectPage(){
             // 백엔드로 code를 보내서 토큰 요청
             const getToken = async () =>{
                try{
-                const response = await axios.post('https://bucketmate.onrender.com/auth/kakao/token',{
+                const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/auth/kakao/token`,{
                     code: code, // code값을 body로 전송
                 });
 

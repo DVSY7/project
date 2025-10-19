@@ -142,7 +142,7 @@ export default function Login(props) {
 
     try {
       const response = await axios.post(
-        'https://bucketmate.onrender.com/api/users/login',
+        `${process.env.REACT_APP_SERVER_URL}/api/users/login`,
         inputData,
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -271,7 +271,7 @@ export default function Login(props) {
 
     try {
       const response = await axios.post(
-        'https://bucketmate.onrender.com/api/users/signup',
+        `${process.env.REACT_APP_SERVER_URL}/api/users/signup`,
         userData
       );
       alert('회원가입 성공!');

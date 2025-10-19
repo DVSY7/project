@@ -5,7 +5,7 @@ import axios from "axios";
 // 좋아요 표시 불러오기
 export const fetchIsLiked = async (galleryID, userID) => {
   try {
-    const res = await axios.get(`https://bucketmate.onrender.com/api/isLiked?galleryID=${galleryID}&userID=${userID}`);
+    const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/isLiked?galleryID=${galleryID}&userID=${userID}`);
     const data = res.data;
     console.log("data는?",data);
     return data.liked;
@@ -18,7 +18,7 @@ export const fetchIsLiked = async (galleryID, userID) => {
 // 좋아요 표시 저장
 export const likesHandler = async (requests,galleryID, userID) =>{
   try{
-    const res = await axios.get(`https://bucketmate.onrender.com/api/users/likesHandler?requests=${requests}&galleryID=${galleryID}&userID=${userID}`);
+    const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users/likesHandler?requests=${requests}&galleryID=${galleryID}&userID=${userID}`);
     return res.data;
   }catch(error){
     return null;
@@ -28,7 +28,7 @@ export const likesHandler = async (requests,galleryID, userID) =>{
 // 좋아요 수 불러오기
 export const fetchLikes = async (galleryID) =>{
   try{
-    const res = await axios.get(`https://bucketmate.onrender.com/api/likes?galleryID=${galleryID}`);
+    const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/likes?galleryID=${galleryID}`);
     return res.data[0].likes;
   }catch(error){
     return null;
@@ -38,7 +38,7 @@ export const fetchLikes = async (galleryID) =>{
 // 댓글 좋아요 동작처리
 export const updateCommentLikes = async (commentID, userID, isliked) => {
   try{
-    await axios.post(`https://bucketmate.onrender.com/api/users/gallery/updateCommentLikes`,{
+    await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/users/gallery/updateCommentLikes`,{
       commentID,
       userID,
       isliked

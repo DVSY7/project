@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const fetchMiniProfileInfo = async (userID)=>{
     try{
-        const res = await axios.post(`https://bucketmate.onrender.com/api/profile/miniProfile`,{
+        const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/profile/miniProfile`,{
             userID,
         })
         return res.data;

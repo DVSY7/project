@@ -6,7 +6,7 @@ export default function KakaoLogin() {
 
     // kakao 로그인 버튼 함수
     const REST_API_KEY = 'f6badfb7692d7ca2cbf9febe90105836';
-    const REDIRECT_URL = 'https://bucketmate.vercel.app/auth/kakao/callback';
+    const REDIRECT_URL = `${process.env.REACT_APP_CLIENT_URL}/auth/kakao/callback`;
 
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URL}&response_type=code`;
 

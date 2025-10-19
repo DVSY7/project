@@ -9,7 +9,7 @@ export async function checkedToken(setUsername,setName){
     }
 
     try{
-        const response = await axios.get('https://bucketmate.onrender.com/api/token/protected-data',{
+        const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/token/protected-data`,{
             headers:{
                 Authorization: `Bearer ${token}`,
             },

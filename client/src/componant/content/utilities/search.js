@@ -5,7 +5,7 @@ import axios from "axios";
 export async function search(searchData){
 
     try{
-        const response = await axios.post('https://bucketmate.onrender.com/api/search',{
+        const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/search`,{
             searchQuery: searchData,
         });
 
