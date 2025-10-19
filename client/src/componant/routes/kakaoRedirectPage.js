@@ -33,5 +33,17 @@ export default function KakaoRedirectPage(){
          }
     },[searchParams]);
 
-    return <div>카카오 로그인 중입니다...</div>
+    return <div className="flex justify-center items-center h-screen">
+                <div
+                    className={`w-32 h-32 border-8 border-blue-500 border-t-gray-300 rounded-full spin`}
+                > 
+                </div>
+                <div className="absolute text-[22px] font-bold">로딩중
+                    <div className="flex justify-center gap-1">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div> 
 }
