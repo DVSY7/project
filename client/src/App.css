@@ -175,7 +175,7 @@ body {
   animation: gradient-move 2s ease infinite;
 }
 
-@keyframes spin {
+@keyframes spin-buki {
   0% { transform: rotate(0deg) translateX(24px) rotate(0deg); }
   100% { transform: rotate(360deg) translateX(24px) rotate(-360deg); }
 }
@@ -194,7 +194,7 @@ body {
   height: 0.8rem;
   border-radius: 50%;
   transform-origin: center;
-  animation: spin 1.2s linear infinite;
+  animation: spin-buki 1.2s linear infinite;
 }
 
 /* 잔상 (트레일) */
@@ -207,7 +207,7 @@ body {
   transform-origin: center;
   filter: blur(4px);
   opacity: 0.6;
-  animation: spin 1.2s linear infinite;
+  animation: spin-buki 1.2s linear infinite;
 }
 
 /* 핑크 */
@@ -250,14 +250,14 @@ body {
   50% { transform: scale(0.8); }
 }
 
-@keyframes spin {
+@keyframes spin-login {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
 /* 클래스 정의는 별도로 만들어야 함 */
 .spin {
-  animation: spin 1s linear infinite;
+  animation: spin-login 1s linear infinite;
 }
 
 @keyframes bounce-dot {
