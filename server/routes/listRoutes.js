@@ -6,5 +6,6 @@ const listController = require('../controllers/listController');
 
 // 라우터 생성 API
 router.post('/create', listController.createList);
+router.post('/slides', listController.listSlides);
 
 module.exports = router;//server/routes/fetchRoutes.js

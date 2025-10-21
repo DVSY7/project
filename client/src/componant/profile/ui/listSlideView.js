@@ -1,10 +1,38 @@
 //client/src/componant/profile/ui/listSlideView.js
 import {useState,useEffect,useRef} from "react";
+import { fetchListSlides } from "../api/ListSlide";
 
 
 export const ListSlideView = ({ listID,listContainRef,onClose}) =>{
     const [slideAnimate,setSlideAnimate] = useState("slide-in-right");
     const slideRef = useRef();
+    const [listClicked, setListClicked] = useState(false);
+    // list loading 상태 애니메이션
+    const listLoadingAnimation = "p-2 inline-block rounded-lg shimmer-loader"
+
+    // list상세정보
+    const [listDetails, setListDetails] = useState();
+    // list상세정보 API 호출
+    useEffect( ()=>{
+        const loadListDetails = async () => {
+            try{
+                const listDetailsData = await fetchListSlides(listID);
+                setListClicked(false);
+                setListDetails(null);
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                if(listDetailsData){
+                    setListClicked(true);
+                    setListDetails(listDetailsData);
+                    console.log("list 상세정보 불러오기성공:",listDetailsData);
+                }else{
+                    console.log("list 상세정보 불러오기실패");
+                }
+            }catch(error){
+                console.error("list 상세정보 API 호출 오류:",error);
+            }
+        }
+        if(listID) loadListDetails();
+    },[listID])
 
     //외부 클릭 감지
     useEffect(()=>{
@@ -32,9 +60,10 @@ export const ListSlideView = ({ listID,listContainRef,onClose}) =>{
         <>
             <div 
                 ref={slideRef}
-                className={`${slideAnimate} bg-white border-[1px] border-blue-100 w-[57.1vw] h-[75vh] absolute right-0 z-20`}
+                className={`${slideAnimate} border-[2px] rounded-3xl rounded-r-none shadow-lg border-gray-100 bg-white w-[58vw] h-[75vh] absolute p-4 right-0 z-20`}
             >
-                {listID}
+                <div className={`${listClicked ? "" : listLoadingAnimation } h-20 w-full`}>{listDetails?.listBasic?.title || ""}</div>
+                <div className="bg-gray-200 h-[45vh]">일차</div>
             </div>
         </>
     )

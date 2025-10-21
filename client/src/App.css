@@ -296,6 +296,26 @@ body {
   animation: slideOutRight 0.7s forwards;
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: 200% 200%;
+  }
+  100% {
+    background-position: -200% -200%;
+  }
+}
+
+.shimmer-loader{
+  background: linear-gradient(
+    90deg,
+    #f3f3f3 0%,       /* 중간 밝은 회색 */
+    #f1f1f136 50%,       /* 끝 연한 회색 */
+    #f3f3f3 100%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 2s ease infinite;
+}
+
 
 /* 
 .rdrDayhovered .rdrDayNumber span,
