@@ -22,7 +22,7 @@ export const ListSlideView = ({ listID,listContainRef,onClose}) =>{
                 const listDetailsData = await fetchListSlides(listID);
                 setListClicked(false);
                 setListDetails(null);
-                await new Promise((resolve) => setTimeout(resolve, 300));
+                await new Promise((resolve) => setTimeout(resolve, 3000));
                 if(listDetailsData){
                     setListClicked(true);
                     setListDetails(listDetailsData);
@@ -70,14 +70,28 @@ export const ListSlideView = ({ listID,listContainRef,onClose}) =>{
         }
     },[listDetails])
 
-    useEffect(()=>{
-        if(listDetails?.listBasic?.end_date){
-            const endDateText = listDetails.listBasic.end_date;
-            const endDateResult = endDateText.slice(0,endDateText.indexOf("T")).trim();
+    const formattedDate = (listDetailsDate) => {
+        if(!listDetailsDate) return "없음";
+        const formattedDate = listDetailsDate.split("T")[0];
+        return formattedDate || "없음";
+    }
 
-            setEndDate(endDateResult);
-        }
-    })
+    const basic = listDetails?.listBasic;
+
+    const ListSlideBox = ({Color,Title,Text}) => {
+        return(
+            <>
+                <div className={`${listClicked? `${Color}` : listLoadingAnimation} h-full w-[25%] rounded-lg flex flex-col justify-center items-center`}>
+                    {listDetails&&(
+                        <>
+                            <div className={`text-[1.3em] my-2 font-bold w-full ml-4`}>{Title}</div>
+                            <div className={`bg-white h-[30%] w-[90%] rounded-md flex justify-center items-center font-sans font-bold`}>{Text}</div>
+                        </>
+                    )}
+                </div>
+            </>
+        )
+    }
 
     return(
         <>
@@ -107,21 +121,15 @@ export const ListSlideView = ({ listID,listContainRef,onClose}) =>{
                 </div>
                 <div className="flex justify-between h-[45vh]">
                     <div className={`${listClicked? "" : listLoadingAnimation} h-full w-[55%] rounded-lg`}></div>
-                    <div className={`${listClicked? "" : listLoadingAnimation} h-full w-[43%] rounded-lg`}></div>
+                    <div className={`${listClicked? "border-[3px] p-4 border-gray-100" : listLoadingAnimation} h-full w-[43%] rounded-lg`}>{basic?.text}</div>
                 </div>
                 <div className={`h-[15vh] mt-2 flex gap-4`}>
-                    {/* 📅📍💰⏳ */}
-                    <div className={`${listClicked? "bg-red-100" : listLoadingAnimation} h-full w-[25%] rounded-lg flex flex-col justify-center items-center`}>
-                        {listDetails&&(
-                            <>
-                                <div className={`text-[1.3em] my-2 font-bold w-full ml-4`}>📅 마감 일자 </div>
-                                <div className={`bg-white h-[30%] w-[90%] rounded-md flex justify-center items-center font-bold`}>{listDetails?.listBasic?.end_date === null ? "없음" : `${endDate}`}</div>
-                            </>
-                        )}
-                    </div>
-                    <div className={`${listClicked? "bg-yellow-100" : listLoadingAnimation} h-full w-[25%] rounded-lg`}></div>
-                    <div className={`${listClicked? "bg-green-100" : listLoadingAnimation} h-full w-[25%] rounded-lg`}></div>
-                    <div className={`${listClicked? "bg-blue-100" : listLoadingAnimation} h-full w-[25%] rounded-lg`}></div>
+                {/* 📅📍💰⏳ */}
+                    
+                    <ListSlideBox Color={"bg-red-100"} Title={"📅 마감 일자"} Text={`${listDetails?.listBasic?.end_date === null ? "없음" : `${formattedDate(listDetails?.listBasic?.end_date)}`}`}/>
+                    <ListSlideBox Color={"bg-yellow-100"} Title={"📍 위치"} Text={`${listDetails?.listBasic?.meet_place === null ? "없음" : `${listDetails?.listBasic?.meet_place}`}`}/>
+                    <ListSlideBox Color={"bg-green-100"} Title={"💰 비용"} Text={`${listDetails?.listBasic?.budget === null ? "없음" : `${listDetails?.listBasic?.budget}`}`}/>
+                    <ListSlideBox Color={"bg-blue-100"} Title={"⏳ 진행 기간"} Text={`${basic?.period_start_date && basic?.period_end_date ? `${formattedDate(basic?.period_start_date)} ~ ${formattedDate(basic?.period_end_date)}` : "없음"}`}/>
                 </div>
             </div>
         </>
