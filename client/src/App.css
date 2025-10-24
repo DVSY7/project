@@ -316,6 +316,20 @@ body {
   animation: shimmer 2s ease infinite;
 }
 
+@keyframes grayToblue {
+  0% {
+    background-color: #e5e7eb;
+  }
+  100% {
+    background-color: #3b82f6;
+  }
+}
+
+.gray-to-blue {
+  animation: grayToblue 0.3s forwards;
+}
+
+
 
 /* 
 .rdrDayhovered .rdrDayNumber span,
