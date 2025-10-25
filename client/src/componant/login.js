@@ -23,7 +23,7 @@ export default function Login(props) {
     const handleScroll = (e) => {
       // 이미 스크롤 중이면 이벤트 무시
       if (isScrolling) return;
-      setIsScrolling(true);
+      setTimeout(()=>{setIsScrolling(true)},1000);
 
       const scrollY = window.scrollY;
       const screenHeight = window.innerHeight;
@@ -36,12 +36,12 @@ export default function Login(props) {
       } else if (e.deltaY < 0) {
         // 위로 스크롤
         if (scrollY > screenHeight / 2) {
-          scrollTo(introRef);
+          scrollTo(loginSectionRef);
         }
       }
       
-      // 일정 시간 후 스크롤 잠금 해제
-      setTimeout(() => setIsScrolling(false), 100);
+      // // 일정 시간 후 스크롤 잠금 해제
+      // setTimeout(() => setIsScrolling(false), 100);
     };
 
     window.addEventListener("wheel", handleScroll, { passive: true });
@@ -89,9 +89,9 @@ export default function Login(props) {
   const [email, setEmail] = useState('');
   const [local, setLocal] = useState('');
   const [selectedInterests, setSelectedInterestsList] = useState([]);
-
   useEffect(()=>{
-    document.body.style.overflow = 'hidden'; // 스크롤 막기
+    document.body.classList.add('hide-scrollbar');
+    document.documentElement.classList.add('hide-scrollbar'); 
   },[])
 
   // 회원가입 성공 시 폼 초기화 함수
@@ -305,6 +305,19 @@ export default function Login(props) {
     return { value: day, label: day.toString() };
   });
 
+  const [clickedProfile, setClickedProfile] = useState(false);
+
+  // 프로필 이미지 선택 UI
+  const SelectedProfileImage = ()=>{
+    if(clickedProfile){
+      return(
+      <>
+        <div className={`w-60 h-60 bg-white`}>selectedProfileImage</div>
+      </>
+    )
+    }
+  }
+
   return (
     <>
       <Helmet>
@@ -320,7 +333,9 @@ export default function Login(props) {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      {/* 인트로 섹션 */}
+      {!isScrolling &&
+        <>
+          {/* 인트로 섹션 */}
       <section
         ref = {introRef} 
         className="relative h-screen w-full flex flex-col justify-center items-center bg-black text-white overflow-hidden"
@@ -357,6 +372,9 @@ export default function Login(props) {
           ↓ 지금 시작하기
         </div>
       </section>
+        
+        </>
+      }
       <div ref={loginSectionRef}>
         <div
           className={
@@ -659,7 +677,7 @@ export default function Login(props) {
                     ? selectedInterests.length * 2
                     : selectedInterests.length * 2 - 2)
                 }rem] max-h-[6rem]
-                  text-black rounded-sm text-[1rem] w-60 placeholder:text-[0.8rem] bg-white flex flex-wrap items-center overflow-y-auto overflow-x-auto`}
+                  text-black rounded-sm text-[1rem] w-60 min-h-[1.9em] placeholder:text-[0.8rem] bg-white flex flex-wrap items-center overflow-y-auto overflow-x-auto`}
               >
                 <div
                   onClick={handleChangeInterestModal}
@@ -695,6 +713,13 @@ export default function Login(props) {
                   );
                 })}
               </div>
+              <div
+                onClick={()=>{setClickedProfile(prev => (!prev));}}
+                className={`pl-3 cursor-pointer bg-white text-black w-60 h-[1.9em] rounded-sm flex items-center`}
+              >
+                프로필 이미지 선택
+              </div>
+              <SelectedProfileImage/>
               {/* 관심사 선택모달 */}
               <div
                 className={`${

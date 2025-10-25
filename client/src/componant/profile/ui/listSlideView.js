@@ -7,6 +7,7 @@ import { changeInterestColor } from "../utilities/interestColor";
 export const ListSlideView = ({ listID,listContainRef,onClose}) =>{
     const [slideAnimate,setSlideAnimate] = useState("slide-in-right");
     const slideRef = useRef();
+    const scrollRef = useRef(null);
     const [listClicked, setListClicked] = useState(false);
     const [interestBackGround, setInterestBackGround] = useState("");
     // list loading 상태 애니메이션
@@ -114,17 +115,24 @@ export const ListSlideView = ({ listID,listContainRef,onClose}) =>{
         )
     }
 
+    // 일차변경 시 스크롤 최상단으로 이동
+    useEffect(()=>{
+       if(scrollRef.current){
+        scrollRef.current.scrollTop = 0;
+       } 
+    },[selectedDayItemID])
+
     const listDays = listDetails?.listDays;
     const ListDayItems = ({dayID}) => {
         if(listDays){
             return(
                 listDays[dayID].map((items)=>(
-                    <div className={`flex h-[50%] w-full border-b-[1px] border-gray-200`}>
+                    <div className={`flex h-[40%] w-full border-b-[1px] border-gray-200`}>
                         <div className={`flex justify-center items-center w-[25%] h-full`}>
                             <img 
                             src={`${items.image_url ?? "images/장소준비중.png" }`}
                             alt="장소 준비 이미지"
-                            className={`w-full h-[80%]`}
+                            className={`w-[85%] h-[67%]`}
                             >
                         </img>
                         </div>
@@ -174,7 +182,9 @@ export const ListSlideView = ({ listID,listContainRef,onClose}) =>{
                 <div className="flex justify-between h-[50vh]">
                     <div className={`${listClicked? "border-[3px] border-gray-100 float-left" : listLoadingAnimation} h-full w-[55%] rounded-lg`}>
                         <ListDays listDayID={listDayID}/>
-                        <div className={`mt-2 h-[85%] overflow-y-scroll`}>
+                        <div 
+                        ref={scrollRef}
+                        className={`mt-2 h-[85%] ${listClicked? "overflow-y-scroll":""}`}>
                             <ListDayItems dayID = {selectedDayItemID}/>
                         </div>
                     </div>
