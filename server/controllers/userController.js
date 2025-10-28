@@ -80,7 +80,7 @@ exports.signup = async (req, res) => {
 
       // 중계 테이블 삽입
       await db.query(
-        'INSERT INTO userInterests (user_id, interest_id) VALUES (?, ?)',
+        'INSERT INTO userinterests (user_id, interest_id) VALUES (?, ?)',
         [insertId, interestId]
       );
     }
