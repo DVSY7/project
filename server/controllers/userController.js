@@ -24,7 +24,7 @@ if(!fs.existsSync(uploadDir)){
 }
 const storage = multer.diskStorage({
   destination: (req, file, cd) => {
-    cd(null, "uploads/profiles"); // 저장 폴더
+    cd(null, uploadDir); // 저장 폴더
   },
   filename: (req, file, cd) => {
     const koreaTimestamp = dayjs().tz("Asia/Seoul").format("YYYYMMDDHHmmssSSS");
