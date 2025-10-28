@@ -89,6 +89,8 @@ export default function Login(props) {
   const [email, setEmail] = useState('');
   const [local, setLocal] = useState('');
   const [selectedInterests, setSelectedInterestsList] = useState([]);
+  const [profile, setProfile] = useState(null);
+
   useEffect(()=>{
     document.body.classList.add('hide-scrollbar');
     document.documentElement.classList.add('hide-scrollbar'); 
@@ -109,6 +111,8 @@ export default function Login(props) {
     setLocal('');
     setSelectedInterestsList([]);
     setInterestsModal(false);
+    setProfile(null);
+    setClickedProfile(false);
   };
 
   // 로그인 폼 제출 상태관리 스테이트
@@ -272,10 +276,23 @@ export default function Login(props) {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/api/users/signup`,
-        userData
+        userData,
       );
+      // 프로필 이미지를 등록하면
+      if(profile){
+        const formData = new FormData();
+        const insertId = response.data.insertId;
+        formData.append("insertId",insertId);
+        formData.append("profile",profile);
+
+        await axios.post(
+          `${process.env.REACT_APP_SERVER_URL}/api/users/signup/profile`,
+          formData,
+          {headers: { "Content-Type" : "multipart/form-data" } }
+        );
+      };
       alert('회원가입 성공!');
-      console.log(response.data);
+      console.log("회원가입 데이터:",response.data);
 
       // 회원가입 후 로그인 폼으로 이동
       addSignin();
@@ -306,13 +323,55 @@ export default function Login(props) {
   });
 
   const [clickedProfile, setClickedProfile] = useState(false);
+  const fileInputRef = useRef(null);
+  const [prevProfile, setPrevProfile] = useState(`images/미니프로필.png`);
+  const [redoAnimation, setRedoAnimation] = useState(null);
+
+  // 기본이미지를 클릭하면 파일선택 호출
+  const handleClickProfileImage = ()=>{
+    fileInputRef.current.click();
+  }
+  // 파일 선택 시 미리보기 변경
+  const handleFileChange = (e) =>{
+    const file = e.target.files[0];
+    if(file){
+      const imageURL = URL.createObjectURL(file);
+      // 미리보기 이미지 등록
+      setPrevProfile(imageURL);
+      // 서버로 보낼 프로필 데이터
+      setProfile(file);
+      console.log(file);
+    }
+  }
 
   // 프로필 이미지 선택 UI
   const SelectedProfileImage = ()=>{
     if(clickedProfile){
       return(
       <>
-        <div className={`w-60 h-60 bg-white`}>selectedProfileImage</div>
+        <div className={`relative w-60 h-56 rounded-md bg-white flex justify-center items-center`}>
+          <img 
+          src={prevProfile} 
+          alt='미니프로필'
+          className={`h-[90%] aspect-square rounded-full cursor-pointer`}
+          onClick={handleClickProfileImage}
+          ></img>
+          <img
+          src={`images/초기화.png`}
+          alt="초기화이미지"
+          className={`absolute bottom-0 right-0 w-8 h-8 mr-2 mb-2 opacity-30 hover:opacity-100 duration-300 transition-opacity ${redoAnimation}`}
+          onClick={()=>{setPrevProfile(`images/미니프로필.png`); setRedoAnimation(`redo-animation`); setTimeout(()=>{setRedoAnimation(null);},300)}}
+          >
+          </img>
+          {/* 숨겨진 파일 input */}
+          <input
+          type='file'
+          accept='image/*'
+          ref={fileInputRef}
+          className='hidden'
+          onChange={handleFileChange}
+          ></input>
+        </div>
       </>
     )
     }
@@ -333,7 +392,7 @@ export default function Login(props) {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      {!isScrolling &&
+      {!isScrolling && href !== "signup" &&
         <>
           {/* 인트로 섹션 */}
       <section

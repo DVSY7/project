@@ -5,6 +5,7 @@ const db = require('../config/db'); // DB 연결
 const bcrypt = require('bcryptjs'); // bcrypt 모듈 불러오기
 const jwt = require('jsonwebtoken'); // jsonwebtoken 불러오기
 const fs = require('fs');
+const multer = require('multer');
 const path = require('path');
 const { logLoginAttempt } = require('../utiles/logHelper');
 const dayjs = require('dayjs');
@@ -14,9 +15,24 @@ const JWT_SECRET = process.env.JWT_SECRET; // env에서 가져옴
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+// multer storage 설정
+const storage = multer.diskStorage({
+  destination: (req, file, cd) => {
+    cd(null, "uploads/profiles"); // 저장 폴더
+  },
+  filename: (req, file, cd) => {
+    const koreaTimestamp = dayjs().tz("Asia/Seoul").format("YYYYMMDDHHmmssSSS");
+    const ext = path.extname(file.originalname); // .jpeg, .png 등
+    const filename = `ProfileImage_${koreaTimestamp}${ext}`;
+    cd(null, filename);
+  },
+});
+
+const upload = multer({ storage });
+
 // 회원가입 처리
 exports.signup = async (req, res) => {
-  const { username, password, name, sex, birth, email, local, interests, profile_image } = req.body;
+  const { username, password, name, sex, birth, email, local, interests} = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -44,7 +60,7 @@ exports.signup = async (req, res) => {
 
     // 관심사 없으면 바로 응답
     if (!interests || interests.length === 0) {
-      return res.status(200).json({ message: '회원가입 성공 (관심사 없음)' });
+      return res.status(200).json({ message: '회원가입 성공 (관심사 없음)', insertId });
     }
 
     // 관심사 삽입
@@ -70,27 +86,47 @@ exports.signup = async (req, res) => {
     }
 
     // 등록된 프로필이 없으면 기본이미지 제공
-    if (!profile_image){
-      const basicProfile = "images/미니프로필.png";
-      try{
-        await db.query(
-          "INSERT INTO profiles(user_id, profile_image_url) VALUES(?,?)",
-          [insertId, basicProfile]
-        )
-      } catch(error) {
-        console.error(`프로필 이미지 등록 실패: ${error}`);
-      }
+    const basicProfile = "images/미니프로필.png";
+    try{
+      await db.query(
+        "INSERT INTO profiles(user_id, profile_image_url) VALUES(?,?)",
+        [insertId, basicProfile]
+      )
+    } catch(error) {
+      console.error(`프로필 이미지 등록 실패: ${error}`);
     }
     
     
 
-    res.status(200).json({ message: '회원가입 성공 (관심사 포함)' });
+    res.status(200).json({ message: '회원가입 성공 (관심사 포함)', insertId });
   } catch (err) {
     console.error('회원가입 처리 중 오류:', err);
     res.status(500).json({ message: '회원가입 실패', error: err });
   }
 };
 
+exports.signupProfile = [
+  upload.single("profile"),
+  async (req, res) => {
+    try{
+      const {insertId} = req.body;
+      const file = req.file;
+      if(!insertId || !file) {
+        return res.status(400).json({ message: "잘못된 요청" });
+      };
+      // DB에 이미지 경로 저장
+      const imageURL = `${process.env.SERVER_URL}/images/profiles/${file.filename}`;
+      await db.query(
+        `UPDATE profiles SET profile_image_url = ? WHERE user_id = ?`,
+        [imageURL, insertId]
+      );
+      res.status(200).json({ message: "프로필 업로드 성공", imageURL})
+    }catch(error){
+      console.error(error);
+      res.status(500).json({ message: "프로필 업로드 실패" });
+    }
+  }
+]
 
 // 로그인 처리
 exports.login = async (req, res) => {
