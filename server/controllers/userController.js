@@ -16,6 +16,12 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 // multer storage 설정
+const uploadDir = path.join(__dirname, `../uploads/profiles`);
+
+// 디렉토리가 없으면 생성
+if(!fs.existsSync(uploadDir)){
+  fs.mkdirSync(uploadDir, {recursive: true });
+}
 const storage = multer.diskStorage({
   destination: (req, file, cd) => {
     cd(null, "uploads/profiles"); // 저장 폴더
