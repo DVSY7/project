@@ -42,7 +42,7 @@ exports.signup = async (req, res) => {
 
     // 사용자 삽입
     const insertUserQuery = `
-      INSERT INTO Users (username, password, name, sex, birth, email, local)
+      INSERT INTO users (username, password, name, sex, birth, email, local)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     const [result] = await db.query(insertUserQuery, [
@@ -80,7 +80,7 @@ exports.signup = async (req, res) => {
 
       // 중계 테이블 삽입
       await db.query(
-        'INSERT INTO UserInterests (user_id, interest_id) VALUES (?, ?)',
+        'INSERT INTO userInterests (user_id, interest_id) VALUES (?, ?)',
         [insertId, interestId]
       );
     }
