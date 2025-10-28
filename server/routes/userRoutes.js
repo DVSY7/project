@@ -6,6 +6,9 @@ const userController = require('../controllers/userController'); // 사용자 �
 // 회원가입 API
 router.post('/signup',userController.signup);
 
+// 회원가입 프로필 이미지 등록 API
+router.post('/signup/profile',userController.signupProfile);
+
 // 로그인 API
 router.post('/login',userController.login);
 

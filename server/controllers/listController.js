@@ -179,3 +179,44 @@ exports.createList = async (req, res) => {
     });
   }
 };
+
+exports.listSlides = async (req, res) => {
+  try{
+    const { listID } = req.body;
+    if(listID){
+      // console.log("listID:",listID);
+      const [listBasic] = await db.query(
+        `SELECT * FROM lists WHERE list_id = ?`, 
+      [listID]
+      )
+      // listID에 해당하는 day_id 가져오기
+      const [listDays] = await db.query(
+        `SELECT id FROM list_days WHERE list_id = ?`,
+        [listID]
+      )
+      // 결과 객체를 배열로 변환
+      const dayIDs = listDays.map((day)=> day.id);
+      const [listItems] = await db.query(
+        `SELECT * FROM list_items WHERE day_id IN (?) ORDER BY day_id, display_order`,
+        [dayIDs]
+      )
+      // 일차별로 항목들을 그룹화
+      const groupedItems = {};
+      listItems.forEach((item)=>{
+        if(!groupedItems[item.day_id]){
+          groupedItems[item.day_id] = [];
+        }
+        groupedItems[item.day_id].push(item);
+      })
+      console.log("list_Basic:",listBasic);
+      console.log("list_Days:",groupedItems);
+      res.status(200).json({listBasic: listBasic[0],listDayID:dayIDs, listDays: groupedItems});
+    }
+  }catch(error){
+    res.status(500).json({
+      success: false,
+      message: '리스트 슬라이드 불러오기 중 오류가 발생했습니다.',
+      error: error.message
+    });
+  }
+}

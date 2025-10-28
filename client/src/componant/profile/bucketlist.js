@@ -1,10 +1,11 @@
 //client/src/componant/profile/bucketlist.js
-import {useState,useEffect} from "react";
+import {useState,useEffect,useRef} from "react";
 import FilterModal from "./ui/filterModal";
 import JoinMessage from "./ui/joinMessage";
 import {useLocation} from "react-router-dom";
 import { bookmarkChange, fetchListInfo } from "./api/List";
 import { changeInterestColor } from "./utilities/interestColor";
+import { ListSlideView } from "./ui/listSlideView";
 
 export default function BucketList(props){
     // 부모 컴포넌트 전달 값
@@ -62,16 +63,58 @@ export default function BucketList(props){
         return;
     }
 
+    // list가 스크롤 상태인지 확인
+    const listRef = useRef();
+    // list 스크롤 상태관리 스테이트
+    const [listOverFlow, setListOverFlow] = useState(false);
+    useEffect(()=>{
+        const isOverFlow = listRef.current;
+        if(isOverFlow.scrollHeight > isOverFlow.clientHeight){
+            setListOverFlow(true);
+        }
+    },[listInfo])
+    // list 스크롤 상태체크
+    const handleScroll = () => {
+        const isOverFlow = listRef.current;
+        if(!isOverFlow) return;
+        setListOverFlow(isOverFlow.scrollTop === 0);
+    }
+
+    // listSlideView 펼치기
+    const [listSlideView, setListSlideView] = useState(false);
+    // slide에 listID 전달
+    const [listID, setListID] = useState();
+
+    const listContainRef = useRef();
+
     return(
         <>
-            <div className={` w-[80%] h-[95%] rounded-3xl shadow-xl border border-solid border-t-gray-200`}>
+            {/* 리스트 슬라이드 */}
+            {listSlideView && listID &&
+                <ListSlideView 
+                    listID = {listID}
+                    onClose = {() => setListSlideView(false)}
+                    listContainRef = {listContainRef}
+                />
+            }
+
+            <div
+                ref={listContainRef}    
+                className={` w-[80%] h-[95%] rounded-3xl shadow-xl border border-solid border-t-gray-200`}>
                 <div className={`flex justify-between h-[15%] border-b-[1px]`}>
                     <div className={`flex items-center h-full text-[1.5rem] ml-6`}>리스트</div>
                     <div onClick={()=>setFilter(prev => !prev)} className={`mt-3 mr-8 cursor-pointer relative ${filter? "opacity-100":" opacity-30"} text-[0.8rem] transition-opacity duration-300`}>필터<span className={`ml-1 text-[0.75rem]`}>●</span>{filter&&<FilterModal setFilter={setFilter} filterOptions={filterOptions} setFilterOptions={setFilterOptions}/>}</div>
                 </div>
-                <div 
-                className={`h-[85%] overflow-y-auto hide-scrollbar`}>
-
+                <div
+                ref={listRef}
+                onScroll={handleScroll} 
+                className={`h-[85%] overflow-y-auto hide-scrollbar relative`}>
+                    {/* 리스트가 스크롤 가능상태이면 */}
+                    {listOverFlow&&
+                    <div className="flex justify-center items-center fixed w-[52.5vh] h-[5vh] bottom-[10vh]  rounded-b-3xl z-20 opacity-50 pointer-events-none">
+                        <div className="relative text-[20px] flex justify-center items-center font-bold">↓</div>
+                    </div>
+                    }
                     {/* 리스트가 존재하지 않으면 */}
                     {listInfo.length === 0 && 
                     <div className={`bg-gray-50 w-full h-full flex justify-center items-center`}>리스트가 존재하지 않습니다.</div>}
@@ -80,12 +123,15 @@ export default function BucketList(props){
                         const interest = listInfo.interest.split("&")[0].trim();
                         const interestColor = changeInterestColor(interest);
                         return(
-                        <div 
+                        <div
                             key={`list-${listInfo.list_id}`} 
                             className={`flex w-[90%] h-[25%] border-b border-b-gray-200 ml-6 hover:bg-gray-200 rounded-md transition-colors duration-300`}
                         >
                             <div className={`2xl:flex justify-center items-end w-[15%] h-full hidden`}><img src={listInfo.profile_image} alt="프로필" className={`mb-2 w-[55px] h-[55px] rounded-[50%]`}></img></div>
-                            <div className={`flex flex-col justify-end w-[65%] h-full`}>
+                            <div
+                                onClick={()=>{setListSlideView(true);setListID(listInfo.list_id);}} 
+                                className={`flex flex-col justify-end w-[65%] h-full cursor-pointer`}
+                            >
                                 <div className={`font-bold ml-4`}>{listInfo.title}</div>
                                 <div className={`font-sans opacity-50 ml-6 mb-1`}>{listInfo.period_start_date} ~ {listInfo.period_end_date}</div>
                             </div>

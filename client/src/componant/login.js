@@ -23,7 +23,7 @@ export default function Login(props) {
     const handleScroll = (e) => {
       // 이미 스크롤 중이면 이벤트 무시
       if (isScrolling) return;
-      setIsScrolling(true);
+      setTimeout(()=>{setIsScrolling(true)},1000);
 
       const scrollY = window.scrollY;
       const screenHeight = window.innerHeight;
@@ -36,12 +36,12 @@ export default function Login(props) {
       } else if (e.deltaY < 0) {
         // 위로 스크롤
         if (scrollY > screenHeight / 2) {
-          scrollTo(introRef);
+          scrollTo(loginSectionRef);
         }
       }
       
-      // 일정 시간 후 스크롤 잠금 해제
-      setTimeout(() => setIsScrolling(false), 100);
+      // // 일정 시간 후 스크롤 잠금 해제
+      // setTimeout(() => setIsScrolling(false), 100);
     };
 
     window.addEventListener("wheel", handleScroll, { passive: true });
@@ -89,9 +89,11 @@ export default function Login(props) {
   const [email, setEmail] = useState('');
   const [local, setLocal] = useState('');
   const [selectedInterests, setSelectedInterestsList] = useState([]);
+  const [profile, setProfile] = useState(null);
 
   useEffect(()=>{
-    document.body.style.overflow = 'hidden'; // 스크롤 막기
+    document.body.classList.add('hide-scrollbar');
+    document.documentElement.classList.add('hide-scrollbar'); 
   },[])
 
   // 회원가입 성공 시 폼 초기화 함수
@@ -109,6 +111,8 @@ export default function Login(props) {
     setLocal('');
     setSelectedInterestsList([]);
     setInterestsModal(false);
+    setProfile(null);
+    setClickedProfile(false);
   };
 
   // 로그인 폼 제출 상태관리 스테이트
@@ -272,10 +276,23 @@ export default function Login(props) {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/api/users/signup`,
-        userData
+        userData,
       );
+      // 프로필 이미지를 등록하면
+      if(profile){
+        const formData = new FormData();
+        const insertId = response.data.insertId;
+        formData.append("insertId",insertId);
+        formData.append("profile",profile);
+
+        await axios.post(
+          `${process.env.REACT_APP_SERVER_URL}/api/users/signup/profile`,
+          formData,
+          {headers: { "Content-Type" : "multipart/form-data" } }
+        );
+      };
       alert('회원가입 성공!');
-      console.log(response.data);
+      console.log("회원가입 데이터:",response.data);
 
       // 회원가입 후 로그인 폼으로 이동
       addSignin();
@@ -305,6 +322,61 @@ export default function Login(props) {
     return { value: day, label: day.toString() };
   });
 
+  const [clickedProfile, setClickedProfile] = useState(false);
+  const fileInputRef = useRef(null);
+  const [prevProfile, setPrevProfile] = useState(`images/미니프로필.png`);
+  const [redoAnimation, setRedoAnimation] = useState(null);
+
+  // 기본이미지를 클릭하면 파일선택 호출
+  const handleClickProfileImage = ()=>{
+    fileInputRef.current.click();
+  }
+  // 파일 선택 시 미리보기 변경
+  const handleFileChange = (e) =>{
+    const file = e.target.files[0];
+    if(file){
+      const imageURL = URL.createObjectURL(file);
+      // 미리보기 이미지 등록
+      setPrevProfile(imageURL);
+      // 서버로 보낼 프로필 데이터
+      setProfile(file);
+      console.log(file);
+    }
+  }
+
+  // 프로필 이미지 선택 UI
+  const SelectedProfileImage = ()=>{
+    if(clickedProfile){
+      return(
+      <>
+        <div className={`relative w-60 h-56 rounded-md bg-white flex justify-center items-center`}>
+          <img 
+          src={prevProfile} 
+          alt='미니프로필'
+          className={`h-[90%] aspect-square rounded-full cursor-pointer`}
+          onClick={handleClickProfileImage}
+          ></img>
+          <img
+          src={`images/초기화.png`}
+          alt="초기화이미지"
+          className={`absolute bottom-0 right-0 w-8 h-8 mr-2 mb-2 opacity-30 hover:opacity-100 duration-300 transition-opacity ${redoAnimation}`}
+          onClick={()=>{setPrevProfile(`images/미니프로필.png`); setRedoAnimation(`redo-animation`); setTimeout(()=>{setRedoAnimation(null);},300)}}
+          >
+          </img>
+          {/* 숨겨진 파일 input */}
+          <input
+          type='file'
+          accept='image/*'
+          ref={fileInputRef}
+          className='hidden'
+          onChange={handleFileChange}
+          ></input>
+        </div>
+      </>
+    )
+    }
+  }
+
   return (
     <>
       <Helmet>
@@ -320,7 +392,9 @@ export default function Login(props) {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      {/* 인트로 섹션 */}
+      {!isScrolling && href !== "signup" &&
+        <>
+          {/* 인트로 섹션 */}
       <section
         ref = {introRef} 
         className="relative h-screen w-full flex flex-col justify-center items-center bg-black text-white overflow-hidden"
@@ -357,6 +431,9 @@ export default function Login(props) {
           ↓ 지금 시작하기
         </div>
       </section>
+        
+        </>
+      }
       <div ref={loginSectionRef}>
         <div
           className={
@@ -659,7 +736,7 @@ export default function Login(props) {
                     ? selectedInterests.length * 2
                     : selectedInterests.length * 2 - 2)
                 }rem] max-h-[6rem]
-                  text-black rounded-sm text-[1rem] w-60 placeholder:text-[0.8rem] bg-white flex flex-wrap items-center overflow-y-auto overflow-x-auto`}
+                  text-black rounded-sm text-[1rem] w-60 min-h-[1.9em] placeholder:text-[0.8rem] bg-white flex flex-wrap items-center overflow-y-auto overflow-x-auto`}
               >
                 <div
                   onClick={handleChangeInterestModal}
@@ -695,6 +772,13 @@ export default function Login(props) {
                   );
                 })}
               </div>
+              <div
+                onClick={()=>{setClickedProfile(prev => (!prev));}}
+                className={`pl-3 cursor-pointer bg-white text-black w-60 h-[1.9em] rounded-sm flex items-center`}
+              >
+                프로필 이미지 선택
+              </div>
+              <SelectedProfileImage/>
               {/* 관심사 선택모달 */}
               <div
                 className={`${

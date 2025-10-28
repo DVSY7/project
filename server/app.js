@@ -22,7 +22,7 @@ app.use(express.urlencoded({extended:true, limit: '10mb'}));
 // 정적 파일 서빙 (images 폴더)
 app.use('/images', express.static(path.join(__dirname, '../client/public/images')));
 // 정적 파일 서빙 (uploads/posts 폴더)
-app.use('/images/posts', express.static(path.join(__dirname, 'uploads/posts')));
+app.use('/images', express.static(path.join(__dirname, 'uploads')));
 
 // 라우터 연결   /api/users/signup
 app.use('/api/users',userRoutes);

@@ -9,6 +9,7 @@
 
 body {
   font-family: 'Lilita One', sans-serif;
+  overflow-x: hidden;
 }
 
 
@@ -260,6 +261,15 @@ body {
   animation: spin-login 1s linear infinite;
 }
 
+@keyFrames spin-redo {
+  0%{ transform: rotate(0deg); }
+  100%{ transform: rotate(360deg); }
+}
+
+.redo-animation {
+  animation: spin-redo 0.3s linear;
+}
+
 @keyframes bounce-dot {
   0%, 80%, 100% { transform: scale(0); }
   40% { transform: scale(1); }
@@ -276,6 +286,57 @@ body {
 .dot:nth-child(1) { animation-delay: 0s; }
 .dot:nth-child(2) { animation-delay: 0.2s; }
 .dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes slideInRight {
+  0% { transform: translateX(100%); opacity:0.5;}
+  100% { transform: translateX(0%); opacity:1;}
+}
+
+@keyframes slideOutRight {
+  0% { transform: translateX(0%); opacity:1;}
+  100% { transform: translateX(100%); opacity:0.5;}
+}
+
+.slide-in-right {
+  animation: slideInRight 0.7s forwards;
+}
+
+.slide-out-right {
+  animation: slideOutRight 0.7s forwards;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 200%;
+  }
+  100% {
+    background-position: -200% -200%;
+  }
+}
+
+.shimmer-loader{
+  background: linear-gradient(
+    90deg,
+    #f3f3f3 0%,       /* 중간 밝은 회색 */
+    #f1f1f136 50%,       /* 끝 연한 회색 */
+    #f3f3f3 100%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 2s ease infinite;
+}
+
+@keyframes grayToblue {
+  0% {
+    background-color: #e5e7eb;
+  }
+  100% {
+    background-color: #3b82f6;
+  }
+}
+
+.gray-to-blue {
+  animation: grayToblue 0.3s forwards;
+}
 
 
 
