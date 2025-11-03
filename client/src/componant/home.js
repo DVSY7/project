@@ -1,4 +1,3 @@
-import '../App.css';
 import Contents from './content/contents';
 import Menu from './menu';
 import { useEffect, useState } from "react";
@@ -33,6 +32,16 @@ export default function Home(props) {
     };
     getUserID();
   },[name])
+
+
+  // 컴포넌트
+  const Notice = () => {
+    return (
+      <>
+          <div className={`notice-box`}></div>
+      </>
+    )
+  }
  
   return (
     <>
@@ -48,6 +57,8 @@ export default function Home(props) {
             name = {name}
             userID = {userID}
             />
+          {/* 공지사항 */}
+          <Notice />
         </div>
       </div>
     </>

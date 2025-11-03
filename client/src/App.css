@@ -60,6 +60,9 @@ body {
   .clicked-before::before {
     background-color: #3b82f6; /* Tailwind bg-blue-500 */
   }
+  .notice-box{
+    @apply fixed z-20 bg-gray-200 translate-y-[20%] sm:translate-x-0 lg:translate-x-[15vw] 2xl:translate-x-[25vw] h-[70%] w-[550px] rounded-lg
+  }
 }
 
 .custom-height {
