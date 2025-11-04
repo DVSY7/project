@@ -36,7 +36,8 @@ export default function Home(props) {
 
   // 공지사항 컴포넌트
   const Notice = () => {
-    return (
+    const [clickedX, setClickedX] = useState(false);
+    if(!clickedX) return (
       <>
           <div className={`notice-box`}>
             {/* 공지사항 헤더 */}
@@ -44,7 +45,8 @@ export default function Home(props) {
               <div className={`notice-header-title`}>공지사항</div>
               <img 
                 className={`notice-header-xbtn`} 
-                src={`images/x.png`} >
+                src={`images/x.png`}
+                onClick={()=>{setClickedX(true);}} >
               </img>
             </div>
             {/* 공지사항 내용 */}
