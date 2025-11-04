@@ -34,11 +34,42 @@ export default function Home(props) {
   },[name])
 
 
-  // 컴포넌트
+  // 공지사항 컴포넌트
   const Notice = () => {
     return (
       <>
-          <div className={`notice-box`}></div>
+          <div className={`notice-box`}>
+            {/* 공지사항 헤더 */}
+            <div className={`notice-header`}>
+              <div className={`notice-header-title`}>공지사항</div>
+              <img 
+                className={`notice-header-xbtn`} 
+                src={`images/x.png`} >
+              </img>
+            </div>
+            {/* 공지사항 내용 */}
+            <div className={`notice-content`}>
+              <div className={`notice-content-item1`}>
+                <img className={`h-20 w-20 mr-2`}src={`images/notice.png`}></img>
+                <div>
+                  <div>해당 웹사이트는</div>
+                  <div>현재 <span className={`text-blue-500`}>데모버전</span> 입니다.</div>
+                </div>
+              </div>
+              <div className={`notice-content-item2`}>
+                <img 
+                  className={`h-52 w-52`}
+                  src={`images/update.png`}
+                ></img>
+              </div>
+              <div className={`notice-content-item3`}>서비스 개선을 위해 지속적으로 업데이트를 <br></br>진행하고 있습니다.</div>
+            </div>
+            {/* 공지사항 풋터 */}
+            <div className={`notice-footer`}>
+              <div>ㆍ업데이트 주기 : 매주 월요일 오전 6시 ~ 10시</div>
+              <div>ㆍ피드백 : gbytkdduf1004@naver.com 제출</div>
+            </div>
+          </div>
       </>
     )
   }

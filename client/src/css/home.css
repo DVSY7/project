@@ -1,0 +1,39 @@
+/* Notice */
+.notice-box {
+    @apply fixed z-20 bg-white translate-y-[20%] sm:translate-x-0 lg:translate-x-[15vw] 2xl:translate-x-[25vw] h-[70%] w-[550px] rounded-lg 
+    caret-transparent
+}
+.notice-header {
+    @apply 
+    bg-blue-500 h-[10%]
+    text-white text-[3vh]
+    rounded-t-md
+    flex justify-between items-center
+}
+.notice-header-title {
+    @apply ml-5
+}
+.notice-header-xbtn {
+    @apply h-[2vh] w-[2vh] mr-5 cursor-pointer hover:scale-150 transition-transform duration-150
+}
+.notice-content {
+    @apply flex flex-col justify-evenly h-[70%] border-x-[3px] border-blue-500
+}
+.notice-content-item1 {
+    @apply flex justify-center text-[1.8em] font-extrabold
+}
+.notice-content-item2 {
+    @apply flex justify-center
+}
+.notice-content-item3 {
+    @apply flex justify-center text-center text-[1.3em] text-gray-400
+}
+.notice-footer {
+    @apply 
+    flex flex-col justify-center pl-[18%] h-[20%]
+    border-t-[1px] border-t-gray-200
+    border-x-[3px] border-x-blue-500
+    border-b-[3px] border-b-blue-500
+    rounded-b-lg
+    font-sans  
+}
