@@ -37,3 +37,6 @@
     rounded-b-lg
     font-sans  
 }
+.notice-hide-check {
+    @apply flex justify-center items-center z-30 absolute bottom-1 right-3
+}

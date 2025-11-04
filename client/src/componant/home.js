@@ -14,6 +14,8 @@ export default function Home(props) {
   const [name, setName] = useState("");
   // 유저 ID 
   const [userID, setUserID] = useState([{id:0}]);
+  // 공지사항 닫기 상태
+  const [visible, setVisible] = useState(false);
 
   // 로그인 성공 시 토큰 검증
   useEffect(()=>{
@@ -33,20 +35,56 @@ export default function Home(props) {
     getUserID();
   },[name])
 
+  // 오늘 하루 보지 않기 로직
+  useEffect(()=>{
+    const hideDate = localStorage.getItem("noticeHideDate");
+    const today = new Date().toLocaleDateString();
+
+    if(hideDate !== today){
+      setVisible(true);
+    }
+  },[])
+
+  // 오늘 하루 보지 않기 상태 변경 시 로직
+  const handleClose = (checked) => {
+    if(checked){
+      const today = new Date().toLocaleDateString();
+      localStorage.setItem("noticeHideDate", today);
+    }
+    setVisible(false);
+  }
+
+  // 오늘 하루 보지 않기 체크박스 컴포넌트
+  const NoticeHideCheck = () => {
+    return (
+      <>
+        <label className={`notice-hide-check`}>
+          <input
+            type={"checkbox"}
+            className={`mr-1`}
+            onChange={(e)=>{setTimeout(()=>{handleClose(e.target.checked)}, 100);}}
+          />
+          하루동안 보지 않기 
+        </label>
+      </>
+    )
+  }
 
   // 공지사항 컴포넌트
   const Notice = () => {
-    const [clickedX, setClickedX] = useState(false);
-    if(!clickedX) return (
+    if(!visible) return null;
+    return (
       <>
           <div className={`notice-box`}>
+            {/* 오늘 하루 보지 않기 버튼 */}
+            <NoticeHideCheck/>
             {/* 공지사항 헤더 */}
             <div className={`notice-header`}>
               <div className={`notice-header-title`}>공지사항</div>
               <img 
                 className={`notice-header-xbtn`} 
                 src={`images/x.png`}
-                onClick={()=>{setClickedX(true);}} >
+                onClick={()=>{handleClose();}} >
               </img>
             </div>
             {/* 공지사항 내용 */}
