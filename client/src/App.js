@@ -5,6 +5,7 @@ import "./App.css";
 import Community from "./componant/community";
 import Login from "./componant/login";
 import Profile from "./componant/profile";
+import MyInfo from "./componant/myinfo";
 import KakaoRedirectPage from "./componant/routes/kakaoRedirectPage";
 import NaverRedirectPage from "./componant/routes/naverRedirectPage";
 import GoogleRedirectPage from "./componant/routes/googleRedirectPage";
@@ -30,6 +31,7 @@ function App() {
           <Route path="/home" element={<Home setUserID2 = {setUserID2}/>}></Route>
           <Route path="/community" element={<Community/>}/>
           <Route path="/profile" element={<Profile setUserID2 = {setUserID2}/>}/>
+          <Route path="/myinfo" element={<MyInfo/>}/>
           <Route path="/auth/kakao/callback" element={<KakaoRedirectPage/>}/>
           <Route path="/auth/naver/callback" element={<NaverRedirectPage/>}/>
           <Route path="/auth/google/callback" element={<GoogleRedirectPage/>}/>
